@@ -3,8 +3,14 @@
  */
 class Sheet {
 
+  /**
+   * シートに関するコンストラクタ
+   * @constructor
+   * @param {SpreadsheetApp.sheet} sheet - 対象となるシート
+   */
   constructor(sheet = SpreadsheetApp.getActiveSheet(), numHeaderRows = 1) {
     this.sheet = sheet;
+    this.sheetName = sheet.getName();
     this.numHeaderRows = numHeaderRows;
   }
 

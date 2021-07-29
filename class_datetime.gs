@@ -4,9 +4,14 @@
  */
 class Datetime {
 
+  /**
+   * 日付に関するコンストラクタ
+   * @constructor
+   * @param {Date} date - 対象となる日付
+   */
   constructor(date = new Date()) {
     this.date = new Date(date);
-    this.formated = Datetime.format();
+    this.strDate = Datetime.format();
   }
 
   /**

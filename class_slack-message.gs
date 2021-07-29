@@ -1,11 +1,12 @@
 /**
- * Slack メッセージ送信に関するクラス
+ * slack メッセージ送信に関するクラス
  */
 class SlackMessage {
 
   /**
-   * Slack のメッセージ送信に関するコンストラクタ
+   * slack のメッセージ送信に関するコンストラクタ
    * @constructor
+   * @param {string} webhookUrl - Webhook URL
    */
   constructor(webhookUrl) {
     this.webhookUrl = webhookUrl;
@@ -22,7 +23,7 @@ class SlackMessage {
   }
 
   /**
-   * Slack にメッセージを送信する
+   * slack にメッセージを送信する
    * @param {string} message - slack に投稿するメッセージ
    * @param {boolean} isChannelMention - チャンネルメンションをつけるかどうか
    */

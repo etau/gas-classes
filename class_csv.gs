@@ -1,8 +1,15 @@
 /**
- * csv ファイルに関するクラス
+ * csv に関するクラス
  */
 class Csv {
 
+  /**
+   * csv に関するコンストラクタ
+   * @constructor
+   * @param {Array.<Array.<string|number|boolean|Date>>} values - csv に変換する値
+   * @param {string} os - 文字コードを判定するための OS を指定
+   * @param {boolean} hasNewLine - csv ファイルのセルに改行があるかどうか
+   */
   constructor(values, os = 'unix', hasNewLine = false) {
     this.values = values;
     this.os = os;
@@ -11,7 +18,7 @@ class Csv {
 
   /**
    * csv ファイルを Google ドライブに生成するメソッド
-   * @param {string} folderId - 出力先のフォルダ ID
+   * @param {string} folderId - 出力先のフォルダー ID
    * @param {string} fileName - 出力される csv ファイル名 (要拡張子)
    */
   create(folderId, fileName) {
@@ -43,7 +50,7 @@ class Csv {
   /**
    * csv ファイル生成用のデータを生成するメソッド
    * @param {Object} format - フォーマット情報を持つオブジェクト
-   * @return {Array.<Array.<string>>} csv ファイル生成用の 2 次元配列のデータ
+   * @return {Array.<Array.<string|number|boolean|Date>>} csv ファイル生成用の 2 次元配列のデータ
    */
   getData(format) {
     if (!format.hasNewLine) return this.values.join(format.newLine);

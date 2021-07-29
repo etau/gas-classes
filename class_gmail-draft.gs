@@ -1,5 +1,10 @@
 class GmailDraft {
 
+  /**
+   * Gmail の下書きに関するコンストラクタ
+   * @constructor
+   * @param {Array.<string>} record - Gmail の下書きを作成するための配列の値
+   */
   constructor(record) {
     [
       this.recipient,

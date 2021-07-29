@@ -3,13 +3,18 @@
  */
 class Values {
 
+  /**
+   * 値に関するコンストラクタ
+   * @constructor
+   * @param {Array.<Array.<string|number|boolean|Date>>} values - 2 次元配列の値
+   */
   constructor(values) {
     this.values = values;
   }
 
   /**
    * 特定列情報だけを抜き出すメソッド
-   * @return {Array.<Array.<number|string>>} 列情報を 2 次元配列
+   * @return {Array.<Array.<string|number|boolean|Date>>} 列情報を 2 次元配列
    */
   getColumnValues(numColumn) {
     const index = numColumn - 1;
@@ -21,7 +26,7 @@ class Values {
   /**
    * 配列内から A1 型式の場所の要素を返すメソッド
    * @param {string} a1Notation - A1 形式表記
-   * @return {stirng|number|Boolean|Date} 指定された配列内の値
+   * @return {stirng|number|boolean|Date} 指定された配列内の値
    */
   getValueByA1Notation(a1Notation) {
     const rc = this.getRCByA1Notation(a1Notation);
@@ -32,7 +37,7 @@ class Values {
   /**
    * 配列内から A1 型式の場所の要素を返すメソッド
    * @param {string} a1Notation - A1 形式表記
-   * @return {stirng|number|Boolean|Date} 指定された配列内の値
+   * @return {stirng|number|boolean|Date} 指定された配列内の値
    */
   getValuesByA1Notation(a1Notation) {
     const a1Notations = a1Notation.split(':');

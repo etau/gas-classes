@@ -5,6 +5,7 @@ class Money {
 
   /**
    * 金額をフォーマットする静的メソッド
+   * @param {number} amount - 対象となる金額
    * @return {string} フォーマットされた金額
    */
   static format(amount = this.amount) {

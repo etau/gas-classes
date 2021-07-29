@@ -3,6 +3,11 @@
  */
 class Gmail {
 
+  /**
+   * Gmail に関するコンストラクタ
+   * @constructor
+   * @param {string} query - Gmail を検索するクエリー
+   */
   constructor(query) {
     this.threads = GmailApp.search(query);
   }

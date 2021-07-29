@@ -3,9 +3,12 @@
  */
 class Properties {
 
+  /**
+   * プロパティ ストアに関するコンストラクタ
+   * @constructor
+   */
   constructor() {
     this.scriptProperties = PropertiesService.getScriptProperties();
-    this.hoge = this.scriptProperties.getProperty('HOGE');
   }
 
   /** 
@@ -17,27 +20,27 @@ class Properties {
   }
 
   /**
+   * プロパティストアからキーに対する値を取り出すメソッド
+   * @params {String} key - キー
+   */
+  get(key) {
+    return this.scriptProperties.getProperty(key);
+  }
+
+  /**
+   * プロパティストアからすべてのペアを削除するメソッド
+   */
+  deleteAll() {
+    this.scriptProperties.deleteAllProperties();
+  }
+
+  /**
    * スクリプト プロパティにキーと値をセットする静的メソッド
-   * @param {string} key - キーとなる文字列 (アッパースネーク)
+   * @param {string} key - キーとなる文字列
    * @param {string} value - 値
    */
   static set(key, value) {
     PropertiesService.getScriptProperties().setProperty(String(key), String(value));
-  }
-
-  // /**
-  //  * プロパティストアからキーに対する値を取り出す
-  //  * @params {String} key - キー
-  //  */
-  // get(key) {
-  //   return this.scriptProperties.getProperty(key);
-  // }
-
-  /**
-   * プロパティストアからすべてのペアを削除する
-   */
-  deleteAll() {
-    this.scriptProperties.deleteAllProperties();
   }
 
 }

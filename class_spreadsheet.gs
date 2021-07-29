@@ -3,6 +3,11 @@
  */
 class Spreadsheet {
 
+  /**
+   * スプレッドシートに関するコンストラクタ
+   * @constructor
+   * @param {SpreadsheetApp.spreadsheet} spreadsheet - 対象となるスプレッドシート
+   */
   constructor(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
     this.ss = spreadsheet;
   }
