@@ -1,7 +1,7 @@
 /**
  * カレンダーに関するクラス
  */
-class Calennder {
+class Calendar {
 
   /**
    * カレンダーに関するコンストラクタ
@@ -9,8 +9,10 @@ class Calennder {
    * @param {string} account - GWS アカウント
    */
   constructor(account) {
+    /** @type {string} */
     this.account = account;
-    this.user = CalennderApp.getCalendarById(account);
+    /** @type {CalendarApp.Calendar} */
+    this.user = CalendarApp.getCalendarById(account);
   }
 
   /**
