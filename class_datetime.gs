@@ -10,20 +10,10 @@ class Datetime {
    * @param {Date} date - 対象となる日付
    */
   constructor(date = new Date()) {
+    /** type {Date} */
     this.date = new Date(date);
+    /** type {string} */
     this.strDate = Datetime.format();
-  }
-
-  /**
-   * 文字列型の日付を生成するメソッド
-   * @param {Date} d - Date オブジェクト 文字列型も可
-   * @param {string} format - フォーマットする形式
-   * @return {string} フォーマットされた文字列型の日付
-   */
-  static format(d = new Date(), format = 'yyyy/MM/dd') {
-    const date = new Date(d);
-    const strDate = Utilities.formatDate(date, 'JST', format);
-    return strDate;
   }
 
   /**
@@ -60,6 +50,47 @@ class Datetime {
    */
   isSameTime(time) {
     return this.formatDate(this.date, 'HH:mm') === this.fomatDate(time, 'HH:mm');
+  }
+
+
+  /**
+   * インスタンスを生成してからの時間が指定の時間を超えたかどうかを判定するメソッド
+   * @return {boolean} インスタンスを生成してからの時間が指定の時間を超えたかどうか
+   */
+  isTimeOver(limitTime = 345) {
+    const runtime_sec = this.getRuntimeSec();
+    return runtime_sec > limitTime;
+  }
+
+  /**
+   * インスタンスを生成した日時とメソッドを走らせた日時の差分の秒数を返すメソッド
+   * @return {number} runtimeSec
+   */
+  getRuntimeSec() {
+    const now = this.getNow();
+    const runtimeSec = (now.getTime() - this.start.getTime()) / 1000;
+    return runtimeSec;
+  }
+
+  /**
+   * 今の日時の Date オブジェクトを時間を返すメソッド
+   * @return {Date} 今の日時の Date オブジェクト
+   */
+  getNow() {
+    const now = new Date();
+    return now;
+  }
+
+  /**
+   * 文字列型の日付を生成するメソッド
+   * @param {Date} d - Date オブジェクト 文字列型も可
+   * @param {string} format - フォーマットする形式
+   * @return {string} フォーマットされた文字列型の日付
+   */
+  static format(d = new Date(), format = 'yyyy/MM/dd') {
+    const date = new Date(d);
+    const strDate = Utilities.formatDate(date, 'JST', format);
+    return strDate;
   }
 
 }
