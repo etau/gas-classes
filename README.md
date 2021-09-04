@@ -1,2 +1,2 @@
 # gas-classes
-create repository
+GAS を DDD で書いてみる実験中
