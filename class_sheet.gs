@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * シートに関するクラス
  */
@@ -6,11 +8,11 @@ class Sheet {
   /**
    * シートに関するコンストラクタ
    * @constructor
-   * @param {SpreadsheetApp.sheet} sheet - 対象となるシート
+   * @param {SpreadsheetApp.sheet} sheet - 対象となるシート。デフォルト引数は「SpreadsheetApp.getActiveSheet()」
+   * @param {number} numHeaderRows - ヘッダー行の数。デフォルト引数は「1」
    */
   constructor(sheet = SpreadsheetApp.getActiveSheet(), numHeaderRows = 1) {
     this.sheet = sheet;
-    this.sheetName = sheet.getName();
     this.numHeaderRows = numHeaderRows;
   }
 
@@ -35,6 +37,7 @@ class Sheet {
   }
 
   /**
+   * ヘッダー部分を除いた実データ部分を取得するメソッド
    * @return {Array.<Array.<number|string>>} 実データ
    */
   getDataValues() {
@@ -50,6 +53,7 @@ class Sheet {
    */
   setValuesHeaderRowAfter(values) {
     this.clearDataValues();
+    if (!values.length) return;
     this.sheet.getRange(this.numHeaderRows + 1, 1, values.length, values[0].length).
       setValues(values);
   }
@@ -58,6 +62,8 @@ class Sheet {
    * 実データ範囲の値を削除するメソッド
    */
   clearDataValues() {
+    const values = this.getDataValues();
+    if (!values.length) return;
     this.sheet.
       getRange(1 + this.numHeaderRows, 1, this.sheet.getLastRow() - this.numHeaderRows, this.sheet.getLastColumn()).
       clearContent();
@@ -65,9 +71,10 @@ class Sheet {
 
   /**
    * 最終行の下に値を貼り付けるメソッド
-   * @param {Array.<Array.<number|string>>} values - 貼り付ける値
+   * @param {Array.<Array.<number|string|Date>>} values - 貼り付ける値
    */
   appendRows(values) {
+    if (!values.length) return;
     this.sheet.
       getRange(this.sheet.getLastRow() + 1, 1, values.length, values[0].length).
       setValues(values);
@@ -75,8 +82,8 @@ class Sheet {
 
   /**
    * 値範囲でソートするメソッド
-   * @param {number} column - ソート対象となる列
-   * @param {boolean} ascending - 昇順か降順か
+   * @param {number} column - ソート対象となる列。デフォルト引数は「1」
+   * @param {boolean} ascending - 昇順か降順か。デフォルト引数は「true」
    */
   sortDataRows(column = 1, ascending = true) {
     this.sheet.
@@ -85,15 +92,17 @@ class Sheet {
   }
 
   /**
-   * シートの値から、ヘッダー情報をプロパティとして持つ Map 型を生成するメソッド
-   * @return {Array.<Object>} シートの値から、ヘッダー情報を key として持つ Map
-   */
+    * シートの値から、ヘッダー情報をプロパティとして持つ Map 型を生成するメソッド
+    * @return {Array.<Object>} シートの値から、ヘッダー情報を key として持つ Map
+    */
   getDicts() {
     const headers = this.getHeaderValues()[0];
     const values = this.getDataValues();
-    const dicts = values.
-      map(record => record.
-        reduce((acc, cur, i) => acc.set(headers[i], cur), new Map()));
+    const dicts = values.map(
+      record => record.reduce(
+        (acc, cur, i) => acc.set(headers[i], cur), new Map()
+      )
+    );
     return dicts;
   }
 
@@ -104,9 +113,9 @@ class Sheet {
    */
   getSelectedValues(keys) {
     const dicts = this.getDicts();
-    const values = dicts.
-      map(dict => keys.
-        map(key => dict.get(key)));
+    const values = dicts.map(
+      dict => keys.map(
+        key => dict.get(key)));
     return values;
   }
 
