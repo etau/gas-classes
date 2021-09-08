@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * 日付に関するオブジェクトを生成するクラス
  * @param {Date} date - Date オブジェクト 文字列型も可
@@ -7,12 +9,15 @@ class Datetime {
   /**
    * 日付に関するコンストラクタ
    * @constructor
-   * @param {Date} date - 対象となる日付
+   * @param {Date} date - 対象となる日付。デフォルト引数は「new Date()」
    */
   constructor(date = new Date()) {
-    /** type {Date} */
+    const type = new Type(date, TYPE.OBJECT);
+    if (!type.isValidType) throw new Error('Type Error');
+
+    /** @type {Date} */
     this.date = new Date(date);
-    /** type {string} */
+    /** @type {string} */
     this.strDate = Datetime.format();
   }
 
@@ -52,14 +57,14 @@ class Datetime {
     return this.formatDate(this.date, 'HH:mm') === this.fomatDate(time, 'HH:mm');
   }
 
-
   /**
-   * インスタンスを生成してからの時間が指定の時間を超えたかどうかを判定するメソッド
+   * インスタンスを生成してからの時間が指定の秒数を超えたかどうかを判定するメソッド
+   * @param {number} limitSec - 判定する秒数
    * @return {boolean} インスタンスを生成してからの時間が指定の時間を超えたかどうか
    */
-  isTimeOver(limitTime = 345) {
+  isTimeOver(limitSec = /* GAS 360 秒の壁*/ 345) {
     const runtime_sec = this.getRuntimeSec();
-    return runtime_sec > limitTime;
+    return runtime_sec > limitSec;
   }
 
   /**
@@ -95,4 +100,4 @@ class Datetime {
 
 }
 
-const DT = Object.freeze(new Datetime());
+const DATETIME = new Datetime();

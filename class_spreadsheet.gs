@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * スプレッドシートに関するクラス
  */
@@ -6,9 +8,10 @@ class Spreadsheet {
   /**
    * スプレッドシートに関するコンストラクタ
    * @constructor
-   * @param {SpreadsheetApp.spreadsheet} spreadsheet - 対象となるスプレッドシート
+   * @param {SpreadsheetApp.spreadsheet} spreadsheet - 対象となるスプレッドシート。デフォルト引数は「SpreadsheetApp.getActiveSpreadsheet()」
    */
   constructor(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
+    /** @type {SpreadsheetApp.spreadsheet} */
     this.ss = spreadsheet;
   }
 
@@ -55,5 +58,3 @@ class Spreadsheet {
   }
 
 }
-
-const SS = Object.freeze(new Spreadsheet());

@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Gmail に関するクラス
  */
@@ -9,6 +11,7 @@ class Gmail {
    * @param {string} query - Gmail を検索するクエリー
    */
   constructor(query) {
+    /** @type {GmailApp.GmailMessage} */
     this.threads = GmailApp.search(query);
   }
 
@@ -47,5 +50,5 @@ class Gmail {
       replace(suffix, '');
     return sentence;
   }
-  
+
 }

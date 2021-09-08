@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * 値に関するクラス
  */
@@ -45,9 +47,9 @@ class Values {
     const rows = rcs.map(rc => rc.row);
     const columns = rcs.map(rc => rc.column);
 
-    const values = this.values.
-      filter((_, i) => Math.min(...rows) <= i + 1 && i + 1 <= Math.max(...rows)).
-      map(r => r.filter((_, i) => Math.min(...columns) <= i + 1 && i + 1 <= Math.max(...columns)));
+    const values = this.values.filter(
+      (_, i) => Math.min(...rows) <= i + 1 && i + 1 <= Math.max(...rows)).map(
+        r => r.filter((_, i) => Math.min(...columns) <= i + 1 && i + 1 <= Math.max(...columns)));
     return values;
   }
 

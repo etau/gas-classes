@@ -1,18 +1,22 @@
+'use strict'
+
 /**
- * プロパティ ストアに関するクラス
+ * プロパティズ サービスに関するクラス
  */
 class Properties {
 
   /**
-   * プロパティ ストアに関するコンストラクタ
+   * プロパティズ サービスに関するコンストラクタ
    * @constructor
    */
   constructor() {
+    /** @type {Object} */
     this.scriptProperties = PropertiesService.getScriptProperties();
   }
 
+
   /** 
-   * プロパティストアの内容をすべてログする
+   * スクリプト プロパティの内容をすべてログ出力するメソッド
    */
   log() {
     const properties = this.scriptProperties.getProperties();
@@ -20,7 +24,7 @@ class Properties {
   }
 
   /**
-   * プロパティストアからキーに対する値を取り出すメソッド
+   * プロパティ ストアからキーに対する値を取り出すメソッド
    * @params {String} key - キー
    */
   get(key) {
@@ -28,7 +32,7 @@ class Properties {
   }
 
   /**
-   * プロパティストアからすべてのペアを削除するメソッド
+   * プロパティ ストアからすべてのペアを削除するメソッド
    */
   deleteAll() {
     this.scriptProperties.deleteAllProperties();
@@ -44,5 +48,3 @@ class Properties {
   }
 
 }
-
-const PROPERTIES = Object.freeze(new Properties());

@@ -1,4 +1,6 @@
-/**
+'use strict'
+
+/** TODO: SlackApi クラスに変更して、SlackWebhookApi は継承する形に変更
  * slack メッセージ送信に関するクラス
  */
 class SlackMessage {
@@ -9,6 +11,8 @@ class SlackMessage {
    * @param {string} webhookUrl - Webhook URL
    */
   constructor(webhookUrl) {
+
+    /** @type {string} */
     this.webhookUrl = webhookUrl;
   }
 
@@ -17,7 +21,7 @@ class SlackMessage {
    * @param {string} slackId - メンションする対象の slack ID
    * @return {string} メンション
    */
-  getMention(slackId) {
+  getUserMention(slackId) {
     const mention = '<@' + slackId + '>';
     return mention;
   }
@@ -25,7 +29,7 @@ class SlackMessage {
   /**
    * slack にメッセージを送信する
    * @param {string} message - slack に投稿するメッセージ
-   * @param {boolean} isChannelMention - チャンネルメンションをつけるかどうか
+   * @param {boolean} isChannelMention - チャンネルメンションをつけるかどうか。デフォルト引数は「false」
    */
   send(message, isChannelMention = false) {
     const options = {

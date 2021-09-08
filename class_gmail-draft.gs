@@ -1,3 +1,5 @@
+'use strict'
+
 class GmailDraft {
 
   /**
@@ -74,8 +76,8 @@ class GmailDraft {
    */
   static setHtmlFont(string, color = 'black', size = 2, isBold = false) {
     const sentences = string.split('\n');
-    const htmlSentences = sentences.map(sentence =>
-      isBold ?
+    const htmlSentences = sentences.map(
+      sentence => isBold ?
         '<font size=' + size + ' color=' + color + '><b>' + sentence + '</b></font>' :
         '<font size=' + size + ' color=' + color + '>' + sentence + '</font>');
     const htmlSentence = htmlSentences.join('<br>') + '<br>';
