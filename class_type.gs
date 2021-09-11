@@ -13,6 +13,19 @@ const TYPE = Object.freeze(
     OBJECT: 'object',
     /** 整数値 */
     INT: 'integer',
+    /** ファイル オブジェクト */
+    FILE: {
+      /** スプレッドシート オブジェクト*/
+      SPREADSHEET: 'application/vnd.google-apps.spreadsheet'
+    },
+    /** スプレッドシート オブジェクト*/
+    SPREADSHEET: 'Spreadsheet',
+    /** シート オブジェクト */
+    SHEET: 'Sheet',
+    /** toString メソッドで型判定をおこなう対象のオブジェクト */
+    TOSTRINGS: [
+      'Spreadsheet', 'Sheet'
+    ]
   }
 );
 
@@ -37,21 +50,12 @@ class Type {
 
   /**
    * 型判定をする対象と型が一致しているかを返す getter プロパティ
-   * @retrun {boolean}
+   * @retrun {boolean} 型が一致しているかどうか
    */
   get isValidType() {
-    if (this.type_ === 'integer') return Number.isInteger(this.value_);  // MEMO: 型が増えた場合は、判定を増やす
-    return typeof this.value_ === this.type_;
+    if (this.type_ === 'integer') return Number.isInteger(this.value_);
+    if (TYPE.TOSTRINGS.includes(this.type_)) return this.value_.toString() === this.type_;
+    return typeof this.value_ === this.type_ || this.value_.getMimeType() === this.type_;
   }
 
 }
-
-
-// function myFunction() {
-
-//   const dt1 = new Datetime(new Date());
-//   console.log(dt1.date);  // Sun Aug 29 2021 23:53:09 GMT+0900 (Japan Standard Time)
-
-//   const dt2 = new Datetime(2);  // エラー	Error: Type Error
-
-// }
