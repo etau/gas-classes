@@ -10,7 +10,7 @@ const TYPE = Object.freeze(
     /** 真偽値 */
     BOOLEAN: 'boolean',
     /** 整数値 */
-    INT: 'integer',
+    INTEGER: 'integer',
     /** 日付 */
     DATE: 'Date',
     /** 配列 */
@@ -53,24 +53,26 @@ class Type {
     this.value_ = value;
     /** @private {string} */
     this.type_ = type;
+    /** @type {} */
+    this.isValidType = this.isValidType_();
   }
 
   /**
-   * 型判定をする対象と型が一致しているかを返すメソッド
-   * @retrun {boolean} 型が一致しているかどうか
+   * 型判定をする対象と型が一致しているかを返し、一致していない場合にはエラーを投げるプライベート メソッド
+   * @retrun {boolean|Object} 型が一致しているかどうか
    */
-  isValidType() {
+  isValidType_() {
     if (this.type_ === 'integer') return Number.isInteger(this.value_) || this.throwAlert_();
-    if (this.type_ === 'Date') return (this.value_ instanceof Date) || this.throwAlert_();
+    if (this.type_ === 'Date') return this.value_ instanceof Date || this.throwAlert_();
     if (this.type_ === 'Array') return this.value_ instanceof Array || this.throwAlert_();
-    if (this.type_ === 'Object') return (this.value_ instanceof Object) || this.throwAlert_();
+    if (this.type_ === 'Object') return this.value_ instanceof Object || this.throwAlert_();
     if (TYPE.TOSTRINGS.includes(this.type_)) return this.value_.toString() === this.type_ || this.throwAlert_();
     return typeof this.value_ === this.type_ || this.value_.getMimeType() === this.type_ || this.throwAlert_();
   }
 
   /**
-   * エラーを生成するプライベート メソッド
-   * @return {Object} エラー オブジェクト
+   * 型エラーを投げるプライベート メソッド
+   * @throws 型のエラー
    */
   throwAlert_() {
     throw new Error('Type Error: This type is not "' + this.type_ + '".');
