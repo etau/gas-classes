@@ -67,7 +67,9 @@ class Type {
     if (this.type_ === 'Array') return this.value_ instanceof Array || this.throwAlert_();
     if (this.type_ === 'Object') return this.value_ instanceof Object || this.throwAlert_();
     if (TYPE.TOSTRINGS.includes(this.type_)) return this.value_.toString() === this.type_ || this.throwAlert_();
-    return typeof this.value_ === this.type_ || this.value_.getMimeType() === this.type_ || this.throwAlert_();
+    try {
+      return typeof this.value_ === this.type_ || this.value_.getMimeType() === this.type_;
+    } catch (e) { this.throwAlert_(); }
   }
 
   /**
