@@ -8,7 +8,7 @@ class Values {
   /**
    * 値に関するコンストラクタ
    * @constructor
-   * @param {Array.<Array.<string|number|boolean|Date>>} values - 2 次元配列の値
+   * @param {Array.<Array.<string|number|boolean|Date>>} values - 値
    */
   constructor(values) {
     this.values = values;
