@@ -73,7 +73,7 @@ class Datetime {
    */
   getRuntimeSec() {
     const now = this.getNow();
-    const runtimeSec = (now.getTime() - this.start.getTime()) / 1000;
+    const runtimeSec = (now.getTime() - this.date.getTime()) / 1000;
     return runtimeSec;
   }
 
