@@ -12,13 +12,9 @@ class Datetime {
    * @param {Date} date - 対象となる日付。デフォルト引数は「new Date()」
    */
   constructor(date = new Date()) {
-    const type = new Type(date, TYPE.OBJECT);
-    if (!type.isValidType) throw new Error('Type Error');
-
+    new Type(date, TYPE.DATE);
     /** @type {Date} */
     this.date = new Date(date);
-    /** @type {string} */
-    this.strDate = Datetime.format();
   }
 
   /**
@@ -26,7 +22,7 @@ class Datetime {
    * @return {Date} 
    */
   getAM0Date() {
-    const date = new Date(this.format());
+    const date = new Date(this.toString());
     return date;
   }
 
@@ -36,6 +32,7 @@ class Datetime {
    * @return {boolean} 同じ時間かどうか
    */
   isSameMoment(date) {
+    new Type(date, TYPE.DATE);
     return this.date.getTime() === date.getTime();
   }
 
@@ -45,7 +42,8 @@ class Datetime {
    * @return {boolean} 同じ日付かどうか
    */
   isSameDate(date) {
-    return this.formatDate() === this.formatDate(date);
+    new Type(date, TYPE.DATE);
+    return Datetime.format() === Datetime.format(date);
   }
 
   /**
@@ -54,7 +52,8 @@ class Datetime {
    * @return {boolean} 同じ時間かどうか
    */
   isSameTime(time) {
-    return this.formatDate(this.date, 'HH:mm') === this.fomatDate(time, 'HH:mm');
+    new Type(time, TYPE.DATE);
+    return Datetime.format(this.date, 'HH:mm') === Datetime.format(time, 'HH:mm');
   }
 
   /**
@@ -63,6 +62,7 @@ class Datetime {
    * @return {boolean} インスタンスを生成してからの時間が指定の時間を超えたかどうか
    */
   isTimeOver(limitSec = /* GAS 360 秒の壁*/ 345) {
+    new Type(limitSec, TYPE.NUMBER);
     const runtime_sec = this.getRuntimeSec();
     return runtime_sec > limitSec;
   }
@@ -87,12 +87,58 @@ class Datetime {
   }
 
   /**
-   * 文字列型の日付を生成するメソッド
+   * x 日前の Date オブジェクトを返すメソッド
+   * @param {number} x - 日数差
+   * @return {Date} x 日前の Date オブジェクト
+   */
+  getDaysAgo(x) {
+    new Type(x, TYPE.INTEGER);
+    const date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate() - x);
+    return new Datetime(date);
+  }
+
+  /**
+   * x か月の Date オブジェクトを返すメソッド
+   * @param {number} x - 月数差
+   * @return {Date} x 日前の Date オブジェクト
+   */
+  getMonthsAgo(x) {
+    new Type(x, TYPE.INTEGER);
+    const date = new Date(this.date.getFullYear(), this.date.getMonth() - x, this.date.getDate());
+    return new Datetime(date);
+  }
+
+  /**
+   * x 年の Date オブジェクトを返すメソッド
+   * @param {number} x - 年数差
+   * @return {Date} x 日前の Date オブジェクト
+   */
+  getYearsAgo(x) {
+    new Type(x, TYPE.INTEGER);
+    const date = new Date(this.date.getFullYear() - x, this.date.getMonth(), this.date.getDate());
+    return new Datetime(date);
+  }
+
+  /**
+   * コンストラクタの date オブジェクトを指定のフォーマットで文字列化するメソッド
+   * @param {string} format - 日付を文字列化するための指定のフォーマット
+   * @return {string}  日付を文字列化したもの
+   */
+  toString(format = 'yyyy/MM/dd') {
+    new Type(format, TYPE.STRING);
+    const strDate = Datetime.format(this.date, format);
+    return strDate;
+  }
+
+  /**
+   * 指定のフォーマットで日付を文字列化する静的メソッド
    * @param {Date} d - Date オブジェクト 文字列型も可
    * @param {string} format - フォーマットする形式
    * @return {string} フォーマットされた文字列型の日付
    */
   static format(d = new Date(), format = 'yyyy/MM/dd') {
+    new Type(d, TYPE.DATE);
+    new Type(format, TYPE.STRING);
     const date = new Date(d);
     const strDate = Utilities.formatDate(date, 'JST', format);
     return strDate;
