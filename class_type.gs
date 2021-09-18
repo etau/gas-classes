@@ -58,7 +58,7 @@ class Type {
     /** @private {string} */
     this.type_ = type;
     /** @private {boolean|Object} */
-    this.isValid_ = this.isValidType_();
+    this.isValid_ = this.isValid_();
   }
 
   /**
