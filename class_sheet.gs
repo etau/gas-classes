@@ -119,7 +119,7 @@ class Sheet {
    * @param {Array.<number|string>} keys - 辞書のキーとなるヘッダーの値  
    * @return {Array.<Array.<number|string>>} シートから生成された値
    */
-  getValuesSpecifiedColumn(keys) {
+  select(keys) {
     new Type(keys, TYPE.ARRAY);
     const dicts = this.getDicts();
     const values = dicts.map(
