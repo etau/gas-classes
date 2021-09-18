@@ -11,8 +11,8 @@ class SlackMessage {
    * @param {string} webhookUrl - Webhook URL
    */
   constructor(webhookUrl) {
-
     /** @type {string} */
+    new Type(webhookUrl, TYPE.STRING);
     this.webhookUrl = webhookUrl;
   }
 

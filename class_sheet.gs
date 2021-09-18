@@ -12,7 +12,11 @@ class Sheet {
    * @param {number} numHeaderRows - ヘッダー行の数。デフォルト引数は「1」
    */
   constructor(sheet = SpreadsheetApp.getActiveSheet(), numHeaderRows = 1) {
+    new Type(sheet, TYPE.SHEET);
+    /** @type {SpreadsheetApp.Sheet} */
     this.sheet = sheet;
+    new Type(numHeaderRows, TYPE.NUMBER);
+    /** @type {SpreadsheetApp.Sheet} */
     this.numHeaderRows = numHeaderRows;
   }
 
@@ -52,6 +56,7 @@ class Sheet {
    * @param {Array.<Array.<number|string>>} values - 貼り付ける値
    */
   setValuesHeaderRowAfter(values) {
+    new Type(values, TYPE.ARRAY);
     this.clearDataValues();
     if (!values.length) return;
     this.sheet.getRange(this.numHeaderRows + 1, 1, values.length, values[0].length).
@@ -74,6 +79,7 @@ class Sheet {
    * @param {Array.<Array.<number|string|Date>>} values - 貼り付ける値
    */
   appendRows(values) {
+    new Type(values, TYPE.ARRAY);
     if (!values.length) return;
     this.sheet.
       getRange(this.sheet.getLastRow() + 1, 1, values.length, values[0].length).
@@ -86,6 +92,8 @@ class Sheet {
    * @param {boolean} ascending - 昇順か降順か。デフォルト引数は「true」
    */
   sortDataRows(column = 1, ascending = true) {
+    new Type(column, TYPE.INTEGER);
+    new Type(ascending, TYPE.BOOLEAN);
     this.sheet.
       getRange(this.numHeaderRows + 1, 1, this.sheet.getLastRow() - this.numHeaderRows, this.sheet.getLastColumn()).
       sort({ column: column, ascending: ascending });
@@ -108,10 +116,11 @@ class Sheet {
 
   /**
    * 必要な列情報だけのリストを取得するメソッド
-   * @param {Array.<number|string>} keys - 辞書のキー  
+   * @param {Array.<number|string>} keys - 辞書のキーとなるヘッダーの値  
    * @return {Array.<Array.<number|string>>} シートから生成された値
    */
-  getSelectedValues(keys) {
+  getValuesSpecifiedColumn(keys) {
+    new Type(keys, TYPE.ARRAY);
     const dicts = this.getDicts();
     const values = dicts.map(
       dict => keys.map(
@@ -124,6 +133,7 @@ class Sheet {
    * @param {string} url - シート ID を含むスプレッドシートの URL
    */
   static getByUrl(url) {
+    new Type(url, TYPE.STRING);
     const sheets = SpreadsheetApp.openByUrl(url).getSheets();
     const sheetId = Number(url.split('#gid=')[1]);
     const sheet = sheets.find(sheet => sheet.getSheetId() === sheetId);
