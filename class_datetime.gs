@@ -18,42 +18,23 @@ class Datetime {
   }
 
   /**
-   * 時間部分を 0 時に設定したも Date オブジェクトを取得するメソッド
-   * @return {Date} 
+   * format 部分が同じものか比較するメソッド
+   * @param {Date} time - 比較対象の Date オブジェクト 
+   * @return {boolean} format 部分が同じかどうか
    */
-  getAM0Date() {
-    const date = new Date(this.toString());
-    return date;
+  isSame(date, format) {
+    new Type(time, TYPE.DATE);
+    return Datetime.format(this.date, format) === Datetime.format(date, format);
   }
 
   /**
-   * 同じものか比較するメソッド
-   * @param {Date} time - 比較対象の時間を含む Date オブジェクト 
-   * @return {boolean} 同じ時間かどうか
+   * 同じ日時か判定するメソッド
+   * @param {Date} time - 比較対象の Date オブジェクト 
+   * @return {boolean} 同じ日時かどうか
    */
   isSameMoment(date) {
     new Type(date, TYPE.DATE);
     return this.date.getTime() === date.getTime();
-  }
-
-  /**
-   * yyyyMMdd 部分が同じものか比較するメソッド
-   * @param {Date} date - 比較対象の日付を含む Date オブジェクト
-   * @return {boolean} 同じ日付かどうか
-   */
-  isSameDate(date) {
-    new Type(date, TYPE.DATE);
-    return Datetime.format() === Datetime.format(date);
-  }
-
-  /**
-   * HH:mm 部分が同じものか比較するメソッド
-   * @param {Date} time - 比較対象の時間を含む Date オブジェクト 
-   * @return {boolean} 同じ時間かどうか
-   */
-  isSameTime(time) {
-    new Type(time, TYPE.DATE);
-    return Datetime.format(this.date, 'HH:mm') === Datetime.format(time, 'HH:mm');
   }
 
   /**
@@ -72,22 +53,14 @@ class Datetime {
    * @return {number} runtimeSec
    */
   getRuntimeSec() {
-    const now = this.getNow();
+    const now = new Date();
     const runtimeSec = (now.getTime() - this.date.getTime()) / 1000;
     return runtimeSec;
   }
 
   /**
-   * 今の日時の Date オブジェクトを時間を返すメソッド
-   * @return {Date} 今の日時の Date オブジェクト
-   */
-  getNow() {
-    const now = new Date();
-    return now;
-  }
-
-  /**
    * x 日前の Date オブジェクトを返すメソッド
+   * MEMO: 時間部分は 00:00
    * @param {number} x - 日数差
    * @return {Date} x 日前の Date オブジェクト
    */
@@ -99,6 +72,7 @@ class Datetime {
 
   /**
    * x か月の Date オブジェクトを返すメソッド
+   * MEMO: 時間部分は 00:00
    * @param {number} x - 月数差
    * @return {Date} x 日前の Date オブジェクト
    */
@@ -110,6 +84,7 @@ class Datetime {
 
   /**
    * x 年の Date オブジェクトを返すメソッド
+   * MEMO: 時間部分は 00:00
    * @param {number} x - 年数差
    * @return {Date} x 日前の Date オブジェクト
    */
