@@ -29,6 +29,8 @@ const TYPE = Object.freeze(
     TOSTRINGS: [
       'Spreadsheet', 'Sheet', 'Calendar'
     ],
+    /** フォルダー オブジェクト */
+    FOLDER: 'folder',
     /** ファイル オブジェクトの各種 Mine Type */
     FILE: {
       SPREADSHEET: 'application/vnd.google-apps.spreadsheet',
@@ -62,7 +64,7 @@ class Type {
   }
 
   /**
-   * 各プライベート プロパティ value_ のゲッター プロパティ
+   * 各プライベート プロパティのゲッター プロパティ
    */
   get value() { return this.value_; }
   get type() { return this.type_; }
@@ -70,7 +72,7 @@ class Type {
 
   /**
    * 型判定をする対象と型が一致しているかを返し、一致していない場合にはエラーを投げるプライベート メソッド
-   * @retrun {boolean|Object} 型が一致しているかどうか
+   * @retrun {boolean|Object} 型が一致しているかどうか、一致していない場合にはエラーを投げる
    */
   isValid_() {
     if (this.type_ === TYPE.INTEGER) return Number.isInteger(this.value_) || this.throwAlert_();
@@ -78,6 +80,7 @@ class Type {
     if (this.type_ === TYPE.ARRAY) return this.value_ instanceof Array || this.throwAlert_();
     if (this.type_ === TYPE.OBJECT) return this.value_ instanceof Object || this.throwAlert_();
     if (this.type_ === TYPE.MAP) return this.value_ instanceof Map || this.throwAlert_();
+    if (this.type_ === TYPE.FOLDER) return this.value_.getUrl().includes('/drive/folders/') || this.throwAlert_();
     if (TYPE.TOSTRINGS.includes(this.type_)) return this.value_.toString() === this.type_ || this.throwAlert_();
     try {
       return typeof this.value_ === this.type_ || this.value_.getMimeType() === this.type_;
