@@ -13,13 +13,13 @@ class Csv {
    * @param {boolean} hasNewLine - csv ファイルのセルに改行があるかどうか。デフォルト引数は「false」
    */
   constructor(values, os = 'unix', hasNewLine = false) {
-
+    new Type(values, TYPE.ARRAY);
     /** @type {Array.<Array.<string|number|boolean|Date>>} */
     this.values = values;
-
+    new Type(os, TYPE.STRING);
     /** @type {string} */
     this.os = os;
-
+    new Type(hasNewLine, TYPE.BOOLEAN);
     /** @type {boolean} */
     this.hasNewLine = hasNewLine;
   }
@@ -33,39 +33,45 @@ class Csv {
     const format = this.getFormat();
     const data = this.getData(format);
     const folder = DriveApp.getFolderById(folderId);
-    const blob = Utilities.newBlob('', MimeType.CSV, fileName).setDataFromString(data, format.characterCode);
+    const blob = Utilities.newBlob('', MimeType.CSV, fileName).setDataFromString(data, format.get('characterCode'));
     folder.createFile(blob);
   }
 
-  /**
+  /** TODO: Map 型にする
    * OS や改行の有無に応じてフォーマット形式をオブジェクト形式で生成するメソッド
-   * @return {Object} フォーマットの形式をプロパティとして持つオブジェクト
+   * @return {Map} フォーマットの形式をプロパティとして持つオブジェクト
    */
   getFormat() {
     const format = this.os === 'unix' ?
-      {
-        newLine: '\n',
-        characterCode: 'UTF-8',
-      } :
-      {
-        newLine: '\r\n',
-        characterCode: 'Shift-JIS',
-        hasNewLine: this.hasNewLine
-      }
+      new Map(
+        [
+          ['newLine', '\n'],
+          ['characterCode', 'UTF-8'],
+          ['hasNewLine', this.hasNewLine]
+        ]
+      ) :
+      new Map(
+        [
+          ['newLine', '\r\n'],
+          ['characterCode', 'Shift-JIS'],
+          ['hasNewLine', this.hasNewLine]
+        ]
+      )
     return format;
   }
 
   /**
    * csv ファイル生成用のデータを生成するメソッド
-   * @param {Object} format - フォーマット情報を持つオブジェクト
+   * @param {Map} format - フォーマット情報を持つオブジェクト
    * @return {Array.<Array.<string|number|boolean|Date>>} csv ファイル生成用の 2 次元配列のデータ
    */
   getData(format) {
-    if (!format.hasNewLine) return this.values.join(format.newLine);
+    if (!format.get('hasNewLine')) return this.values.join(format.get('newLine'));
 
-    const data = this.values.map(record => record.map(
-      value => '"' + String(value).replace(/\"/g, '\""') + '"')
-    ).join(format.newLine);
+    const data = this.values.map(record =>
+      record.map(
+        value => '"' + String(value).replace(/\"/g, '\""') + '"')
+    ).join(format.get('newLine'));
     return data;
   }
 
