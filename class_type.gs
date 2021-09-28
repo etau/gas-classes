@@ -15,6 +15,8 @@ const TYPE = Object.freeze(
     DATE: 'Date',
     /** 配列 */
     ARRAY: 'Array',
+    /** 正規表現 */
+    REGEXP: 'RegExp',
     /** Map */
     MAP: 'Map',
     /** オブジェクト */
@@ -79,6 +81,7 @@ class Type {
     if (this.type_ === TYPE.DATE) return this.value_ instanceof Date || this.throwAlert_();
     if (this.type_ === TYPE.ARRAY) return this.value_ instanceof Array || this.throwAlert_();
     if (this.type_ === TYPE.OBJECT) return this.value_ instanceof Object || this.throwAlert_();
+    if (this.type_ === TYPE.REGEXP) return this.value_ instanceof RegExp || this.throwAlert_();
     if (this.type_ === TYPE.MAP) return this.value_ instanceof Map || this.throwAlert_();
     if (this.type_ === TYPE.FOLDER) return this.value_.getUrl().includes('/drive/folders/') || this.throwAlert_();
     if (TYPE.TOSTRINGS.includes(this.type_)) return this.value_.toString() === this.type_ || this.throwAlert_();
