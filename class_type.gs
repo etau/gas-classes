@@ -15,12 +15,14 @@ const TYPE = Object.freeze(
     DATE: 'Date',
     /** 配列 */
     ARRAY: 'Array',
+    /** オブジェクト */
+    OBJECT: 'Object',
     /** 正規表現 */
     REGEXP: 'RegExp',
     /** Map */
     MAP: 'Map',
-    /** オブジェクト */
-    OBJECT: 'Object',
+    /** JSON */
+    JSON: 'JSON',
     /** スプレッドシート オブジェクト*/
     SPREADSHEET: 'Spreadsheet',
     /** シート オブジェクト */
@@ -83,6 +85,7 @@ class Type {
     if (this.type_ === TYPE.OBJECT) return this.value_ instanceof Object || this.throwAlert_();
     if (this.type_ === TYPE.REGEXP) return this.value_ instanceof RegExp || this.throwAlert_();
     if (this.type_ === TYPE.MAP) return this.value_ instanceof Map || this.throwAlert_();
+    if (this.type_ === TYPE.JSON) return (typeof this.value_ === 'string' && JSON.parse(this.value_) instanceof Object) || this.throwAlert_();
     if (this.type_ === TYPE.FOLDER) return this.value_.getUrl().includes('/drive/folders/') || this.throwAlert_();
     if (TYPE.TOSTRINGS.includes(this.type_)) return this.value_.toString() === this.type_ || this.throwAlert_();
     try {
