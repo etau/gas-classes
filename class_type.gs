@@ -82,7 +82,7 @@ class Type {
     if (this.type_ === TYPE.INTEGER) return Number.isInteger(this.value_) || this.throwAlert_();
     if (this.type_ === TYPE.DATE) return this.value_ instanceof Date || this.throwAlert_();
     if (this.type_ === TYPE.ARRAY) return this.value_ instanceof Array || this.throwAlert_();
-    if (this.type_ === TYPE.OBJECT) return this.value_ instanceof Object || this.throwAlert_();
+    if (this.type_ === TYPE.OBJECT) return (this.value_ instanceof Object && !(this.value_ instanceof Array)) && !(this.value_ instanceof Map) || this.throwAlert_();
     if (this.type_ === TYPE.REGEXP) return this.value_ instanceof RegExp || this.throwAlert_();
     if (this.type_ === TYPE.MAP) return this.value_ instanceof Map || this.throwAlert_();
     if (this.type_ === TYPE.JSON) return (typeof this.value_ === 'string' && JSON.parse(this.value_) instanceof Object) || this.throwAlert_();
