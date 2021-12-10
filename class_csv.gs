@@ -1,8 +1,5 @@
 'use strict'
 
-/**
- * csv に関するクラス
- */
 class Csv {
 
   /**
@@ -13,13 +10,10 @@ class Csv {
    * @param {boolean} hasNewLine - csv ファイルのセルに改行があるかどうか。デフォルト引数は「false」
    */
   constructor(values, os = 'unix', hasNewLine = false) {
-    new Type(values, TYPE.ARRAY);
     /** @type {Array.<Array.<string|number|boolean|Date>>} */
     this.values = values;
-    new Type(os, TYPE.STRING);
     /** @type {string} */
     this.os = os;
-    new Type(hasNewLine, TYPE.BOOLEAN);
     /** @type {boolean} */
     this.hasNewLine = hasNewLine;
   }
@@ -67,11 +61,8 @@ class Csv {
    */
   getData(format) {
     if (!format.get('hasNewLine')) return this.values.join(format.get('newLine'));
-
-    const data = this.values.map(record =>
-      record.map(
-        value => '"' + String(value).replace(/\"/g, '\""') + '"')
-    ).join(format.get('newLine'));
+    const data = this.values.map(record => record.map(value => '"' + String(value).replace(/\"/g, '\""') + '"')).
+      join(format.get('newLine'));
     return data;
   }
 

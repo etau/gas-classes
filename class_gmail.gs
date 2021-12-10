@@ -1,54 +1,97 @@
 'use strict'
 
-/**
- * Gmail に関するクラス
- */
 class Gmail {
 
   /**
-   * Gmail に関するコンストラクタ
+   * Gmail の下書きに関するコンストラクタ
    * @constructor
-   * @param {string} query - Gmail を検索するクエリー
+   * @param {Array.<string>} record - Gmail の下書きを作成するための配列の値
+   * NOTE: 配列で各種要素を取得する設計
    */
-  constructor(query) {
-    /** @type {GmailApp.GmailMessage} */
-    this.threads = GmailApp.search(query);
+  constructor(record) {
+    [
+      this.recipient,
+      this.subject,
+      this.body,
+      this.from,
+      this.name,
+      this.cc,
+      this.bcc,
+      this.htmlBody
+    ] = record;
+
   }
 
   /**
-   * Gmail スレッドの最初のメッセージの本文を取得するメソッド
-   * @return {string[]} 対象スレッド最初のメッセージの本文 
+   * メールを送信するメソッド
    */
-  getGmailBodies() {
-    const gmailBodies = this.threads.
-      map(thread => thread.getMessages()[0].getPlainBody());
-    return gmailBodies;
+  send() {
+    const { recipient, subject, body, options } = this.getParams();
+    GmailApp.sendEmail(recipient, subject, body, options);
   }
 
   /**
-   * 正規表現にマッチする範囲のメール本文を取得するメソッド
-   * @return {string[]} 対象スレッド最初のメッセージのマッチした文字列 
+   * 下書きを作成するメソッド
    */
-  getSelectedSentences() {
-    const regExp = /hogehoge/;
-    const sentences = this.getGmailBodies().
-      map(gmailBody => gmailBody.match(regExp)[0].replace(/\r?\n/g, ''));
-    return sentences;
+  create() {
+    const { recipient, subject, body, options } = this.getParams();
+    GmailApp.createDraft(recipient, subject, body, options);
   }
 
   /**
-   * 正規表現で prefix と suffix の間の文章を取得する静的メソッド
-   * @param {string} string - 文章を抜き出す文字列
-   * @param {string} prefix - 抜き出したい文章の前の文字列
-   * @param {string} suffix - 抜き出したい文章の後の文字列
-   * @return {string} 抜き出された文字列
+   * メールの下書きに必要なパラメーターを取得するメソッド
+   * @return {Object} メールの下書きを作成するために必要なパラメーター
    */
-  static fetchSentence(string, prefix, suffix) {
-    const regExp = new RegExp(prefix + '.*?' + suffix);
-    const sentence = string.match(regExp)[0].
-      replace(prefix, '').
-      replace(suffix, '');
-    return sentence;
+  getParams() {
+    const params = {
+      recipient: this.recipient,
+      subject: this.subject,
+      body: this.body
+    };
+    const options = {
+      from: this.from,
+      name: this.name,
+      cc: this.cc,
+      bcc: this.bcc,
+      attachments: this.getAttachments(),
+      htmlBody: this.htmlBody
+    };
+    params.options = options;
+    return params;
+  }
+
+  /**
+   * 添付ファイルを取得するメソッド
+   * @param {string} folderId - 添付ファイルを格納している対象のフォルダ ID
+   * @return {Array.<Object>} Blob オブジェクトの配列
+   */
+  getAttachments(folderId = 'hogehoge') {
+    const folder = DriveApp.getFolderById(folderId);
+    const files = folder.getFiles();
+    const attachments = [];
+    while (files.hasNext()) {
+      attachments.push(files.next().getBlob());
+    }
+    return attachments;
+  }
+
+  /**
+   * フォントのサイズと色を変更する静的メソッド
+   * @param {string} string - 対象となる文字列
+   * @param {string} color - フォント カラー
+   * @param {number} size - フォント サイズ
+   * @param {boolean} isBold - 太字かどうか
+   * @return {string} HTML 化した文字列
+   */
+  static setHtmlFont(string, color = 'black', size = 2, isBold = false) {
+    const sentences = string.split('\n');
+    const htmlSentences = sentences.
+      map(sentence => isBold ?
+        '<font size=' + size + ' color=' + color + '><b>' + sentence + '</b></font>' :
+        '<font size=' + size + ' color=' + color + '>' + sentence + '</font>'
+      );
+    const htmlSentence = htmlSentences.join('<br>') + '<br>';
+    return htmlSentence;
   }
 
 }

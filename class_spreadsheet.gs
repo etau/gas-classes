@@ -1,8 +1,5 @@
 'use strict'
 
-/**
- * スプレッドシートに関するクラス
- */
 class Spreadsheet {
 
   /**
@@ -11,7 +8,6 @@ class Spreadsheet {
    * @param {SpreadsheetApp.spreadsheet} spreadsheet - 対象となるスプレッドシート。デフォルト引数は「SpreadsheetApp.getActiveSpreadsheet()」
    */
   constructor(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
-    new Type(spreadsheet, TYPE.SPREADSHEET);
     /** @type {SpreadsheetApp.spreadsheet} */
     this.spreadsheet = spreadsheet;
   }
@@ -23,8 +19,6 @@ class Spreadsheet {
    * @return {Object} 本クラスで生成された Spreadsheet オブジェクト
    */
   copy(name = 'Copy of ' + this.spreadsheet.getName(), folder = this.getParentFolder()) {
-    new Type(name, TYPE.STRING);
-    new Type(folder, TYPE.FOLDER);
     const file = DriveApp.getFileById(this.spreadsheet.getId());
     const newFile = file.makeCopy(name, folder);
     const spreadsheet = SpreadsheetApp.openById(newFile.getId());

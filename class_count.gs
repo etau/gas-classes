@@ -11,7 +11,6 @@ class Count {
    * @param {number} initialValue - カウント開始する初期値。デフォルト引数は 0
    */
   constructor(initialValue = 0) {
-    new Type(initialValue, TYPE.INTEGER);
     /** @type {number} */
     this.initialValue_ = initialValue;
     /** @type {number} */
@@ -26,6 +25,7 @@ class Count {
 
   /**
    * カウント アップするメソッド
+   * @return {number} 1 加算された this.value
    */
   up() {
     return this.value_++;
@@ -33,6 +33,7 @@ class Count {
 
   /**
    * カウント ダウンするメソッド
+   * @return {number} 1 減算された this.value
    */
   down() {
     return this.value_--;
@@ -40,6 +41,7 @@ class Count {
 
   /**
    * 値を初期値にリセットするメソッド
+   * @return {number} 初期値に戻された this.value
    */
   reset(resetValue = this.initialValue_) {
     this.value_ = resetValue;

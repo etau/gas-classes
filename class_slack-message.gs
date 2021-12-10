@@ -12,7 +12,6 @@ class SlackMessage {
    */
   constructor(webhookUrl) {
     /** @type {string} */
-    new Type(webhookUrl, TYPE.STRING);
     this.webhookUrl = webhookUrl;
   }
 
@@ -41,7 +40,7 @@ class SlackMessage {
     UrlFetchApp.fetch(this.webhookUrl, options);
   }
 
-  /** MEMO: class_properties がある場合は不要
+  /** NOTE: class_properties がある場合は不要
    * Webhook URL をセットする静的メソッド
    */
   static setWebhookUrl(webhookUrl) {

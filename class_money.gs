@@ -1,12 +1,11 @@
 'use strict'
 
-/**
- * お金に関するオブジェクトを生成するクラス
- */
 class Money {
 
+  /**
+   * @constructor
+   */
   constructor(amount) {
-    new Type(amount, TYPE.NUMBER);  // or new Type(amount, TYPE.INTEGER)
     /** @type {number} */
     this.amount_ = amount;
     /** @type {string} */
@@ -25,7 +24,7 @@ class Money {
    * @return {string} フォーマットされた金額
    */
   static format(amount = this.amount_) {
-    const formatedAmount = amount.toLocaleString('ja-JP')
+    const formatedAmount = amount.toLocaleString('ja-JP');
     return formatedAmount;
   }
 

@@ -98,7 +98,7 @@ class Type {
    * @throws 型のエラー
    */
   throwAlert_() {
-    throw new Error('Type Error: This type is not "' + this.type_ + '".');
+    throw new Error('Type Error: This type is not a "' + this.type_ + '".');
   }
 
 }

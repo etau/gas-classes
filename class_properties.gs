@@ -1,8 +1,5 @@
 'use strict'
 
-/**
- * プロパティズ サービスに関するクラス
- */
 class Properties {
 
   /**
@@ -10,10 +7,9 @@ class Properties {
    * @constructor
    */
   constructor() {
-    /** @type {Object} */
+    /** @type {PropertiesService.Properties} */
     this.scriptProperties = PropertiesService.getScriptProperties();
   }
-
 
   /** 
    * スクリプト プロパティの内容をすべてログ出力するメソッド
@@ -28,7 +24,8 @@ class Properties {
    * @params {String} key - キー
    */
   get(key) {
-    return this.scriptProperties.getProperty(key);
+    const value = this.scriptProperties.getProperty(key)
+    return value;
   }
 
   /**
@@ -40,6 +37,7 @@ class Properties {
 
   /**
    * スクリプト プロパティにキーと値をセットする静的メソッド
+   * NOTE: Properties.set('SANSAN_API_KEY', 'API キー')
    * @param {string} key - キーとなる文字列
    * @param {string} value - 値
    */

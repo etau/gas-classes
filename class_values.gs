@@ -1,8 +1,5 @@
 'use strict'
 
-/**
- * 値に関するクラス
- */
 class Values {
 
   /**
@@ -20,8 +17,7 @@ class Values {
    */
   getColumnValues(numColumn) {
     const index = numColumn - 1;
-    const columnValues = this.values.
-      map(record => record[index]);
+    const columnValues = this.values.map(record => record[index]);
     return columnValues;
   }
 
@@ -46,10 +42,10 @@ class Values {
     const rcs = a1Notations.map(a1 => this.getRCByA1Notation(a1));
     const rows = rcs.map(rc => rc.row);
     const columns = rcs.map(rc => rc.column);
-
-    const values = this.values.filter(
-      (_, i) => Math.min(...rows) <= i + 1 && i + 1 <= Math.max(...rows)).map(
-        r => r.filter((_, i) => Math.min(...columns) <= i + 1 && i + 1 <= Math.max(...columns)));
+    const values = this.values.filter((_, i) => Math.min(...rows) <= i + 1 && i + 1 <= Math.max(...rows)).
+      map(r => r.
+        filter((_, i) => Math.min(...columns) <= i + 1 && i + 1 <= Math.max(...columns))
+      );
     return values;
   }
 
@@ -83,8 +79,7 @@ class Values {
    */
   getColumn(a1Column) {
     const a1ColumnCharacters = a1Column.split('');
-    const column = a1ColumnCharacters.
-      reduce((acc, cur) => acc * 26 + cur.charCodeAt() - 64, 0);
+    const column = a1ColumnCharacters.reduce((acc, cur) => acc * 26 + cur.charCodeAt() - 64, 0);
     return column;
   }
 

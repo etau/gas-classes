@@ -28,13 +28,15 @@ class Calendar {
 }
 
 
+
 /**
  * 祝日のカレンダーに関するクラス
  */
 class HolidaysCalendar {
 
-  constructor(calendar) {
-    this.calendar = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com');
+  constructor(calendar = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com')) {
+    /** @type {CalendarApp.Calendar} */
+    this.calendar = calendar;
   }
 
   /**
@@ -43,12 +45,11 @@ class HolidaysCalendar {
    */
   getValues() {
     const events = this.getEvents();
-    const values = events.map(
-      event => [
+    const values = events.
+      map(event => [
         event.getTitle(),
         Datetime.format(event.getStartTime())
-      ]
-    );
+      ]);
     return values;
   }
 
