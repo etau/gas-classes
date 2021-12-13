@@ -195,3 +195,4 @@ class Datetime {
 }
 
 const DATETIME = new Datetime();
+const DT = DATETIME;
