@@ -6,13 +6,13 @@ class Sheet {
    * シートに関するコンストラクタ
    * @constructor
    * @param {SpreadsheetApp.sheet} sheet - 対象となるシート。デフォルト引数は「SpreadsheetApp.getActiveSheet()」
-   * @param {number} numHeaderRows - ヘッダー行の数。デフォルト引数は「1」
+   * @param {number} headerRows - ヘッダー行の数。デフォルト引数は「1」
    */
-  constructor(sheet = SpreadsheetApp.getActiveSheet(), numHeaderRows = 1) {
+  constructor(sheet = SpreadsheetApp.getActiveSheet(), headerRows = 1) {
     /** @type {SpreadsheetApp.Sheet} */
     this.sheet = sheet;
     /** @type {SpreadsheetApp.Sheet} */
-    this.numHeaderRows = numHeaderRows;
+    this.headerRows = headerRows;
   }
 
   /**
@@ -25,12 +25,23 @@ class Sheet {
   }
 
   /**
+   * ヘッダーを取得するメソッド
+   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「0 (1 行目)」
+   * @return {Array.<number|string>} ヘッダー
+   */
+  getHeaders(index = 0) {
+    const headerValues = this.getHeaderValues();
+    const headers = headerValues[index];
+    return headers;
+  }
+
+  /**
    * ヘッダー部分を取得するメソッド
    * @return {Array.<Array.<number|string>>} ヘッダー部分
    */
   getHeaderValues() {
     const values = this.getDataRangeValues();
-    const headerValues = values.filter((_, i) => i < this.numHeaderRows);
+    const headerValues = values.filter((_, i) => i < this.headerRows);
     return headerValues;
   }
 
@@ -40,7 +51,7 @@ class Sheet {
    */
   getDataValues() {
     const values = this.getDataRangeValues();
-    const dataValues = values.filter((_, i) => i >= this.numHeaderRows);
+    const dataValues = values.filter((_, i) => i >= this.headerRows);
     return dataValues;
   }
 
@@ -59,10 +70,10 @@ class Sheet {
   /**
    * ヘッダー情報 (各) から列インデックスを返すメソッド
    * @param {string} header - ヘッダー
-   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「1 (2 行目)」
+   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「0 (1 行目)」
    * @return {number} 列インデックス
    */
-  getColumnIndexByHeaderName(header, index = 1) {
+  getColumnIndexByHeaderName(header, index = 0) {
     const headers = this.getHeaders(index);
     const columnIndex = headers.indexOf(header);
     return columnIndex;
@@ -75,7 +86,7 @@ class Sheet {
   setValuesHeaderRowAfter(values) {
     this.clearDataValues();
     if (!values.length) return;
-    this.sheet.getRange(this.numHeaderRows + 1, 1, values.length, values[0].length).
+    this.sheet.getRange(this.headerRows + 1, 1, values.length, values[0].length).
       setValues(values);
   }
 
@@ -86,7 +97,7 @@ class Sheet {
     const values = this.getDataValues();
     if (!values.length) return;
     this.sheet.
-      getRange(1 + this.numHeaderRows, 1, this.sheet.getLastRow() - this.numHeaderRows, this.sheet.getLastColumn()).
+      getRange(1 + this.headerRows, 1, this.sheet.getLastRow() - this.headerRows, this.sheet.getLastColumn()).
       clearContent();
   }
 
@@ -108,7 +119,7 @@ class Sheet {
    */
   sortDataRows(column = 1, ascending = true) {
     this.sheet.
-      getRange(this.numHeaderRows + 1, 1, this.sheet.getLastRow() - this.numHeaderRows, this.sheet.getLastColumn()).
+      getRange(this.headerRows + 1, 1, this.sheet.getLastRow() - this.headerRows, this.sheet.getLastColumn()).
       sort({ column: column, ascending: ascending });
   }
 
@@ -125,7 +136,7 @@ class Sheet {
     return values;
   }
 
-  /**
+  /** TODO: record と row (or rowIndex) を dict 型に持たせたい
     * シートの値から、ヘッダー情報をプロパティとして持つ Map 型を生成するメソッド
     * @return {Array.<Map>} ヘッダー情報を key, 値を value として持つ Map
     */
