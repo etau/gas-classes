@@ -58,10 +58,10 @@ class Sheet {
   /**
    * ヘッダー情報 (各) から列番号を返すメソッド
    * @param {string} header - ヘッダー
-   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「1 (2 行目)」
+   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「0 (1 行目)」
    * @return {number} 列番号
    */
-  getNumColumnByHeaderName(header, index = 1) {
+  getNumColumnByHeaderName(header, index = 0) {
     const columnIndex = this.getColumnIndexByHeaderName(header, index);
     const numColumn = columnIndex + 1;
     return numColumn;
