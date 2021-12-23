@@ -1,2 +1,2 @@
 # gas-classes
-GAS を DDD で書いてみる実験中
+GAS を OOP (DDD) で書いてみる実験中
