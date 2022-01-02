@@ -3,7 +3,7 @@
 class Sheet {
 
   /**
-   * シートに関するコンストラクタ
+   * シートに関するコンストラクタ 
    * @constructor
    * @param {SpreadsheetApp.sheet} sheet - 対象となるシート。デフォルト引数は「SpreadsheetApp.getActiveSheet()」
    * @param {number} headerRows - ヘッダー行の数。デフォルト引数は「1」
@@ -13,6 +13,8 @@ class Sheet {
     this.sheet = sheet;
     /** @type {SpreadsheetApp.Sheet} */
     this.headerRows = headerRows;
+    /** @type {SpreadsheetApp.Sheet} */
+    this.headerRowsIndex = headerRows - 1;
   }
 
   /**
@@ -26,10 +28,10 @@ class Sheet {
 
   /**
    * ヘッダーを取得するメソッド
-   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「0 (1 行目)」
+   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「this.headerRowsIndex」
    * @return {Array.<number|string>} ヘッダー
    */
-  getHeaders(index = 0) {
+  getHeaders(index = this.headerRowsIndex) {
     const headerValues = this.getHeaderValues();
     const headers = headerValues[index];
     return headers;
@@ -58,10 +60,10 @@ class Sheet {
   /**
    * ヘッダー情報 (各) から列番号を返すメソッド
    * @param {string} header - ヘッダー
-   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「0 (1 行目)」
+   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「this.headerRowsIndex」
    * @return {number} 列番号
    */
-  getNumColumnByHeaderName(header, index = 0) {
+  getNumColumnByHeaderName(header, index = this.headerRowsIndex) {
     const columnIndex = this.getColumnIndexByHeaderName(header, index);
     const numColumn = columnIndex + 1;
     return numColumn;
@@ -70,10 +72,10 @@ class Sheet {
   /**
    * ヘッダー情報 (各) から列インデックスを返すメソッド
    * @param {string} header - ヘッダー
-   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「0 (1 行目)」
+   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「this.headerRowsIndex」
    * @return {number} 列インデックス
    */
-  getColumnIndexByHeaderName(header, index = 0) {
+  getColumnIndexByHeaderName(header, index = this.headerRowsIndex) {
     const headers = this.getHeaders(index);
     const columnIndex = headers.indexOf(header);
     return columnIndex;
