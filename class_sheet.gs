@@ -7,7 +7,6 @@ class Sheet {
    * @constructor
    * @param {SpreadsheetApp.sheet} sheet - 対象となるシート。デフォルト引数は「SpreadsheetApp.getActiveSheet()」
    * @param {number} headerRows - ヘッダー行の数。デフォルト引数は「1」
-   * 
    */
   constructor(sheet = SpreadsheetApp.getActiveSheet(), headerRows = 1) {
     /** @type {SpreadsheetApp.Sheet} */
@@ -29,7 +28,7 @@ class Sheet {
 
   /**
    * ヘッダーを取得するメソッド
-   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「0 (1 行目)」
+   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「this.headerRowsIndex」
    * @return {Array.<number|string>} ヘッダー
    */
   getHeaders(index = this.headerRowsIndex) {
@@ -61,7 +60,7 @@ class Sheet {
   /**
    * ヘッダー情報 (各) から列番号を返すメソッド
    * @param {string} header - ヘッダー
-   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「0 (1 行目)」
+   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「this.headerRowsIndex」
    * @return {number} 列番号
    */
   getNumColumnByHeaderName(header, index = this.headerRowsIndex) {
@@ -73,7 +72,7 @@ class Sheet {
   /**
    * ヘッダー情報 (各) から列インデックスを返すメソッド
    * @param {string} header - ヘッダー
-   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「0 (1 行目)」
+   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「this.headerRowsIndex」
    * @return {number} 列インデックス
    */
   getColumnIndexByHeaderName(header, index = this.headerRowsIndex) {
