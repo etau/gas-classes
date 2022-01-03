@@ -61,10 +61,10 @@ class Sheet {
    * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
    * @return {number} 列番号
    */
-  getNumColumnByHeaderName(header, index = headerRows - 1) {
+  getColumnByHeaderName(header, index = headerRows - 1) {
     const columnIndex = this.getColumnIndexByHeaderName(header, index);
-    const numColumn = columnIndex + 1;
-    return numColumn;
+    const column = columnIndex + 1;
+    return column;
   }
 
   /**
@@ -83,7 +83,7 @@ class Sheet {
    * 値範囲を削除し、新しい値を貼り付けるメソッド
    * @param {Array.<Array.<number|string|boolean|Date>>} values - 貼り付ける値
    */
-  setValuesHeaderRowAfter(values) {
+  setValuesHeaderRowsAfter(values) {
     this.clearDataValues();
     if (!values.length) return;
     this.sheet.getRange(this.headerRows + 1, 1, values.length, values[0].length).
