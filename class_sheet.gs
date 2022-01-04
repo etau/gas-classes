@@ -76,6 +76,7 @@ class Sheet {
   getColumnIndexByHeaderName(header, index = this.headerRows - 1) {
     const headers = this.getHeaders(index);
     const columnIndex = headers.indexOf(header);
+    if (columnIndex === -1) throw new Error('There is no value "' + header + '" in the header column.');
     return columnIndex;
   }
 
