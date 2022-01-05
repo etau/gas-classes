@@ -58,7 +58,7 @@ class Sheet {
   /**
    * ヘッダー情報から列番号を返すメソッド
    * @param {string} header - ヘッダー
-   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
+   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
    * @return {number} 列番号
    */
   getColumnByHeaderName(header, index = this.headerRows - 1) {
@@ -70,13 +70,13 @@ class Sheet {
   /**
    * ヘッダー情報から列インデックスを返すメソッド
    * @param {string} header - ヘッダー
-   * @param {number} index - ヘッダーズのヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
+   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
    * @return {number} 列インデックス
    */
   getColumnIndexByHeaderName(header, index = this.headerRows - 1) {
     const headers = this.getHeaders(index);
     const columnIndex = headers.indexOf(header);
-    if (columnIndex === -1) throw new Error('There is no value "' + header + '" in the header column.');
+    if (columnIndex === -1) throw new Error('The value "' + header + '" does not exist in the header row.');
     return columnIndex;
   }
 
@@ -145,15 +145,42 @@ class Sheet {
 
   /**
    * シートの値から、ヘッダー情報をプロパティとして持つ Map 型を生成するメソッド
+   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
    * @return {Array.<Map>} ヘッダー情報を key, 値を value として持つ Map
    */
-  getAsDicts() {
-    const headers = this.getHeaders();
+  getAsDicts(index = this.headerRows - 1) {
+    const headers = this.getHeaders(index);
     const values = this.getDataValues();
     const dicts = values.map((record, i) => record.
       reduce((acc, cur, j) => acc.set(headers[j], cur), new Map([['row', i + 1 + this.headerRows], ['record', record]]))
     );
     return dicts;
+  }
+
+  /**
+   * フィルター対象の列に合致したレコードを取得するメソッド
+   * @param {string} header - フィルター対象の列のヘッダー名
+   * @param {string|number|boolean|Date} value - フィルター対象の値
+   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
+   */
+  filterRecords(header, value, index = this.headerRows - 1) {
+    const dicts = this.getAsDicts(index);
+    const records = dicts.filter(dict => dict.get(header) === value).map(dict => dict.get('record'));
+    return records;
+  }
+
+  /**
+   * 抽出対象の列の一番最初に合致したレコードを取得するメソッド
+   * @param {string} header - 抽出対象の列のヘッダー名
+   * @param {string|number|boolean|Date} value - 抽出対象の値
+   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
+   */
+  findRecord(header, value, index = this.headerRows - 1) {
+    const dicts = this.getAsDicts(index);
+    const dict = dicts.find(dict => dict.get(header) === value);
+    if (dict === undefined) throw new Error('The value "' + value + '" does not exist in the "' + header + '" column.');
+    const record = dict === undefined ? null : dict.get('record');
+    return record;
   }
 
   /**
