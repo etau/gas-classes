@@ -70,3 +70,25 @@ class Trigger {
   }
 
 }
+
+
+// NOTE: 以下のような Enum を設定しておくとよい
+/** @enum {string} */
+const TRIGGER_TYPE = Object.freeze({
+  ON_CHANGE: [
+    { NAME: 'hoge' }
+  ],
+  ON_EDIT: [
+    { NAME: 'fuga' }
+  ],
+  TIME_BASE: {
+    AT_HOUR:
+      [
+        {
+          NAME: 'piyo',
+          HOUR: 23,
+          EVERY_DAYS: 1
+        }
+      ]
+  }
+});
