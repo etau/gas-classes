@@ -70,7 +70,7 @@ class Csv {
    * csv ファイルを 2 次元配列化して返すメソッド
    * @param {DriveApp.file} file - 対象となるファイルオブジェクト
    * @param {string} characterCode - 文字コード。デフォルト引数は「'UTF-8'」
-   * @return {Array.<Array<string|number>>} csv ファイルから取得した 2 次元配列  
+   * @return {Array.<Array<string|number>>} csv ファイルから取得した 2 次元配列
    */
   static read(file, characterCode = 'UTF-8') {
     const blob = file.getBlob();

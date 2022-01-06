@@ -31,7 +31,7 @@ class Folder {
 
   /**
    * フォルダー オブジェクト内のファイルを取得するメソッド
-   * @param {boolean} isArray - 配列として返すかどうか。デフォルト引数は「false」  
+   * @param {boolean} isArray - 配列として返すかどうか。デフォルト引数は「false」
    * @return {DriveApp.FileIterator|Array.<DriveApp.File>} ファイル イテレーターかファイルオブジェクトを要素として持つ配列
    */
   getFiles(isArray = false) {
@@ -55,7 +55,7 @@ class Folder {
 
   /**
    * ファイル名からファイルを取得する関数
-   * @return {DriveApp.File} 
+   * @return {DriveApp.File}
    */
   getByName(name) {
     const files = DriveApp.getFilesByName(name);

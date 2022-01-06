@@ -24,7 +24,7 @@ class Datetime {
 
   /**
    * 同じ日時か判定するメソッド
-   * @param {Date} time - 比較対象の Date オブジェクト 
+   * @param {Date} time - 比較対象の Date オブジェクト
    * @return {boolean} 同じ日時かどうか
    */
   isSameMoment(date) {
@@ -34,7 +34,7 @@ class Datetime {
   /**
    * 昨日以前かどうかを判定するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
-   * @return {boolean} 
+   * @return {boolean}
    */
   isBefore(date) {
     return date.getTime() + (24 * 60 * 60 * 1000) < this.date.getTime();
@@ -43,7 +43,7 @@ class Datetime {
   /**
    * 明日以降かどうかを判定するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
-   * @return {boolean} 
+   * @return {boolean}
    */
   isAfter(date) {
     return date.getTime() > this.date.getTime();
