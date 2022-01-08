@@ -13,6 +13,27 @@ class Datetime {
   }
 
   /**
+   * Dateオブジェクトにn日足すメソッド
+   * @param {Date} time - Date オブジェクト
+   * @param {number} n -  追加する日数
+   * @return {Date} time - Date オブジェクト
+   */
+  addDays(n) {
+     this.date.setDate(this.date.getDate() + n);
+     return this.date;
+  }
+
+    /**
+  * 終了時間に達したらエラーメッセージを投げるメソッド
+  * NOTE: 使用する際にはglobal で const DT = new Datetime();しておくこと
+  */
+  endLoopIfTimeOver() {
+    const message = '345 秒経過したため処理を中断します';
+    if (this.isTimeOver()) throw new Error(message);
+
+  }
+
+  /**
    * format 部分が同じものか比較するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
    * @param {string} format - 比較するフォーマット
@@ -24,7 +45,7 @@ class Datetime {
 
   /**
    * 同じ日時か判定するメソッド
-   * @param {Date} time - 比較対象の Date オブジェクト 
+   * @param {Date} time - 比較対象の Date オブジェクト
    * @return {boolean} 同じ日時かどうか
    */
   isSameMoment(date) {
@@ -34,7 +55,7 @@ class Datetime {
   /**
    * 昨日以前かどうかを判定するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
-   * @return {boolean} 
+   * @return {boolean}
    */
   isBefore(date) {
     return date.getTime() + (24 * 60 * 60 * 1000) < this.date.getTime();
@@ -43,7 +64,7 @@ class Datetime {
   /**
    * 明日以降かどうかを判定するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
-   * @return {boolean} 
+   * @return {boolean}
    */
   isAfter(date) {
     return date.getTime() > this.date.getTime();
@@ -51,6 +72,7 @@ class Datetime {
 
   /**
    * インスタンスを生成してからの時間が指定の秒数を超えたかどうかを判定するメソッド
+   * NOTE: 使用する際にはglobal で const DT = new Datetime();しておく
    * @param {number} limitSec - 判定する秒数
    * @return {boolean} インスタンスを生成してからの時間が指定の時間を超えたかどうか
    */
@@ -195,4 +217,3 @@ class Datetime {
 }
 
 const DATETIME = new Datetime();
-const DT = DATETIME;
