@@ -13,27 +13,6 @@ class Datetime {
   }
 
   /**
-   * Dateオブジェクトにn日足すメソッド
-   * @param {Date} time - Date オブジェクト
-   * @param {number} n -  追加する日数
-   * @return {Date} time - Date オブジェクト
-   */
-  addDays(n) {
-     this.date.setDate(this.date.getDate() + n);
-     return this.date;
-  }
-
-    /**
-  * 終了時間に達したらエラーメッセージを投げるメソッド
-  * NOTE: 使用する際にはglobal で const DT = new Datetime();しておくこと
-  */
-  endLoopIfTimeOver() {
-    const message = '345 秒経過したため処理を中断します';
-    if (this.isTimeOver()) throw new Error(message);
-
-  }
-
-  /**
    * format 部分が同じものか比較するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
    * @param {string} format - 比較するフォーマット
@@ -70,13 +49,30 @@ class Datetime {
     return date.getTime() > this.date.getTime();
   }
 
+  /**           
+   * Date オブジェクトに n 日足すメソッド            
+   * @param {Date} time - Date オブジェクト            
+   * @param {number} n -  追加する日数            
+   * @return {Date} time - Date オブジェクト            
+   */
+  addDays(n) {
+    this.date.setDate(this.date.getDate() + n);
+    return this.date;
+  }
+
+  /**            
+   * 終了時間に達したらエラーメッセージを投げるメソッド            
+   */
+  endLoopIfTimeOver() {
+    if (this.isTimeOver()) throw new Error('345 秒経過したため処理を中断します');
+  }
+
   /**
    * インスタンスを生成してからの時間が指定の秒数を超えたかどうかを判定するメソッド
-   * NOTE: 使用する際にはglobal で const DT = new Datetime();しておく
    * @param {number} limitSec - 判定する秒数
    * @return {boolean} インスタンスを生成してからの時間が指定の時間を超えたかどうか
    */
-  isTimeOver(limitSec = /* GAS 360 秒の壁*/ 345) {
+  isTimeOver(limitSec = /* GAS 360 秒の壁*/ 350) {
     const runtime_sec = this.getRuntimeSec();
     return runtime_sec > limitSec;
   }
@@ -172,6 +168,36 @@ class Datetime {
       nextDt = nextDt.createDaysAgo(-1);
     }
     return nextDt;
+  }
+
+  /**
+   * x 営業日前の Datetime オブジェクトを返すメソッド
+   * @param {number} x - 日数差
+   * @return {Datetime} x 日前の Date オブジェクト
+   */
+  createBusinessDaysBefore(x) {
+    if (x <= 0) throw new Error('The parameter must be greater than 0.');
+    let count = 0;
+    let dt = this;
+    while (count !== x) {
+      dt = dt.createPrevBussinessDay();
+      count++;
+    }
+    return dt;
+  }
+
+  /**
+   * 前営業日の Datetime オブジェクトを返すメソッド
+   * @param {Datetime} dt - 判定対象となる Datetime オブジェクト。デフォルト引数は「this」
+   * @return {Datetime} 翌営業日の Datetime オブジェクト
+   */
+  createPrevBussinessDay(dt = this) {
+    if (x <= 0) throw new Error('The parameter must be greater than 0.');
+    let prevDt = dt.createDaysAgo(1);
+    while (this.isHoliday(prevDt.date)) {
+      prevDt = prevDt.createDaysAgo(1);
+    }
+    return prevDt;
   }
 
   /**
