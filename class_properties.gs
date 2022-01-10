@@ -37,12 +37,11 @@ class Properties {
 
   /**
    * スクリプト プロパティにキーと値をセットする静的メソッド
-   * NOTE: Properties.set('SANSAN_API_KEY', 'API キー')
    * @param {string} key - キーとなる文字列
    * @param {string} value - 値
    */
   static set(key, value) {
-    PropertiesService.getScriptProperties().setProperty(String(key), String(value));
+    PropertiesService.getScriptProperties().setProperty(key, value);
   }
 
 }
