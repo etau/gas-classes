@@ -152,7 +152,10 @@ class Sheet {
     const headers = this.getHeaders(index);
     const values = this.getDataValues();
     const dicts = values.map((record, i) => record.
-      reduce((acc, cur, j) => acc.set(headers[j], cur), new Map([['row', i + 1 + this.headerRows], ['record', record]]))
+      reduce((acc, cur, j) => acc.set(headers[j], cur), new Map([
+        ['row', i + this.headerRows + 1],
+        ['record', record]
+      ]))
     );
     return dicts;
   }
