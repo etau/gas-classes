@@ -65,7 +65,7 @@ class Values {
   /**
    * A1 形式表記から行数を返すメソッド
    * @param {string} a1Notation - A1 形式表記
-   * @return {number} 行数 
+   * @return {number} 行数
    */
   getRow(a1Notation) {
     const row = Number(a1Notation.match(/\d*$/)[0]);

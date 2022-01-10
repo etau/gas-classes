@@ -9,9 +9,7 @@ class Json {  // プロパティを探し当てるやつを作る
 
   getValueFromProperty(property) {
     const object = this.getAsObject();
-
     return object[property];
-
   }
 
   getValueFromPath(path) {

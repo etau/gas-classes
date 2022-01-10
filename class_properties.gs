@@ -11,7 +11,7 @@ class Properties {
     this.scriptProperties = PropertiesService.getScriptProperties();
   }
 
-  /** 
+  /**
    * スクリプト プロパティの内容をすべてログ出力するメソッド
    */
   log() {
