@@ -37,7 +37,7 @@ class Trigger {
   /**
    * スプレッドシート編集時のトリガーを設定するメソッド
    */
-  createOnEdit() {
+  createOnEditForSpreadsheet() {
     this.delete();
     ScriptApp.newTrigger(this.functionName).
       forSpreadsheet(SS).
