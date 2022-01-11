@@ -212,10 +212,14 @@ class Datetime {
   /**
    * 土日祝かどうかを判定するメソッド
    * @param {Date} date - 判定する日
-   * @return {boolean} 土日祝のかどうか   */
+   * @return {boolean} 土日祝のかどうか
+   * NOTE: 利用する場合にはコンストラクタ メソッドに以下を追加
+   * @type {CalendarApp.Calendar}
+   * this.holidays = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com');
+   */
   isHoliday(date = this.date) {
     if (date.getDay() % 6 === 0) return true;
-    return this.holidays.getEventsForDay(date).length;
+    return this.holidays.getEventsForDay(date).length !== 0;
   }
 
   /**
