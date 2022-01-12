@@ -15,7 +15,7 @@ class ChangingEvent {
     /** @type {SpreadsheetApp.Sheet} */
     this.sheet = e.source.getActiveSheet();
     /** @type {SpreadsheetApp.Range} */
-    this.range = e.source.getActiveSheet().getActiveRange();
+    this.range = e.source.getActiveRange();
   }
 
   /**

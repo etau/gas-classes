@@ -13,6 +13,18 @@ class Sheet {
     this.sheet = sheet;
     /** @type {number} */
     this.headerRows = headerRows;
+    /** @type {Array.<Array.<number|string|boolean|Date} */
+    this.dataRangeValues = this.getDataRangeValues();
+  }
+
+  /**
+   * コンストラクタ メソッドの dataRangeValues を新しく設定するメソッド
+   * @return {Sheet} dataRangeValues を更新した Sheet オブジェクト
+   */
+  flush() {
+    const values = this.getDataRangeValues();
+    this.dataRangeValues = values;
+    return this;
   }
 
   /**
@@ -40,7 +52,7 @@ class Sheet {
    * @return {Array.<Array.<string>>} ヘッダー部分
    */
   getHeaderValues() {
-    const values = this.getDataRangeValues();
+    const values = this.dataRangeValues;
     const headerValues = values.filter((_, i) => i < this.headerRows);
     return headerValues;
   }
@@ -50,7 +62,7 @@ class Sheet {
    * @return {Array.<Array.<number|string|boolean|Date>>} レコード
    */
   getDataValues() {
-    const values = this.getDataRangeValues();
+    const values = this.dataRangeValues;
     const dataValues = values.filter((_, i) => i >= this.headerRows);
     return dataValues;
   }
