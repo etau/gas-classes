@@ -13,18 +13,15 @@ class Sheet {
     this.sheet = sheet;
     /** @type {number} */
     this.headerRows = headerRows;
-    /** @type {Array.<Array.<number|string|boolean|Date} */
-    this.dataRangeValues = this.getDataRangeValues();
   }
 
   /**
-   * コンストラクタ メソッドの dataRangeValues を新しく設定するメソッド
-   * @return {Sheet} dataRangeValues を更新した Sheet オブジェクト
+   * Sheet オブジェクトを新しく取得し直すメソッド
+   * @return {Sheet} 更新された Sheet オブジェクト
    */
   flush() {
-    const values = this.getDataRangeValues();
-    this.dataRangeValues = values;
-    return this;
+    const sheet = new Sheet(this.sheet, this.headerRows);
+    return sheet;
   }
 
   /**
@@ -32,7 +29,9 @@ class Sheet {
    * @return {Array.<Array.<number|string|boolean|Date>>} シートの値
    */
   getDataRangeValues() {
+    if (this.dataRangeValues_ !== undefined) return this.dataRangeValues_;
     const dataRangeValues = this.sheet.getDataRange().getValues();
+    this.dataRangeValues_ = dataRangeValues;
     return dataRangeValues;
   }
 
@@ -42,8 +41,10 @@ class Sheet {
    * @return {Array.<string>} ヘッダー一覧
    */
   getHeaders(index = this.headerRows - 1) {
+    if (this.headers_ !== undefined) return this.headers_;
     const headerValues = this.getHeaderValues();
     const headers = headerValues[index];
+    this.headers_ = headers;
     return headers;
   }
 
@@ -52,8 +53,10 @@ class Sheet {
    * @return {Array.<Array.<string>>} ヘッダー部分
    */
   getHeaderValues() {
-    const values = this.dataRangeValues;
+    if (this.headerValues_ !== undefined) return this.headerValues_;
+    const values = this.getDataRangeValues();
     const headerValues = values.filter((_, i) => i < this.headerRows);
+    this.headerValues_ = headerValues;
     return headerValues;
   }
 
@@ -62,8 +65,10 @@ class Sheet {
    * @return {Array.<Array.<number|string|boolean|Date>>} レコード
    */
   getDataValues() {
-    const values = this.dataRangeValues;
+    if (this.dataValues !== undefined) return this.dataValues;
+    const values = this.dataRangeValues_;
     const dataValues = values.filter((_, i) => i >= this.headerRows);
+    this.dataValues = dataValues;
     return dataValues;
   }
 
