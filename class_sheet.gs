@@ -65,10 +65,10 @@ class Sheet {
    * @return {Array.<Array.<number|string|boolean|Date>>} レコード
    */
   getDataValues() {
-    if (this.dataValues !== undefined) return this.dataValues;
+    if (this.dataValues_ !== undefined) return this.dataValues_;
     const values = this.dataRangeValues_;
     const dataValues = values.filter((_, i) => i >= this.headerRows);
-    this.dataValues = dataValues;
+    this.dataValues_ = dataValues;
     return dataValues;
   }
 
@@ -166,6 +166,7 @@ class Sheet {
    * @return {Array.<Map>} ヘッダー情報を key, 値を value として持つ Map
    */
   getAsDicts(index = this.headerRows - 1) {
+    if (this.dicts_ !== undefined) return this.dicts_;
     const headers = this.getHeaders(index);
     const values = this.getDataValues();
     const dicts = values.map((record, i) => record.
@@ -174,6 +175,7 @@ class Sheet {
         ['record', record]
       ]))
     );
+    this.dicts_ = dicts;
     return dicts;
   }
 
