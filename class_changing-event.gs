@@ -25,7 +25,7 @@ class ChangingEvent {
   isSingleCell() {
     const numRows = this.range.getNumRows();
     const numColumns = this.range.getNumColumns();
-    return numRows + numColumns === 2;
+    return numRows * numColumns === 1;
   }
 
 }

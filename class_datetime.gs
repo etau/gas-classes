@@ -61,10 +61,11 @@ class Datetime {
   }
 
   /**            
-   * 終了時間に達したらエラーメッセージを投げるメソッド            
+   * 終了時間に達したらエラーを投げるメソッド            
    */
   endLoopIfTimeOver() {
-    if (this.isTimeOver()) throw new Error('345 秒経過したため処理を中断します');
+    const limitSec = 350;
+    if (this.isTimeOver(limitSec)) throw new Error('Processing time exceeded' + limitSec + 'seconds.');
   }
 
   /**
