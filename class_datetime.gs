@@ -214,13 +214,22 @@ class Datetime {
    * 土日祝かどうかを判定するメソッド
    * @param {Date} date - 判定する日
    * @return {boolean} 土日祝のかどうか
-   * NOTE: 利用する場合にはコンストラクタ メソッドに以下を追加
-   * @type {CalendarApp.Calendar}
-   * this.holidays = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com');
    */
   isHoliday(date = this.date) {
     if (date.getDay() % 6 === 0) return true;
-    return this.holidays.getEventsForDay(date).length !== 0;
+    if (this.holidays !== undefined) return this.holidays.map(holiday => Datetime.format(holiday)).includes(this.toString());
+    if (this.holidaysCalendar_ === undefined) this.holidaysCalendar_ = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com');
+    return this.holidaysCalendar_.getEventsForDay(date).length !== 0;
+  }
+
+  /**
+   * 休日判定用の休日を追加するメソッド
+   * @param {Array.<Date>} holidays - 追加する祝日
+   * @return {Datetime}
+   */
+  addHolidays(holidays) {
+    this.holidays = holidays;
+    return this;
   }
 
   /**
