@@ -18,8 +18,8 @@ class SlackApi {
    * チャンネル名とIDを持つ配列をつくるメソッド
    * @return {Array} アクティブなチャンネル（archiveされていないチャンネル）のチャンネル名とIDを持つ配列
    */
-  getActiveChannelsValues() {
-    const channelValues = this.getChannelsValues();
+  getActiveChannelsValues(teamId) {
+    const channelValues = this.getChannelsValues(teamId);
     const activeChannelsValues = channelValues.filter(record => record[2] === false);
     return activeChannelsValues;
   }
@@ -28,8 +28,8 @@ class SlackApi {
    * slack チャンネルの必要な情報を持つ配列をつくるメソッド
    * @return {Array.<Array.<string|boolean>} slack チャンネルの必要な情報を持つ配列
    */
-  getChannelsValues() {
-    const channels = this.getChannels();
+  getChannelsValues(teamId) {
+    const channels = this.getChannels(teamId);
     const channelValues = channels.map(channelInfo => {
       const { name, id, is_archived } = channelInfo;
       return [name, id, is_archived];
@@ -42,8 +42,8 @@ class SlackApi {
    * slack チャンネルの情報をオブジェクトとして持つ配列を生成するメソッド
    * @return {Array.<Object>} slack チャンネルの情報
    */
-  getChannels() {
-    const conversations = this.getConversations();
+  getChannels(teamId) {
+    const conversations = this.getConversations(teamId);
     const channels = conversations.channels;
     return channels;
   }
@@ -52,9 +52,9 @@ class SlackApi {
    * slack チャンネルの詳細な情報を持つオブジェクトを取得するメソッド
    * @return {Object} slack チャンネルの情報
    */
-  getConversations() {
+  getConversations(teamId) {
     const params = this.getParams('GET', this.botToken);
-    const url = this.buildConversationsListUrl();
+    const url = this.buildConversationsListUrl(teamId);
     const conversations = this.getAsObject(url, params);
     return conversations;
   }
@@ -63,9 +63,8 @@ class SlackApi {
    * fetch メソッドで利用する conversations.list の URL を生成するメソッド
    * @return {string} fetch メソッド用の URL
    */
-  buildConversationsListUrl() {
+  buildConversationsListUrl(teamId) {
     const limit = 1000;
-    const teamId = 'nonproken';
     const url = 'https://slack.com/api/conversations.list?' +
       'limit=' + limit + '&' +
       'team_id=' + teamId;
