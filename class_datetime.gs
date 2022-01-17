@@ -24,7 +24,7 @@ class Datetime {
 
   /**
    * 同じ日時か判定するメソッド
-   * @param {Date} time - 比較対象の Date オブジェクト 
+   * @param {Date} time - 比較対象の Date オブジェクト
    * @return {boolean} 同じ日時かどうか
    */
   isSameMoment(date) {
@@ -34,7 +34,7 @@ class Datetime {
   /**
    * 昨日以前かどうかを判定するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
-   * @return {boolean} 
+   * @return {boolean}
    */
   isBefore(date) {
     return date.getTime() + (24 * 60 * 60 * 1000) < this.date.getTime();
@@ -43,10 +43,29 @@ class Datetime {
   /**
    * 明日以降かどうかを判定するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
-   * @return {boolean} 
+   * @return {boolean}
    */
   isAfter(date) {
     return date.getTime() > this.date.getTime();
+  }
+
+  /**           
+   * Date オブジェクトに n 日足すメソッド            
+   * @param {Date} time - Date オブジェクト            
+   * @param {number} n -  追加する日数            
+   * @return {Date} time - Date オブジェクト            
+   */
+  addDays(n) {
+    this.date.setDate(this.date.getDate() + n);
+    return this.date;
+  }
+
+  /**            
+   * 終了時間に達したらエラーを投げるメソッド            
+   */
+  endLoopIfTimeOver() {
+    const limitSec = 350;
+    if (this.isTimeOver(limitSec)) throw new Error('Processing time exceeded' + limitSec + 'seconds.');
   }
 
   /**
@@ -54,7 +73,7 @@ class Datetime {
    * @param {number} limitSec - 判定する秒数
    * @return {boolean} インスタンスを生成してからの時間が指定の時間を超えたかどうか
    */
-  isTimeOver(limitSec = /* GAS 360 秒の壁*/ 345) {
+  isTimeOver(limitSec = /* GAS 360 秒の壁*/ 350) {
     const runtime_sec = this.getRuntimeSec();
     return runtime_sec > limitSec;
   }
@@ -153,6 +172,36 @@ class Datetime {
   }
 
   /**
+   * x 営業日前の Datetime オブジェクトを返すメソッド
+   * @param {number} x - 日数差
+   * @return {Datetime} x 日前の Date オブジェクト
+   */
+  createBusinessDaysBefore(x) {
+    if (x <= 0) throw new Error('The parameter must be greater than 0.');
+    let count = 0;
+    let dt = this;
+    while (count !== x) {
+      dt = dt.createPrevBussinessDay();
+      count++;
+    }
+    return dt;
+  }
+
+  /**
+   * 前営業日の Datetime オブジェクトを返すメソッド
+   * @param {Datetime} dt - 判定対象となる Datetime オブジェクト。デフォルト引数は「this」
+   * @return {Datetime} 翌営業日の Datetime オブジェクト
+   */
+  createPrevBussinessDay(dt = this) {
+    if (x <= 0) throw new Error('The parameter must be greater than 0.');
+    let prevDt = dt.createDaysAgo(1);
+    while (this.isHoliday(prevDt.date)) {
+      prevDt = prevDt.createDaysAgo(1);
+    }
+    return prevDt;
+  }
+
+  /**
    * 営業日かどうかを判定するメソッド
    * @param {Date} date - 判定する日
    * @return {boolean} 営業日かどうか
@@ -164,10 +213,23 @@ class Datetime {
   /**
    * 土日祝かどうかを判定するメソッド
    * @param {Date} date - 判定する日
-   * @return {boolean} 土日祝のかどうか   */
+   * @return {boolean} 土日祝のかどうか
+   */
   isHoliday(date = this.date) {
     if (date.getDay() % 6 === 0) return true;
-    return this.holidays.getEventsForDay(date).length;
+    if (this.holidays !== undefined) return this.holidays.map(holiday => Datetime.format(holiday)).includes(this.toString());
+    if (this.holidaysCalendar_ === undefined) this.holidaysCalendar_ = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com');
+    return this.holidaysCalendar_.getEventsForDay(date).length !== 0;
+  }
+
+  /**
+   * 休日判定用の休日を追加するメソッド
+   * @param {Array.<Date>} holidays - 追加する祝日
+   * @return {Datetime}
+   */
+  addHolidays(holidays) {
+    this.holidays = holidays;
+    return this;
   }
 
   /**
@@ -193,6 +255,3 @@ class Datetime {
   }
 
 }
-
-const DATETIME = new Datetime();
-const DT = DATETIME;

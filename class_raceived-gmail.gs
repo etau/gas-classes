@@ -15,7 +15,7 @@ class ReceivedGmail {
 
   /**
    * Gmail スレッドの最初のメッセージの本文を取得するメソッド
-   * @return {string[]} 対象スレッド最初のメッセージの本文 
+   * @return {string[]} 対象スレッド最初のメッセージの本文
    */
   getGmailBodies() {
     const gmailBodies = this.threads.map(thread => thread.getMessages()[0].getPlainBody());
@@ -24,7 +24,7 @@ class ReceivedGmail {
 
   /**
    * 正規表現にマッチする範囲のメール本文を取得するメソッド
-   * @return {string[]} 対象スレッド最初のメッセージのマッチした文字列 
+   * @return {string[]} 対象スレッド最初のメッセージのマッチした文字列
    */
   getSelectedSentences() {
     const regExp = /hogehoge/;

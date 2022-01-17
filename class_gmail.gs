@@ -28,6 +28,7 @@ class Gmail {
   send() {
     const { recipient, subject, body, options } = this.getParams();
     GmailApp.sendEmail(recipient, subject, body, options);
+    return this;
   }
 
   /**
@@ -36,6 +37,7 @@ class Gmail {
   create() {
     const { recipient, subject, body, options } = this.getParams();
     GmailApp.createDraft(recipient, subject, body, options);
+    return this;
   }
 
   /**

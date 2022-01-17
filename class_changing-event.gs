@@ -15,7 +15,7 @@ class ChangingEvent {
     /** @type {SpreadsheetApp.Sheet} */
     this.sheet = e.source.getActiveSheet();
     /** @type {SpreadsheetApp.Range} */
-    this.range = e.source.getActiveSheet().getActiveRange();
+    this.range = e.source.getActiveRange();
   }
 
   /**
@@ -25,7 +25,7 @@ class ChangingEvent {
   isSingleCell() {
     const numRows = this.range.getNumRows();
     const numColumns = this.range.getNumColumns();
-    return numRows + numColumns === 2;
+    return numRows * numColumns === 1;
   }
 
 }
