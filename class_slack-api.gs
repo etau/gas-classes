@@ -159,7 +159,7 @@ class SlackApi {
    * @return {Array.<Array.<string>} slack 名、slack 表示名、slack IDの情報を持つ二次元配列
    */
   getMembersValues() {
-    const members = this.getUsersList().members;
+    const members = this.getUsersList(true);
     const membersValues = members.map(member => {
       const profile = member.profile;
       return [profile.real_name, profile.display_name, member.id];
@@ -172,11 +172,38 @@ class SlackApi {
    * slack ユーザーの詳細な情報を持つオブジェクトを取得するメソッド
    * @return {Object} slack ユーザーの情報
    */
-  getUsersList() {
-    const params = this.getParams(method = 'GET', token = this.botToken);
-    const url = this.buildUsersListUrl();
-    const usersList = this.getAsObject(url, params);
-    return usersList;
+  getUsersList(returnOnlyMembers = false) {
+    //const params = this.getParams('GET', this.botToken);
+    let usersList = []
+    let members = []
+    let nextCorsor = ""
+    let is_loop = true
+    let is_first = true
+
+    while(is_loop) {
+      const payload =
+      {
+        "token": this.botToken,
+        "limit": 1000,
+        "cursor": nextCorsor //次にどこから取得をするか
+      }
+      const params = this.getParamAddPayload('GET', this.botToken, payload);
+      //const url = this.buildUsersListUrl();
+      const url = "https://slack.com/api/users.list";
+      const response = this.getAsObject(url, params)
+      usersList = usersList.concat(response);
+      members = members.concat(response.members)
+      nextCorsor = response.response_metadata.next_cursor
+      if( is_first === false &&  nextCorsor === ""){
+        is_loop = false
+      }
+      is_first = false
+    }
+    if(returnOnlyMembers === true){
+      return members;
+    }else{
+      return usersList;
+    }
   }
 
   /**
@@ -220,7 +247,7 @@ class SlackApi {
    * @return {Object} slack ユーザーの情報
    */
   getConversationsMembersList(channel) {
-    const params = this.getParams(method = 'GET', token = this.botToken);
+    const params = this.getParams('GET',this.botToken);
     const url = this.buildConversationsMembersUrl(channel);
     const usersList = this.getAsObject(url, params);
     return usersList;
@@ -250,6 +277,24 @@ class SlackApi {
       headers: {
         Authorization: 'Bearer ' + token
       }
+    };
+    return params;
+  }
+  /**
+   * fetch メソッド用のパラメーターを生成するメソッドpayloadを利用する場合。
+   * @param {string} method - GET or POST メソッド。デフォルト引数は「POST」
+   * @param {string} token - 利用するトークン。デフォルト引数は this.token
+   * @param {string} payload - デフォルト引数は ""
+   * @return {Object} fetch メソッド用のパラメーター
+   */
+  getParamAddPayload(method = 'POST', token = this.token, payload = "") {
+    const params = {
+      method: method,
+      contentType: "application/x-www-form-urlencoded",
+      headers: {
+        Authorization: 'Bearer ' + token
+      },
+      payload:payload
     };
     return params;
   }

@@ -66,7 +66,7 @@ class Sheet {
    */
   getDataValues() {
     if (this.dataValues_ !== undefined) return this.dataValues_;
-    const values = this.dataRangeValues_;
+    const values = this.getDataRangeValues();
     const dataValues = values.filter((_, i) => i >= this.headerRows);
     this.dataValues_ = dataValues;
     return dataValues;
