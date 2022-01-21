@@ -223,9 +223,9 @@ class Datetime {
   }
 
   /**
-   * 休日判定用の休日を追加するメソッド
+   * 休日判定用の休日をプロパティに追加するメソッド
    * @param {Array.<Date>} holidays - 追加する祝日
-   * @return {Datetime}
+   * @return {Datetime} Datetime オブジェクト
    */
   addHolidays(holidays) {
     this.holidays = holidays;

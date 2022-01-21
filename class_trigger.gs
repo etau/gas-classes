@@ -63,7 +63,7 @@ class Trigger {
    * トリガーを削除するメソッド
    */
   delete() {
-    const triggers = ScriptApp.getScriptTriggers();
+    const triggers = ScriptApp.getProjectTriggers();
     triggers.forEach(trigger => {
       if (trigger.getHandlerFunction() === this.functionName) ScriptApp.deleteTrigger(trigger);
     });

@@ -20,6 +20,7 @@ class Sheet {
    * @return {Sheet} 更新された Sheet オブジェクト
    */
   flush() {
+    SpreadsheetApp.flush();
     const sheet = new Sheet(this.sheet, this.headerRows);
     return sheet;
   }
@@ -103,7 +104,7 @@ class Sheet {
    */
   setValuesHeaderRowsAfter(values) {
     this.clearDataValues();
-    if (!values.length) return;
+    if (values.length === 0) return;
     this.sheet.getRange(this.headerRows + 1, 1, values.length, values[0].length).
       setValues(values);
     return this;
@@ -114,7 +115,7 @@ class Sheet {
    */
   clearDataValues() {
     const values = this.getDataValues();
-    if (!values.length) return;
+    if (values.length === 0) return;
     this.sheet.
       getRange(1 + this.headerRows, 1, this.sheet.getLastRow() - this.headerRows, this.sheet.getLastColumn()).
       clearContent();
@@ -126,7 +127,7 @@ class Sheet {
    * @param {Array.<Array.<number|string|boolean|Date>>} values - 貼り付ける値
    */
   appendRows(values) {
-    if (!values.length) return;
+    if (values.length === 0) return;
     this.sheet.
       getRange(this.sheet.getLastRow() + 1, 1, values.length, values[0].length).
       setValues(values);
@@ -184,11 +185,25 @@ class Sheet {
    * @param {string} header - フィルター対象の列のヘッダー名
    * @param {string|number|boolean|Date} value - フィルター対象の値
    * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
+   * @return {Array.<Array.<string|number|boolean|Date>} フィルターされたレコード
    */
   filterRecords(header, value, index = this.headerRows - 1) {
-    const dicts = this.getAsDicts(index);
-    const records = dicts.filter(dict => dict.get(header) === value).map(dict => dict.get('record'));
+    const filterdDicts = this.filterDicts(header, value, index);
+    const records = filterdDicts.map(dict => dict.get('record'));
     return records;
+  }
+
+  /**
+   * フィルター対象の列に合致した dicts を取得するメソッド
+   * @param {string} header - フィルター対象の列のヘッダー名
+   * @param {string|number|boolean|Date} value - フィルター対象の値
+   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
+   * @return {Array.<Map>} フィルターされた dicts
+   */
+  filterDicts(header, value, index = this.headerRows - 1) {
+    const dicts = this.getAsDicts(index);
+    const filterdDicts = dicts.filter(dict => dict.get(header) === value);
+    return filterdDicts;
   }
 
   /**
@@ -196,13 +211,26 @@ class Sheet {
    * @param {string} header - 抽出対象の列のヘッダー名
    * @param {string|number|boolean|Date} value - 抽出対象の値
    * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
+   * @return {Array.<string|number|boolean|Date>} 対象レコード
    */
   findRecord(header, value, index = this.headerRows - 1) {
+    const dict = this.findDict(header, value, index);
+    const record = dict === undefined ? null : dict.get('record');
+    return record;
+  }
+
+  /**
+   * 抽出対象の列の一番最初に合致した dict を取得するメソッド
+   * @param {string} header - 抽出対象の列のヘッダー名
+   * @param {string|number|boolean|Date} value - 抽出対象の値
+   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
+   * @return {Map} dict
+   */
+  findDict(header, value, index = this.headerRows - 1) {
     const dicts = this.getAsDicts(index);
     const dict = dicts.find(dict => dict.get(header) === value);
     if (dict === undefined) throw new Error('The value "' + value + '" does not exist in the "' + header + '" column.');
-    const record = dict === undefined ? null : dict.get('record');
-    return record;
+    return dict;
   }
 
   /**
