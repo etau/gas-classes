@@ -183,6 +183,26 @@ class SlackApi {
   }
 
   /**
+   * slack のから ユーザーの詳細な情報を持つオブジェクトを取得するメソッド
+   * @return {Array.<Objyect>} slack ユーザーの情報
+   */
+  getMembers(nextCorsor = "") {
+    const payload =
+    {
+      "token": this.botToken,
+      "limit": 1000,
+      "cursor": nextCorsor 
+    }
+    const params = this.getParamAddPayload('GET', this.botToken, payload);
+    const url = "https://slack.com/api/users.list";
+    const response = this.getAsObject(url, params);
+    this.members_ = this.members_ === undefined ? response.members : this.members_.concat(response.members);
+    this.nextCorsor = response.response_metadata.next_cursor;
+    if (this.nextCorsor !== "") return this.getMembers(this.nextCorsor);
+    return this.members_;
+  }
+
+  /**
    * fetch メソッドで利用する users.list の URL を生成するメソッド
    * @return {string} fetch メソッド用の URL
    */
