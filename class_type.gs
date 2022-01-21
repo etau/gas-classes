@@ -31,7 +31,9 @@ const TYPE = Object.freeze(
     CALENDAR: 'Calendar',
     /** toString メソッドで型判定をおこなう対象のオブジェクト */
     TOSTRINGS: [
-      'Spreadsheet', 'Sheet', 'Calendar'
+      'Spreadsheet',
+      'Sheet',
+      'Calendar'
     ],
     /** フォルダー オブジェクト */
     FOLDER: 'folder',
@@ -60,45 +62,38 @@ class Type {
    */
   constructor(value, type) {
     /** @private {*} */
-    this.value_ = value;
+    this.value = value;
     /** @private {string} */
-    this.type_ = type;
+    this.type = type;
     /** @private {boolean|Object} */
-    this.isValid_ = this.isValid_();
+    this.isValid = this.isValid();
   }
-
-  /**
-   * 各プライベート プロパティのゲッター プロパティ
-   */
-  get value() { return this.value_; }
-  get type() { return this.type_; }
-  get isValid() { return this.isValid_; }
 
   /**
    * 型判定をする対象と型が一致しているかを返し、一致していない場合にはエラーを投げるプライベート メソッド
    * @retrun {boolean|Object} 型が一致しているかどうか、一致していない場合にはエラーを投げる
    */
-  isValid_() {
-    if (this.type_ === TYPE.INTEGER) return Number.isInteger(this.value_) || this.throwAlert_();
-    if (this.type_ === TYPE.DATE) return this.value_ instanceof Date || this.throwAlert_();
-    if (this.type_ === TYPE.ARRAY) return this.value_ instanceof Array || this.throwAlert_();
-    if (this.type_ === TYPE.OBJECT) return (this.value_ instanceof Object && !(this.value_ instanceof Array)) && !(this.value_ instanceof Map) || this.throwAlert_();  // TODO: Set 型の判定も必要かな？
-    if (this.type_ === TYPE.REGEXP) return this.value_ instanceof RegExp || this.throwAlert_();
-    if (this.type_ === TYPE.MAP) return this.value_ instanceof Map || this.throwAlert_();
-    if (this.type_ === TYPE.JSON) return (typeof this.value_ === 'string' && JSON.parse(this.value_) instanceof Object) || this.throwAlert_();
-    if (this.type_ === TYPE.FOLDER) return this.value_.getUrl().includes('/drive/folders/') || this.throwAlert_();
-    if (TYPE.TOSTRINGS.includes(this.type_)) return this.value_.toString() === this.type_ || this.throwAlert_();
+  isValid() {
+    if (this.type === TYPE.INTEGER) return Number.isInteger(this.value) || this.throwAlert();
+    if (this.type === TYPE.DATE) return this.value instanceof Date || this.throwAlert();
+    if (this.type === TYPE.ARRAY) return this.value instanceof Array || this.throwAlert();
+    if (this.type === TYPE.OBJECT) return (this.value instanceof Object && !(this.value instanceof Array)) && !(this.value instanceof Map) || this.throwAlert();  // TODO: Set 型の判定も必要かな？
+    if (this.type === TYPE.REGEXP) return this.value instanceof RegExp || this.throwAlert();
+    if (this.type === TYPE.MAP) return this.value instanceof Map || this.throwAlert();
+    if (this.type === TYPE.JSON) return (typeof this.value === 'string' && JSON.parse(this.value) instanceof Object) || this.throwAlert();
+    if (this.type === TYPE.FOLDER) return this.value.getUrl().includes('/drive/folders/') || this.throwAlert();
+    if (TYPE.TOSTRINGS.includes(this.type)) return this.value.toString() === this.type || this.throwAlert();
     try {
-      return typeof this.value_ === this.type_ || this.value_.getMimeType() === this.type_;
-    } catch (e) { this.throwAlert_(); }
+      return typeof this.value === this.type || this.value.getMimeType() === this.type;
+    } catch (e) { this.throwAlert(); }
   }
 
   /**
    * 型エラーを投げるプライベート メソッド
    * @throws 型のエラー
    */
-  throwAlert_() {
-    throw new Error('Type Error: This type is not a "' + this.type_ + '".');
+  throwAlert() {
+    throw new Error('Type Error: This type is not a "' + this.type + '".');
   }
 
 }

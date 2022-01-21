@@ -31,7 +31,7 @@ class Csv {
     folder.createFile(blob);
   }
 
-  /** TODO: Map 型にする
+  /**
    * OS や改行の有無に応じてフォーマット形式をオブジェクト形式で生成するメソッド
    * @return {Map} フォーマットの形式をプロパティとして持つオブジェクト
    */

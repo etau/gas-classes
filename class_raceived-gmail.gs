@@ -26,8 +26,7 @@ class ReceivedGmail {
    * 正規表現にマッチする範囲のメール本文を取得するメソッド
    * @return {string[]} 対象スレッド最初のメッセージのマッチした文字列
    */
-  getSelectedSentences() {
-    const regExp = /hogehoge/;
+  getSelectedSentences(regExp) {
     const sentences = this.getGmailBodies().map(gmailBody => gmailBody.match(regExp)[0].replace(/\r?\n/g, ''));
     return sentences;
   }

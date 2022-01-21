@@ -13,6 +13,18 @@ class Trigger {
   }
 
   /**
+   * retryMins 後にトリガーを設定するメソッド
+   * @param {number} retryMins - 分。デフォルト値は「1」。
+   * NOTE: try...chatch 文とセットで利用する
+   */
+  retry(retryMins = 1) {
+    const date = new Date();
+    date.setMinutes(date.getMinutes() + retryMins);
+    this.createTimeBased(date);
+    return this;
+  }
+
+  /**
    * 指定日時のトリガーを設定するメソッド
    * @param {Date} triggerTime - トリガーをセットする指定日時
    */
@@ -21,6 +33,7 @@ class Trigger {
       timeBased().
       at(triggerTime).
       create();
+    return this;
   }
 
   /**
@@ -32,6 +45,7 @@ class Trigger {
       forSpreadsheet(SS).
       onChange().
       create();
+    return this;
   }
 
   /**
@@ -43,6 +57,7 @@ class Trigger {
       forSpreadsheet(SS).
       onEdit().
       create();
+    return this;
   }
 
   /**
@@ -57,6 +72,7 @@ class Trigger {
       atHour(hour).
       everyDays(everyDays).
       create();
+    return this;
   }
 
   /**
@@ -67,6 +83,7 @@ class Trigger {
     triggers.forEach(trigger => {
       if (trigger.getHandlerFunction() === this.functionName) ScriptApp.deleteTrigger(trigger);
     });
+    return this;
   }
 
 }

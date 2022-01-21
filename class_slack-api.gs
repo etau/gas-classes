@@ -8,7 +8,7 @@ class SlackApi {
    */
   constructor() {
     /** @type {string} */
-    this.token = PROPERTIES.get('USER_ACCESS_TOKEN');
+    this.token = PROPERTIES.get('USER_OAUTH_TOKEN');
     /** @type {string} */
     this.botToken = PROPERTIES.get('BOT_USER_OAUTH_TOKEN');
   }
@@ -62,6 +62,8 @@ class SlackApi {
   /**
    * fetch メソッドで利用する conversations.list の URL を生成するメソッド
    * @return {string} fetch メソッド用の URL
+   * NOTE: Bot tokens「channels:read, groups:read, im:read, mpim:read」
+   * User tokens「channels:read, groups:read, im:read, mpim:read」
    */
   buildConversationsListUrl(teamId) {
     const limit = 1000;
@@ -158,8 +160,8 @@ class SlackApi {
    * slack 名、slack 表示名、slack IDの情報を持つ二次元配列を取得するメソッド
    * @return {Array.<Array.<string>} slack 名、slack 表示名、slack IDの情報を持つ二次元配列
    */
-  getMembersValues() {
-    const members = this.getUsersList().members;
+  getMembersValues(teamId) {
+    const members = this.getUsersList(teamId).members;
     const membersValues = members.map(member => {
       const profile = member.profile;
       return [profile.real_name, profile.display_name, member.id];
@@ -172,10 +174,11 @@ class SlackApi {
    * slack ユーザーの詳細な情報を持つオブジェクトを取得するメソッド
    * @return {Object} slack ユーザーの情報
    */
-  getUsersList() {
-    const params = this.getParams(method = 'GET', token = this.botToken);
-    const url = this.buildUsersListUrl();
+  getUsersList(teamId) {
+    const params = this.getParams('GET', this.botToken);
+    const url = this.buildUsersListUrl(teamId);
     const usersList = this.getAsObject(url, params);
+    console.log('usersList', usersList)
     return usersList;
   }
 
@@ -183,9 +186,8 @@ class SlackApi {
    * fetch メソッドで利用する users.list の URL を生成するメソッド
    * @return {string} fetch メソッド用の URL
    */
-  buildUsersListUrl() {
+  buildUsersListUrl(teamId) {
     const limit = 1000;
-    const teamId = 'nonproken';
     const url = 'https://slack.com/api/users.list?' +
       'limit=' + limit + '&' +
       'team_id=' + teamId;
@@ -220,7 +222,7 @@ class SlackApi {
    * @return {Object} slack ユーザーの情報
    */
   getConversationsMembersList(channel) {
-    const params = this.getParams(method = 'GET', token = this.botToken);
+    const params = this.getParams('GET', this.botToken);
     const url = this.buildConversationsMembersUrl(channel);
     const usersList = this.getAsObject(url, params);
     return usersList;
