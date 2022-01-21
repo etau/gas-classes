@@ -20,6 +20,7 @@ class Sheet {
    * @return {Sheet} 更新された Sheet オブジェクト
    */
   flush() {
+    SpreadsheetApp.flush();
     const sheet = new Sheet(this.sheet, this.headerRows);
     return sheet;
   }
