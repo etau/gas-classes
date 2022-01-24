@@ -54,7 +54,7 @@ class Values {
    * @param {string} a1Notation - A1 形式表記
    * @return {Object} row と column をプロパティとして持つ
    */
-  getRCByA1Notation(a1Notation) {
+  getRcByA1Notation(a1Notation) {
     const row = this.getRow(a1Notation);
     const a1Column = a1Notation.split(String(row))[0];
     const column = this.getColumn(a1Column);
