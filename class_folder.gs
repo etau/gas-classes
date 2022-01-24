@@ -13,9 +13,14 @@ class Folder {
   constructor(folder = DriveApp.getFolderById(PROPERTIES.get('FOLDER_ID'))) {
     /** @type {DriveApp.folder} */
     this.folder = folder;
-    /** @type {string} */
-    this.foldrId = folder.getId();
   }
+
+  /**
+   * Class Folder から委譲されたメソッド
+   * NOTE: https://developers.google.com/apps-script/reference/drive/folder
+   */
+  getId(...args) { return this.folder.getId(...args); }
+  getFiles(...args) { return this.folder.getFiles(...args); }
 
   /**
    * 任意の文字列を含んだファイルを削除するメソッド
@@ -35,7 +40,7 @@ class Folder {
    * @return {DriveApp.FileIterator|Array.<DriveApp.File>} ファイル イテレーターかファイルオブジェクトを要素として持つ配列
    */
   getFiles(isArray = false) {
-    const files = this.folder.getFiles();
+    const files = this.getFiles();
     if (!isArray) return files;
     const filesAsArray = this.getFilesAsArray(files);
     return filesAsArray;

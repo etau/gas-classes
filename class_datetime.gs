@@ -13,6 +13,14 @@ class Datetime {
   }
 
   /**
+   * Class Date から委譲されたメソッド
+   */
+  getTime() { return this.date.getTime(); }
+  getFullYear() { return this.date.getFullYear(); }
+  getMonth() { return this.date.getMonth(); }
+  getDate() { return this.date.getDate(); }
+
+  /**
    * format 部分が同じものか比較するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
    * @param {string} format - 比較するフォーマット
@@ -28,7 +36,7 @@ class Datetime {
    * @return {boolean} 同じ日時かどうか
    */
   isSameMoment(date) {
-    return this.date.getTime() === date.getTime();
+    return this.getTime() === date.getTime();
   }
 
   /**
@@ -37,7 +45,7 @@ class Datetime {
    * @return {boolean}
    */
   isBefore(date) {
-    return date.getTime() + (24 * 60 * 60 * 1000) < this.date.getTime();
+    return date.getTime() + (24 * 60 * 60 * 1000) < this.getTime();
   }
 
   /**
@@ -46,7 +54,7 @@ class Datetime {
    * @return {boolean}
    */
   isAfter(date) {
-    return date.getTime() > this.date.getTime();
+    return date.getTime() > this.getTime();
   }
 
   /**           
@@ -56,7 +64,7 @@ class Datetime {
    * @return {Date} time - Date オブジェクト            
    */
   addDays(n) {
-    this.date.setDate(this.date.getDate() + n);
+    this.date.setDate(this.getDate() + n);
     return this.date;
   }
 
@@ -83,7 +91,7 @@ class Datetime {
    * @return {number} runtimeSec
    */
   getRuntimeSec() {
-    const runtimeSec = (Date.now() - this.date.getTime()) / 1000;
+    const runtimeSec = (Date.now() - this.getTime()) / 1000;
     return runtimeSec;
   }
 
@@ -94,7 +102,7 @@ class Datetime {
    * @return {Date} x 日前の Date オブジェクト
    */
   createDaysAgo(x) {
-    const date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate() - x);
+    const date = new Date(this.getFullYear(), this.getMonth(), this.getDate() - x);
     return new Datetime(date);
   }
 
@@ -105,7 +113,7 @@ class Datetime {
    * @return {Datetime} x 日前の Date オブジェクト
    */
   createMonthsAgo(x) {
-    const date = new Date(this.date.getFullYear(), this.date.getMonth() - x, this.date.getDate());
+    const date = new Date(this.getFullYear(), this.getMonth() - x, this.getDate());
     return new Datetime(date);
   }
 
@@ -116,7 +124,7 @@ class Datetime {
    * @return {Datetime} x 日前の Date オブジェクト
    */
   createYearsAgo(x) {
-    const date = new Date(this.date.getFullYear() - x, this.date.getMonth(), this.date.getDate());
+    const date = new Date(this.getFullYear() - x, this.getMonth(), this.getDate());
     return new Datetime(date);
   }
 
@@ -139,7 +147,7 @@ class Datetime {
    */
   getDates(diffDays) {
     const nums = new Array(Math.abs(diffDays) + 1).fill().map((_, i) => i);
-    const dates = nums.map(num => new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate() + num));
+    const dates = nums.map(num => new Date(this.getFullYear(), this.getMonth(), this.getDate() + num));
     return dates;
   }
 

@@ -16,6 +16,16 @@ class Sheet {
   }
 
   /**
+   * Class Sheet から委譲されたメソッド
+   * NOTE: https://developers.google.com/apps-script/reference/spreadsheet/sheet
+   */
+  getDataRange() { return this.sheet.getDataRange(); }
+  getRange(...args) { return this.sheet.getRange(...args); }
+  getLastRow() { return this.sheet.getLastRow(); }
+  getLastColumn() { return this.sheet.getLastColumn(); }
+  getAssociatedFormUrl() { return this.sheet.getFormUrl(); }
+
+  /**
    * Sheet オブジェクトを新しく取得し直すメソッド
    * @return {Sheet} 更新された Sheet オブジェクト
    */
@@ -31,7 +41,7 @@ class Sheet {
    */
   getDataRangeValues() {
     if (this.dataRangeValues_ !== undefined) return this.dataRangeValues_;
-    const dataRangeValues = this.sheet.getDataRange().getValues();
+    const dataRangeValues = this.getDataRange().getValues();
     this.dataRangeValues_ = dataRangeValues;
     return dataRangeValues;
   }
@@ -105,7 +115,7 @@ class Sheet {
   setValuesHeaderRowsAfter(values) {
     this.clearDataValues();
     if (values.length === 0) return;
-    this.sheet.getRange(this.headerRows + 1, 1, values.length, values[0].length).
+    this.getRange(this.headerRows + 1, 1, values.length, values[0].length).
       setValues(values);
     return this;
   }
@@ -116,8 +126,7 @@ class Sheet {
   clearDataValues() {
     const values = this.getDataValues();
     if (values.length === 0) return;
-    this.sheet.
-      getRange(1 + this.headerRows, 1, this.sheet.getLastRow() - this.headerRows, this.sheet.getLastColumn()).
+    this.getRange(1 + this.headerRows, 1, this.getLastRow() - this.headerRows, this.getLastColumn()).
       clearContent();
     return this;
   }
@@ -128,8 +137,7 @@ class Sheet {
    */
   appendRows(values) {
     if (values.length === 0) return;
-    this.sheet.
-      getRange(this.sheet.getLastRow() + 1, 1, values.length, values[0].length).
+    this.getRange(this.getLastRow() + 1, 1, values.length, values[0].length).
       setValues(values);
     return this;
   }
@@ -140,8 +148,7 @@ class Sheet {
    * @param {boolean} ascending - 昇順か降順か。デフォルト引数は「true」
    */
   sortDataRows(column = 1, ascending = true) {
-    this.sheet.
-      getRange(this.headerRows + 1, 1, this.sheet.getLastRow() - this.headerRows, this.sheet.getLastColumn()).
+    this.getRange(this.headerRows + 1, 1, this.getLastRow() - this.headerRows, this.getLastColumn()).
       sort({ column: column, ascending: ascending });
     return this;
   }
@@ -231,6 +238,16 @@ class Sheet {
     const dict = dicts.find(dict => dict.get(header) === value);
     if (dict === undefined) throw new Error('The value "' + value + '" does not exist in the "' + header + '" column.');
     return dict;
+  }
+
+  /**
+   * シートに回答するフォーム オブジェクトを取得するメソッド
+   * @return {FormApp.Form} シートに回答するフォーム オブジェクト
+   */
+  getAssociatedForm() {
+    const url = this.getAssociatedFormUrl();
+    const form = FormApp.openByUrl(url);
+    return form;
   }
 
   /**

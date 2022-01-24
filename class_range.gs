@@ -13,6 +13,16 @@ class Range {
   }
 
   /**
+   * Class Range から委譲されたメソッド
+   * NOTE: https://developers.google.com/apps-script/reference/spreadsheet/range
+   */
+  getFontColor() { return this.range.getFontColor(); }
+  setFontColor(...args) { return this.range.setFontColor(...args); }
+  getBackgroundColor() { return this.range.getBackground(); }
+  setBackground(...args) { return this.range.setBackground(...args); }
+  setFontLine(...args) { return this.range.setFontLine(...args); }
+
+  /**
    * 同じ色かどうかを判定するメソッド
    * @param {string} colerCode - 比較する 16 進数表記の文字色
    * @return {boolean} 文字色が同じかどうか
@@ -23,29 +33,11 @@ class Range {
   }
 
   /**
-   * 文字色を取得するメソッド
-   * @return {string} 16 進数表記の文字色
-   */
-  getFontColor() {
-    const color = this.range.getFontColor();
-    return color;
-  }
-
-  /**
-   * 背景色を取得するメソッド
-   * @return {string} 16 進数表記の文字色
-   */
-  getBackgroundColor() {
-    const color = this.range.getBackground();
-    return color;
-  }
-
-  /**
    * 文字色をつけるメソッド
    * @param {string} color - 文字色。デフォルト引数は「red]
    */
   setFontColor(color = 'red') {
-    this.range.setFontColor(color);
+    this.setFontColor(color);
   }
 
   /**
@@ -53,14 +45,14 @@ class Range {
    * @param {string} color - 背景色。デフォルト引数は「red]
    */
   setBackgroundColor(color = 'red') {
-    this.range.setBackground(color);
+    this.setBackground(color);
   }
 
   /**
    * 取り消し線をつけるメソッド
    */
   setCancelLine() {
-    this.range.setFontLine('line-through');
+    this.setFontLine('line-through');
   }
 
 }

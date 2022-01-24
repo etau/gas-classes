@@ -3,7 +3,7 @@
 class Properties {
 
   /**
-   * プロパティズ サービスに関するコンストラクタ
+   * プロパティーズ サービスに関するコンストラクタ
    * @constructor
    */
   constructor() {
@@ -12,27 +12,18 @@ class Properties {
   }
 
   /**
+   * Class Properties から委譲されたメソッド
+   * NOTE: https://developers.google.com/apps-script/reference/properties/properties
+   */
+  get(...args) { return this.scriptProperties.getProperty(...args); }
+  deleteAll() { return this.scriptProperties.deleteAllProperties(); }
+
+  /**
    * スクリプト プロパティの内容をすべてログ出力するメソッド
    */
   log() {
     const properties = this.scriptProperties.getProperties();
     console.log(properties);
-  }
-
-  /**
-   * プロパティ ストアからキーに対する値を取り出すメソッド
-   * @params {String} key - キー
-   */
-  get(key) {
-    const value = this.scriptProperties.getProperty(key)
-    return value;
-  }
-
-  /**
-   * プロパティ ストアからすべてのペアを削除するメソッド
-   */
-  deleteAll() {
-    this.scriptProperties.deleteAllProperties();
   }
 
   /**

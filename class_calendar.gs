@@ -40,6 +40,12 @@ class HolidaysCalendar {
   }
 
   /**
+   * Class CalendarApp から委譲されたメソッド
+   * NOTE: https://developers.google.com/apps-script/reference/calendar/calendar-app
+   */
+  getEvents(...args) { return this.calendar.getEvents(...args); }
+
+  /**
    * 祝日名と日付を取得するメソッド
    * @return {Array.<Array.<string>>} 祝日名と日付の値
    */
@@ -54,14 +60,14 @@ class HolidaysCalendar {
   }
 
   /**
-   * x か月前から y か月語までのイベント (祝日情報) を取得するメソッド
+   * x か月前から y か月後までのイベント (祝日情報) を取得するメソッド
    * @return {CalendarApp.CalendarEvent}
    */
-  getEvents(x = 1, y = 1) {
+  getEventsBetweenMonths(x = 1, y = 1) {
     const date = new Date();
     const startDate = new Date(date.getFullYear(), date.getMonth() - x, date.getDate());
     const endDate = new Date(date.getFullYear(), date.getMonth() + y, date.getDate());
-    const events = this.calendar.getEvents(startDate, endDate);
+    const events = this.getEvents(startDate, endDate);
     return events;
   }
 
