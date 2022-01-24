@@ -5,37 +5,44 @@ class Form {
   /**
    * フォームに関するコンストラクタ
    * @constructor
-   * @param {Object} e - フォーム送信時のイベント オブジェクト
+   * @param {FormApp.Form}
    */
-  constructor(e) {
-    [this.ts, ...this.values] = e.values;
-    this.ts = e.values[0];
-    this.namedValues = e.namedValues;
-    this.values = e.values;
-    this.range = e.range;
+  constructor(form) {
+    this.form = form;
   }
 
   /**
-   * イベント オブジェクトから Range オブジェクトを取得するメソッド
-   * @return {SpreadsheetApp.Range} イベントオブジェクト 範囲のスプレッドシートの Range オブジェクト
+   * 対象となるリスト形式の質問を更新するメソッド
+   * @param {string} title - リスト形式の質問
+   * @param {Array.<string>} preChoices - 回答群
    */
-  getRange() {
-    const sheet = this.e.source.getActiveSheet();
-    const { rowStart, rowEnd, columnStart, columnEnd } = this.e.range;
-    const numRows = Math.abs(rowStart - rowEnd) + 1;
-    const numColumns = Math.abs(columnStart - columnEnd) + 1;
-    const sheetRange = sheet.getRange(rowStart, columnStart, numRows, numColumns);
-    return sheetRange;
+  updateListChoices(title, preChoices) {
+    const listItem = this.getListItem(title);
+    const choices = this.getChoices(preChoices)
+    listItem.setChoices(choices);
+    return this;
   }
 
   /**
-   * 単一セルに対する操作かどうかを判定するメソッド
-   * @return {boolean} 単一セルに対する操作かどうか
+   * リスト形式の質問の中から対象の ListItem オブジェクトを取得するメソッド
+   * @param {string} title - リスト形式の質問
+   * @return {FormApp.ListItem} 
    */
-  isSingleCell() {
-    const { rowStart, rowEnd, columnStart, columnEnd } = this.e.range;
-    return rowStart === rowEnd && columnStart === columnEnd;
+  getListItem(title) {
+    const listItems = this.form.getItems(FormApp.ItemType.LIST);
+    const listItem = listItems.find(item => item.getTitle() === title).asListItem();
+    return listItem;
+  }
+
+  /**
+   * 回答群からリスト形式のオブジェクトを作るメソッド
+   * @param {string} title - リスト形式の質問
+   * @param {Array.<string>} preChoices - 回答群
+   */
+  getChoices(title, preChoices) {
+    const listItem = this.getListItem(title);
+    const choices = preChoices.map(element => listItem.createChoice(element));
+    return choices;
   }
 
 }
-
