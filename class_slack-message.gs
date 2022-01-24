@@ -32,16 +32,17 @@ class SlackMessage {
    */
   send(message, isChannelMention = false) {
     const options = {
-      'method': 'POST',
-      'payload': JSON.stringify({
-        'text': isChannelMention ? '<!channel>\n' + message : message
+      method: 'POST',
+      payload: JSON.stringify({
+        text: isChannelMention ? '<!channel>\n' + message : message
       })
     };
     UrlFetchApp.fetch(this.webhookUrl, options);
   }
 
-  /** NOTE: class_properties がある場合は不要
+  /**
    * Webhook URL をセットする静的メソッド
+   * NOTE: class properties がある場合は不要
    */
   static setWebhookUrl(webhookUrl) {
     PropertiesService.getScriptProperties().setProperty('WEBHOOK_URL', webhookUrl);
