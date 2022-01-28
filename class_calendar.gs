@@ -18,12 +18,11 @@ class Calendar {
   }
 
   /**
-   * @param {string} title - カレンダーのタイトル
-   * @param {Date} date - カレンダー登録日
+   * Class CalendarApp から委譲されたメソッド
+   * NOTE: https://developers.google.com/apps-script/reference/calendar/calendar-app
    */
-  createAllDayEvent(title, date) {
-    this.calendar.createAllDayEvent(title, date);
-  }
+  getEvents(...args) { return this.calendar.getEvents(...args); }
+  createAllDayEvent(...args) { return this.calendar.createAllDayEvent(...args); }
 
 }
 
