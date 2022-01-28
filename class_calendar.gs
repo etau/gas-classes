@@ -47,10 +47,12 @@ class HolidaysCalendar {
 
   /**
    * 祝日名と日付を取得するメソッド
+   * @param {Date} startDate - 開始日
+   * @param {Date} endDate - 終了日
    * @return {Array.<Array.<string>>} 祝日名と日付の値
    */
-  getValues() {
-    const events = this.getEvents();
+  getValues(startDate, endDate) {
+    const events = this.getEvents(startDate, endDate);
     const values = events.
       map(event => [
         event.getTitle(),
