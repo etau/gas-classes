@@ -28,17 +28,22 @@ class Calendar {
 
 
 
-/**
+/** NOTE: Calendar クラスが充実してきたら、継承するかどうかを判断
  * 祝日のカレンダーに関するクラス
  */
 class HolidayCalendar {
 
+  /**
+   * 祝日のカレンダーに関するコンストラクタ
+   * @constructor
+   * @param {number} year - 対象となる年
+   * @param {CalendarApp.Calendar} calendar - 祝日カレンダー 
+   */
   constructor(year = new Date().getFullYear(), calendar = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com')) {
     /** @type {number} */
     this.year = year;
     /** @type {CalendarApp.Calendar} */
     this.calendar = calendar;
-
   }
 
   /**
