@@ -71,31 +71,19 @@ class HolidayCalendar {
    * @return {Array.<Array.<string|Date>>} 固有の休暇
    */
   getSpecificHolidaysValues() {
-    const specificHolidayDicts = this.getSpecificHolidayAsDicts();
-    const specificHolidaysValues = specificHolidayDicts.map(specificHoliday => [
-      specificHoliday.get('name'),
-      Datetime.format(specificHoliday.get('date'))
-    ]);
+    const specificHolidaysValues = [
+      ['冬季休暇', year + '/01/02'],
+      ['冬季休暇', year + '/01/03'],
+      ['冬季休暇', year + '/01/04'],
+      ['夏季休暇', year + '/08/13'],
+      ['夏季休暇', year + '/08/14'],
+      ['夏季休暇', year + '/08/15'],
+      ['冬季休暇', year + '/12/29'],
+      ['冬季休暇', year + '/12/30'],
+      ['冬季休暇', year + '/12/31'],
+    ];
     return specificHolidaysValues;
   }
 
-  /**
-   * 対象年の固有の休暇を Map 型で取得するメソッド
-   * @return {Array.<Map>} 固有の休暇
-   */
-  getSpecificHolidayAsDicts(year = this.year) {
-    const specificHolidays = [
-      new Map([['name', '冬季休暇'], ['date', new Date(year + '/01/02')]]),
-      new Map([['name', '冬季休暇'], ['date', new Date(year + '/01/03')]]),
-      new Map([['name', '冬季休暇'], ['date', new Date(year + '/01/04')]]),
-      new Map([['name', '夏季休暇'], ['date', new Date(year + '/08/13')]]),
-      new Map([['name', '夏季休暇'], ['date', new Date(year + '/08/14')]]),
-      new Map([['name', '夏季休暇'], ['date', new Date(year + '/08/15')]]),
-      new Map([['name', '冬季休暇'], ['date', new Date(year + '/12/29')]]),
-      new Map([['name', '冬季休暇'], ['date', new Date(year + '/12/30')]]),
-      new Map([['name', '冬季休暇'], ['date', new Date(year + '/12/31')]]),
-    ];
-    return specificHolidays;
-  }
 
 }
