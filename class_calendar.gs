@@ -70,7 +70,7 @@ class HolidayCalendar {
    * 固有の休暇を配列で取得するメソッド
    * @return {Array.<Array.<string|Date>>} 固有の休暇
    */
-  getSpecificHolidaysValues() {
+  getSpecificHolidaysValues(year = this.year) {
     const specificHolidaysValues = [
       ['冬季休暇', year + '/01/02'],
       ['冬季休暇', year + '/01/03'],
