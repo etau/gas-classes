@@ -3,7 +3,7 @@
 class Properties {
 
   /**
-   * プロパティーズ サービスに関するコンストラクタ
+   * スクリプト プロパティに関するコンストラクタ
    * @constructor
    */
   constructor() {
@@ -15,7 +15,6 @@ class Properties {
    * Class Properties から委譲されたメソッド
    * NOTE: https://developers.google.com/apps-script/reference/properties/properties
    */
-  get(...args) { return this.scriptProperties.getProperty(...args); }
   deleteAll() { return this.scriptProperties.deleteAllProperties(); }
 
   /**
@@ -27,12 +26,24 @@ class Properties {
   }
 
   /**
+   * スクリプト プロパティから値を取得するメソッド
+   * @param {string} key - キーとなる文字列
+   * @return {string|Array|Object}  
+   */
+  get(key) {
+    const strValue = this.scriptProperties.getProperty(key);
+    const value = typeof JSON.parse(strValue) instanceof Object ? JSON.parse(strValue) : strValue;
+    return value;
+  }
+
+  /**
    * スクリプト プロパティにキーと値をセットする静的メソッド
    * @param {string} key - キーとなる文字列
-   * @param {string} value - 値
+   * @param {*} value - 値
    */
   static set(key, value) {
-    PropertiesService.getScriptProperties().setProperty(key, value);
+    PropertiesService.getScriptProperties().
+      setProperty(key, typeof value === 'object' ? JSON.stringify(value) : value);
   }
 
 }
