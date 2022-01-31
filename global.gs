@@ -3,4 +3,4 @@
  */
 const PROPERTIES = new Properties();
 const SS = SpreadsheetApp.getActiveSheet();
-const DT = DATETIME();
+const DT = DATETIME;

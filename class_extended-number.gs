@@ -2,6 +2,9 @@
 
 class ExtendedNumber {
 
+  /**
+   * 
+   */
   constructor(number) {
     this.number = number;
   }

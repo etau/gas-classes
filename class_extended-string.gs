@@ -5,7 +5,7 @@ class ExtendedString {
   /**
    * 
    */
-  constructor(stirng) {
+  constructor(string) {
     this.stirng = string;
   }
 

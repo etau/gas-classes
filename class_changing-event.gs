@@ -10,7 +10,7 @@ class ChangingEvent {
   constructor(e) {
     /** @type {Object} */
     this.e = e;
-    /** */
+    /** @type {} */
     this.changeType = e.changeType;
     /** @type {SpreadsheetApp.Sheet} */
     this.sheet = e.source.getActiveSheet();
