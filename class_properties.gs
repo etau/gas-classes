@@ -28,7 +28,8 @@ class Properties {
   /**
    * スクリプト プロパティから値を取得するメソッド
    * @param {string} key - キーとなる文字列
-   * @return {string|Array|Object}  
+   * @return {string|Array|Object} 値
+   * NOTE: オブジェクトが JSON 形式になっているものは、オブジェクトにして返す
    */
   get(key) {
     const strValue = this.scriptProperties.getProperty(key);
@@ -39,7 +40,7 @@ class Properties {
   /**
    * スクリプト プロパティにキーと値をセットする静的メソッド
    * @param {string} key - キーとなる文字列
-   * @param {*} value - 値
+   * @param {string|Array|Object} value - 値
    */
   static set(key, value) {
     PropertiesService.getScriptProperties().
