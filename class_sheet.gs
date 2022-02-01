@@ -126,7 +126,7 @@ class Sheet {
   clearDataValues() {
     const values = this.getDataValues();
     if (values.length === 0) return;
-    this.getRange(1 + this.headerRows, 1, this.getLastRow() - this.headerRows, this.getLastColumn()).
+    this.getRange(1 + this.headerRows, 1, values.length, values[0].length).
       clearContent();
     return this;
   }

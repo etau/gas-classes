@@ -35,7 +35,7 @@ class User {
 
   /**
    * 管理者の email をプロパティ ストアに設定する静的メソッド
-   * @params {Array.<string>} adminEmails - 管理者の email
+   * @param {Array.<string>} adminEmails - 管理者の email
    * NOTE: Properties クラスを利用
    */
   static setAdminEmails(adminEmails) {
