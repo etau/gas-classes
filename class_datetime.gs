@@ -21,6 +21,15 @@ class Datetime {
   getDate() { return this.date.getDate(); }
 
   /**
+   * 対象月かどうかを判定するメソッド
+   * @param {number} month - 対象月
+   * @return {boolean} 対象月かどうか
+   */
+  isMonth(month) {
+    return this.getMonth() === month - 1;
+  }
+
+  /**
    * format 部分が同じものか比較するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
    * @param {string} format - 比較するフォーマット
