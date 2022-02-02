@@ -26,7 +26,7 @@ class Datetime {
    * @return {boolean} 対象月かどうか
    */
   isMonth(month) {
-    return this.getMonth() === month - 1;
+    return this.getMonth() + 1 === month;
   }
 
   /**
