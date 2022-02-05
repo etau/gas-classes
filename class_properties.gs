@@ -33,7 +33,7 @@ class Properties {
    */
   get(key) {
     const strValue = this.scriptProperties.getProperty(key);
-    const value = typeof JSON.parse(strValue) instanceof Object ? JSON.parse(strValue) : strValue;
+    const value = JSON.parse(strValue) instanceof Object ? JSON.parse(strValue) : strValue;
     return value;
   }
 
