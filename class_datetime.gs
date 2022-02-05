@@ -105,36 +105,68 @@ class Datetime {
   }
 
   /**
-   * x 日前の Date オブジェクトを返すメソッド
-   * NOTE: 時間部分は 00:00
+   * UNIX 時間を取得する関数
+   * @return 
+   */
+  getUnixTimeSec() {
+    const time = this.getTime();
+    const unixTime = Math.ceil(time / 1000);
+    return unixTime;
+  }
+
+  /**
+   * x 分前の Datetime オブジェクトを返すメソッド
    * @param {number} x - 日数差
-   * @return {Date} x 日前の Date オブジェクト
+   * @return {Datetime} x 日前の Datetime オブジェクト
+   */
+  createMinutesAgo(x) {
+    const d = new Date(this.date);
+    d.setMinutes(d.getMinutes() - x);
+    return new Datetime(d);
+  }
+
+  /**
+   * x 時間前の Datetime オブジェクトを返すメソッド
+   * @param {number} x - 日数差
+   * @return {Datetime} x 日前の Datetime オブジェクト
+   */
+  createHoursAgo(x) {
+    const d = new Date(this.date);
+    d.setHours(d.getHours() - x);
+    return new Datetime(d);
+  }
+
+  /**
+   * x 日前の Datetime オブジェクトを返すメソッド
+   * @param {number} x - 日数差
+   * @return {Datetime} x 日前の Datetime オブジェクト
    */
   createDaysAgo(x) {
-    const date = new Date(this.getFullYear(), this.getMonth(), this.getDate() - x);
-    return new Datetime(date);
+    const d = new Date(this.date);
+    d.setDate(d.getDate() - x);
+    return new Datetime(d);
   }
 
   /**
-   * x か月の Date オブジェクトを返すメソッド
-   * NOTE: 時間部分は 00:00
+   * x か月の Datetime オブジェクトを返すメソッド
    * @param {number} x - 月数差
-   * @return {Datetime} x 日前の Date オブジェクト
+   * @return {Datetime} x 日前の Datetime オブジェクト
    */
   createMonthsAgo(x) {
-    const date = new Date(this.getFullYear(), this.getMonth() - x, this.getDate());
-    return new Datetime(date);
+    const d = new Date(this.date);
+    d.setMonth(d.getMonth() - x);
+    return new Datetime(d);
   }
 
   /**
-   * x 年の Date オブジェクトを返すメソッド
-   * NOTE: 時間部分は 00:00
+   * x 年の Datetime オブジェクトを返すメソッド
    * @param {number} x - 年数差
-   * @return {Datetime} x 日前の Date オブジェクト
+   * @return {Datetime} x 日前の Datetime オブジェクト
    */
   createYearsAgo(x) {
-    const date = new Date(this.getFullYear() - x, this.getMonth(), this.getDate());
-    return new Datetime(date);
+    const d = new Date(this.date);
+    d.setFullYear(d.getFullYear() - x);
+    return new Datetime(d);
   }
 
   /**
@@ -230,12 +262,13 @@ class Datetime {
   /**
    * 土日祝かどうかを判定するメソッド
    * @param {Date} date - 判定する日
+   * @param {CalendarApp.Calendar} holidaysCalendar - カレンダー オブジェクト
    * @return {boolean} 土日祝のかどうか
    */
-  isHoliday(date = this.date) {
+  isHoliday(date = this.date, holidaysCalendar = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com')) {
     if (date.getDay() % 6 === 0) return true;
     if (this.holidays !== undefined) return this.holidays.map(holiday => Datetime.format(holiday)).includes(this.toString());
-    if (this.holidaysCalendar_ === undefined) this.holidaysCalendar_ = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com');
+    if (this.holidaysCalendar_ === undefined) this.holidaysCalendar_ = holidaysCalendar;
     return this.holidaysCalendar_.getEventsForDay(date).length !== 0;
   }
 
