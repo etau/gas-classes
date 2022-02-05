@@ -27,3 +27,19 @@ class Toolkit {
   }
 
 }
+
+
+class TestSheet {
+
+  constructor() {
+    this.s_ = new Sheet();
+    this.sheet = this.s_.sheet;
+  }
+
+  getDataRangeValues() { return this.s_.getDataRangeValues(); }
+
+  getHoge() {
+    return 'hoge';
+  }
+
+}

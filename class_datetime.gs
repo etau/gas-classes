@@ -305,5 +305,3 @@ class Datetime {
   }
 
 }
-
-const DATETIME = new Datetime();

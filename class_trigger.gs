@@ -1,6 +1,5 @@
 'use strict'
 
-
 class Trigger {
 
   /**
@@ -9,6 +8,7 @@ class Trigger {
    * @param {string} functionName - 関数名
    */
   constructor(functionName) {
+    /** @type {string} */
     this.functionName = functionName;
   }
 
@@ -31,6 +31,7 @@ class Trigger {
   createTimeBased(triggerTime) {
     ScriptApp.newTrigger(this.functionName).
       timeBased().
+      inTimezone('Asia/Tokyo').
       at(triggerTime).
       create();
     return this;

@@ -37,20 +37,16 @@ class Csv {
    */
   getFormat() {
     const format = this.os === 'unix' ?
-      new Map(
-        [
-          ['newLine', '\n'],
-          ['characterCode', 'UTF-8'],
-          ['hasNewLine', this.hasNewLine]
-        ]
-      ) :
-      new Map(
-        [
-          ['newLine', '\r\n'],
-          ['characterCode', 'Shift-JIS'],
-          ['hasNewLine', this.hasNewLine]
-        ]
-      )
+      new Map([
+        ['newLine', '\n'],
+        ['characterCode', 'UTF-8'],
+        ['hasNewLine', this.hasNewLine]
+      ]) :
+      new Map([
+        ['newLine', '\r\n'],
+        ['characterCode', 'Shift-JIS'],
+        ['hasNewLine', this.hasNewLine]
+      ]);
     return format;
   }
 
