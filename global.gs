@@ -3,9 +3,9 @@
 /**
  * グローバル定数宣言
  */
+const DT = new Datetime();
 const PROPERTIES = new Properties();
 const SS = SpreadsheetApp.getActiveSpreadsheet();
-const DT = DATETIME;
 
 /**
  * ツールキット クラス
