@@ -30,7 +30,7 @@ const TYPE = Object.freeze(
     /** カレンダー オブジェクト */
     CALENDAR: 'Calendar',
     /** toString メソッドで型判定をおこなう対象のオブジェクト */
-    TOSTRINGS: [
+    TO_STRINGS: [
       'Spreadsheet',
       'Sheet',
       'Calendar'
