@@ -33,11 +33,12 @@ class EditEvent {
   }
 
   /**
-   * 編集前と編集後の値が同じかどうかを判定するメソッド
-   * @return {boolean} 編集前と編集後の値が同じかどうか
+   * 編集前後の値が同じかどうかを判定するメソッド
+   * @return {boolean|undefined} 編集前後の値が同じかどうか
    * NOTE: 同じ値をコピー・アンド・ペーストした場合でも編集と判定されるため
    */
   isSameValue() {
+    if (!this.isSingleCell()) return undefined;
     return this.e.oldValue === this.e.value;
   }
 
