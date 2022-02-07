@@ -6,7 +6,7 @@ class TimeTriggerEvents {
    * @param {Object} e - トリガー イベント
    */
   constructor(e) {
-    /** @type {Date} */
+    /** @type {Date} NOTE: UTC 以外の値が取れるか不明*/
     e.timezone = 'UTC' ?
       this.utcDate = new Date(e.year, e.month, e['day-of-month'], e.hour, e.minute, e.second) :
       this.date = new Date(e.year, e.month, e['day-of-month'], e.hour, e.minute, e.second)
