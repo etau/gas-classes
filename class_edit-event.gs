@@ -10,15 +10,32 @@ class EditEvent {
   constructor(e) {
     /** @type {Object} */
     this.e = e;
-    /** @tyep {SpreadsheetApp.sheet} */
-    this.sheet = e.source.getActiveSheet();
-    /** @type {SpreadsheetApp.Range} */
-    this.range = e.source.getActiveRange();
+    /** @type {Object} */
+    this.source = e.source;
   }
 
   /**
-   * 編集前の値と同じかどうかを判定するメソッド NOTE: 同じ値をコピー・アンド・ペーストした場合でも編集と判定されるため
-   * @return {boolean} 編集前の値と同じかどうか
+   * イベントが実行されたシートを取得するメソッド
+   * @return {SpreadsheetApp.Sheet} Sheet オブジェクト
+   */
+  getSourceSheet() {
+    const sourceSheet = this.source.getActiveSheet();
+    return sourceSheet;
+  }
+
+  /**
+   * イベントが実行された範囲を取得するメソッド
+   * @return {SpreadsheetApp.Range} Range オブジェクト
+   */
+  getSourceRange() {
+    const sourceRange = this.source.getActiveRange();
+    return sourceRange;
+  }
+
+  /**
+   * 編集前と編集後の値が同じかどうかを判定するメソッド
+   * @return {boolean} 編集前と編集後の値が同じかどうか
+   * NOTE: 同じ値をコピー・アンド・ペーストした場合でも編集と判定されるため
    */
   isSameValue() {
     return this.e.oldValue === this.e.value;

@@ -10,12 +10,28 @@ class ChangeEvent {
   constructor(e) {
     /** @type {Object} */
     this.e = e;
-    /** @type {} */
+    /** @type {string} */
     this.changeType = e.changeType;
-    /** @type {SpreadsheetApp.Sheet} */
-    this.sheet = e.source.getActiveSheet();
-    /** @type {SpreadsheetApp.Range} */
-    this.range = e.source.getActiveRange();
+    /** @type {Object} */
+    this.source = e.source;
+  }
+
+  /**
+   * イベントが実行されたシートを取得するメソッド
+   * @return {SpreadsheetApp.Sheet} Sheet オブジェクト
+   */
+  getSourceSheet() {
+    const sourceSheet = this.source.getActiveSheet();
+    return sourceSheet;
+  }
+
+  /**
+   * イベントが実行された範囲を取得するメソッド
+   * @return {SpreadsheetApp.Range} Range オブジェクト
+   */
+  getSourceRange() {
+    const sourceRange = this.source.getActiveRange();
+    return sourceRange;
   }
 
   /**
