@@ -1,6 +1,6 @@
 'use strict'
 
-class ChangingEvent {
+class ChangeEvent {
 
   /**
    * 変更イベントに関するコンストラクタ
