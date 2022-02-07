@@ -31,7 +31,6 @@ class Trigger {
   createTimeBased(triggerTime) {
     ScriptApp.newTrigger(this.functionName).
       timeBased().
-      inTimezone('Asia/Tokyo').
       at(triggerTime).
       create();
     return this;
@@ -89,6 +88,22 @@ class Trigger {
 
 }
 
+/**
+ * 初回のトリガーを設定する関数
+ */
+function setInitialTriggers() {
+
+  const onChangeTriggers = TRIGGER_TYPE.ON_CHANGE;
+  onChangeTriggers.forEach(trigger => new Trigger(trigger.NAME).createOnChangeForSpreadsheet());
+
+  const onEditTriggers = TRIGGER_TYPE.ON_EDIT;
+  onEditTriggers.forEach(trigger => new Trigger(trigger.NAME).createOnEditForSpreadsheet());
+
+  const timeBasedTriggers = TRIGGER_TYPE.TIME_BASE;
+  const atHourTriggers = timeBasedTriggers.AT_HOUR;
+  atHourTriggers.forEach(trigger => new Trigger(trigger.NAME).createAtHour(trigger.HOUR, trigger.EVERY_DAYS));
+
+}
 
 // NOTE: 以下のような Enum を設定しておくとよい
 /** @enum {string} */
@@ -104,7 +119,7 @@ const TRIGGER_TYPE = Object.freeze({
       [
         {
           NAME: 'piyo',
-          HOUR: 23,
+          HOUR: 0,
           EVERY_DAYS: 1
         }
       ]
