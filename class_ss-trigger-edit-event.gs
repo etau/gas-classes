@@ -1,6 +1,6 @@
 'use strict'
 
-class EditEvent {
+class TriggerEditEvent {
 
   /**
    * 編集イベントに関するコンストラクタ

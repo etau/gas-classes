@@ -1,4 +1,4 @@
-class TimeTriggerEvents {
+class TriggerTimeEvents {
 
   /**
    * トリガーイベント (時間主導型) に関するコンストラクタ
