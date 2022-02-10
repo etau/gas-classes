@@ -23,16 +23,6 @@ class TriggerTimeEvents {
   }
 
   /**
-   * 時間主導型のトリガーが実行された時間を取得するメソッド
-   * @return {Date} 時間主導型のトリガーが実行された時間
-   * NOTE: 確認されている状況では UTC の値が設定されている
-   */
-  getDate() {
-    const date = new Date(this.year, this.month, this.date, this.hour, this.minute, this.second);
-    return date;
-  }
-
-  /**
    * 現地時間を取得するメソッド
    * @param {number} diffHours - 時差
    * @return {Date} 時差を調整した日付
@@ -42,6 +32,23 @@ class TriggerTimeEvents {
     if (this.timezone !== 'UTC') return this.getDate();
     const date = this.getDate();
     date.setHours(date.getHours() + diffHours);
+    return date;
+  }
+
+  /**
+   * 時間主導型のトリガーが実行された時間を取得するメソッド
+   * @return {Date} 時間主導型のトリガーが実行された時間
+   * NOTE: 確認されている状況では UTC の値が設定されている
+   */
+  getDate() {
+    const date = new Date(
+      this.year,
+      this.month - 1,
+      this.date,
+      this.hour,
+      this.minute,
+      this.second
+    );
     return date;
   }
 
