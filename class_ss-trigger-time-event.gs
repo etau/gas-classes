@@ -25,7 +25,7 @@ class TriggerTimeEvents {
   /**
    * 現地時間を取得するメソッド
    * @param {number} diffHours - 時差
-   * @return {Date} 時差を調整した日付
+   * @return {Date} 時差を調整した日時
    * NOTE: this.timezone が UTC でない場合 (JST であると仮定した) の処理あり
    */
   getLocaleDate(diffHours = 9) {
@@ -37,7 +37,7 @@ class TriggerTimeEvents {
 
   /**
    * 時間主導型のトリガーが実行された時間を取得するメソッド
-   * @return {Date} 時間主導型のトリガーが実行された時間
+   * @return {Date} 時間主導型のトリガーが実行された日時
    * NOTE: 確認されている状況では UTC の値が設定されている
    */
   getDate() {
