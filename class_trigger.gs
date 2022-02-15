@@ -81,7 +81,8 @@ class Trigger {
   delete() {
     const triggers = ScriptApp.getProjectTriggers();
     triggers.forEach(trigger => {
-      if (trigger.getHandlerFunction() === this.functionName) ScriptApp.deleteTrigger(trigger);
+      if (trigger.getHandlerFunction() !== this.functionName) return;
+      ScriptApp.deleteTrigger(trigger);
     });
     return this;
   }
