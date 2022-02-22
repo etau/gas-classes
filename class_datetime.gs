@@ -5,37 +5,32 @@ class Datetime {
   /**
    * 日付に関するコンストラクタ
    * @constructor
-   * @param {Date} date - 対象となる日付。デフォルト引数は「new Date()」
+   * @param {Date|string|number} param - Date オブジェクトでインスタンス生成可能な引数
    */
-  constructor(date = new Date()) {
+  constructor(param = new Date()) {
     /** @type {Date} */
-    this.date = new Date(date);
+    this.date = new Date(param);
   }
 
   /**
-   * Class Date から委譲されたメソッド
+   * Date オブジェクトから委譲されたメソッド
+   * NOTE: getMonth, setMonth は 0 - 11 を 1 - 12 に変更  
    */
-  getTime() { return this.date.getTime(); }
   getFullYear() { return this.date.getFullYear(); }
-  getMonth() { return this.date.getMonth(); }
+  getMonth() { return this.date.getMonth() + 1; }
   getDate() { return this.date.getDate(); }
-
-  /**
-   * 対象月かどうかを判定するメソッド
-   * @param {number} month - 対象月
-   * @return {boolean} 対象月かどうか
-   */
-  isMonth(month) {
-    return this.getMonth() + 1 === month;
-  }
+  getTime() { return this.date.getTime(); }
+  setFullYear(arg) { return this.date.setFullYear(arg); }
+  setMonth(arg) { return this.date.setMonth(arg - 1); }
+  setDate(arg) { return this.date.setDate(arg); }
 
   /**
    * format 部分が同じものか比較するメソッド
-   * @param {Date} time - 比較対象の Date オブジェクト
+   * @param {Date} date - 比較対象の Date オブジェクト
    * @param {string} format - 比較するフォーマット
    * @return {boolean} format 部分が同じかどうか
    */
-  isSame(date, format) {
+  isSame(date, format = 'yyyy/MM/dd HH:mm:ss') {
     return Datetime.format(this.date, format) === Datetime.format(date, format);
   }
 
@@ -49,7 +44,7 @@ class Datetime {
   }
 
   /**
-   * 昨日以前かどうかを判定するメソッド
+   * 指定された日時以前かどうかを判定するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
    * @return {boolean}
    */
@@ -58,7 +53,7 @@ class Datetime {
   }
 
   /**
-   * 明日以降かどうかを判定するメソッド
+   * 指定された日時以降かどうかを判定するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
    * @return {boolean}
    */
@@ -287,7 +282,7 @@ class Datetime {
    * @param {string} format - 日付を文字列化するための指定のフォーマット
    * @return {string}  日付を文字列化したもの
    */
-  toString(format = 'yyyy/MM/dd') {
+  toString(format = 'yyyy/MM/dd HH:mm:ss') {
     const strDate = Datetime.format(this.date, format);
     return strDate;
   }
@@ -298,7 +293,7 @@ class Datetime {
    * @param {string} format - フォーマットする形式
    * @return {string} フォーマットされた文字列型の日付
    */
-  static format(d = new Date(), format = 'yyyy/MM/dd') {
+  static format(d = new Date(), format = 'yyyy/MM/dd HH:mm:ss') {
     const date = new Date(d);
     const strDate = Utilities.formatDate(date, 'JST', format);
     return strDate;
