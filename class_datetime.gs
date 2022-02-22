@@ -14,7 +14,7 @@ class Datetime {
 
   /**
    * Date オブジェクトから委譲されたメソッド
-   * NOTE: getMonth, setMonth は 0 - 11 を 1 - 12 に変更  
+   * NOTE: getMonth, setMonth の戻り値、仮引数は 0 - 11 を 1 - 12 に変更  
    */
   getFullYear() { return this.date.getFullYear(); }
   getMonth() { return this.date.getMonth() + 1; }
@@ -101,7 +101,7 @@ class Datetime {
 
   /**
    * UNIX 時間を取得する関数
-   * @return 
+   * @return {number} 秒単位までのユニックス タイム
    */
   getUnixTimeSec() {
     const time = this.getTime();
