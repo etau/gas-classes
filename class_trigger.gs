@@ -15,6 +15,7 @@ class Trigger {
   /**
    * retryMins 後にトリガーを設定するメソッド
    * @param {number} retryMins - 分。デフォルト値は「1」。
+   * @return {Trigger} Trigger オブジェクト
    * NOTE: try...chatch 文とセットで利用する
    */
   retry(retryMins = 1) {
@@ -27,6 +28,7 @@ class Trigger {
   /**
    * 指定日時のトリガーを設定するメソッド
    * @param {Date} triggerTime - トリガーをセットする指定日時
+   * @return {Trigger} Trigger オブジェクト
    */
   createTimeBased(triggerTime) {
     ScriptApp.newTrigger(this.functionName).
@@ -38,6 +40,7 @@ class Trigger {
 
   /**
    * スプレッドシート変更時のトリガーを設定するメソッド
+   * @return {Trigger} Trigger オブジェクト
    */
   createOnChangeForSpreadsheet() {
     this.delete();
@@ -50,6 +53,7 @@ class Trigger {
 
   /**
    * スプレッドシート編集時のトリガーを設定するメソッド
+   * @return {Trigger} Trigger オブジェクト
    */
   createOnEditForSpreadsheet() {
     this.delete();
@@ -64,6 +68,7 @@ class Trigger {
    * 時間主導型 - 日付ベースのタイマーを設定するメソッド
    * @param {number} hour - 時間 NOTE: 20 と設定した場合「午後 20 時～ 21 時」に設定
    * @param {number} everyDays - 何日ごとに実行するか
+   * @return {Trigger} Trigger オブジェクト
    */
   createAtHour(hour, everyDays) {
     this.delete();
@@ -77,6 +82,7 @@ class Trigger {
 
   /**
    * トリガーを削除するメソッド
+   * @return {Trigger} Trigger オブジェクト
    */
   delete() {
     const triggers = ScriptApp.getProjectTriggers();
