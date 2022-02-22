@@ -35,15 +35,6 @@ class Datetime {
   }
 
   /**
-   * 同じ日時か判定するメソッド
-   * @param {Date} time - 比較対象の Date オブジェクト
-   * @return {boolean} 同じ日時かどうか
-   */
-  isSameMoment(date) {
-    return this.getTime() === date.getTime();
-  }
-
-  /**
    * 指定された日時以前かどうかを判定するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
    * @return {boolean}
@@ -279,8 +270,8 @@ class Datetime {
 
   /**
    * コンストラクタの date オブジェクトを指定のフォーマットで文字列化するメソッド
-   * @param {string} format - 日付を文字列化するための指定のフォーマット
-   * @return {string}  日付を文字列化したもの
+   * @param {string} format - フォーマットする形式
+   * @return {string} フォーマットされた文字列型の日付
    */
   toString(format = 'yyyy/MM/dd HH:mm:ss') {
     const strDate = Datetime.format(this.date, format);
