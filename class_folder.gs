@@ -36,9 +36,10 @@ class Folder {
 
   /**
    * ファイル イテレーターからファイル オブジェクトを配列として取得するメソッド
+   * @param {DriveApp.FileIterator} - ファイル イテレーター
    * @return {Array.<DriveApp.File>} ファイル オブジェクトを要素として持つ配列
    */
-  createArrayFiles(files = this.folder.getFiles() ) {
+  createArrayFiles(files = this.getFiles()) {
     const filesAsArray = [];
     while (files.hasNext()) {
       filesAsArray.push(files.next());
@@ -47,8 +48,9 @@ class Folder {
   }
 
   /**
-   * ファイル名からファイルを取得する関数
-   * @return {DriveApp.File}
+   * ファイル名からファイルを取得するメソッド
+   * @param {string} name - ファイル名
+   * @return {DriveApp.File} ファイル オブジェクト
    */
   getByName(name) {
     const files = DriveApp.getFilesByName(name);
@@ -59,11 +61,11 @@ class Folder {
 
   /**
    * グーグルドライブフォルダのURLからフォルダを取得する静的メソッド
-   * @param {string} url - フォルダー ID を含む グーグルドライブフォルダの URL
+   * @param {string} url - フォルダー ID を含む Google ドライブ フォルダの URL
    * @return {DriveApp.folder}
    */
-  static getByUrl(url){
-    const folderId = url.match("(?<=drive\/folders\/).*?(?=\/|$)");
+  static getByUrl(url) {
+    const folderId = url.match(/(?<=drive\/folders\/).*?(?=\/|$)/);
     const folder = DriveApp.getFolderById(folderId);
     return folder;
   }
