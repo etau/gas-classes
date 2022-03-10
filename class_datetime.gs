@@ -3,13 +3,13 @@
 class Datetime {
 
   /**
-   * 日付に関するコンストラクタ
+   * 日時に関するコンストラクタ
    * @constructor
-   * @param {Date|string|number} param - Date オブジェクトでインスタンス生成可能な引数
+   * @param {Date|string|number|...number} date - Date オブジェクトでインスタンス生成可能な引数
    */
-  constructor(param = new Date()) {
+  constructor(date = new Date()) {
     /** @type {Date} */
-    this.date = new Date(param);
+    this.date = new Date(date);
   }
 
   /**
@@ -31,7 +31,7 @@ class Datetime {
    * @return {boolean} format 部分が同じかどうか
    */
   isSame(date, format = 'yyyy/MM/dd HH:mm:ss') {
-    return Datetime.format(this.date, format) === Datetime.format(date, format);
+    return Datetime.format(date, format) === Datetime.format(this.date, format);
   }
 
   /**
@@ -156,8 +156,8 @@ class Datetime {
   }
 
   /**
-   * コンストラクタの date オブジェクトとの日付差を返すメソッド
-   * @param {Date} date - コンストラクタの date オブジェクトとの日付差を計算する対象となる Date オブジェクト
+   * コンストラクタの date オブジェクトとの日数差を返すメソッド
+   * @param {Date} date - コンストラクタの date オブジェクトとの日数差を計算する対象となる Date オブジェクト
    * @return {number} コンストラクタの date オブジェクトと param との日数差
    */
   calculateDiffDays(date) {
@@ -195,7 +195,7 @@ class Datetime {
 
   /**
    * 翌営業日の Datetime オブジェクトを返すメソッド
-   * @param {Datetime} dt - 判定対象となる Datetime オブジェクト。デフォルト引数は「this」
+   * @param {Datetime} dt - 判定対象となる Datetime オブジェクト。
    * @return {Datetime} 翌営業日の Datetime オブジェクト
    */
   createNextBussinessDay(dt = this) {
@@ -224,7 +224,7 @@ class Datetime {
 
   /**
    * 前営業日の Datetime オブジェクトを返すメソッド
-   * @param {Datetime} dt - 判定対象となる Datetime オブジェクト。デフォルト引数は「this」
+   * @param {Datetime} dt - 判定対象となる Datetime オブジェクト
    * @return {Datetime} 翌営業日の Datetime オブジェクト
    */
   createPrevBussinessDay(dt = this) {
@@ -271,7 +271,7 @@ class Datetime {
   /**
    * コンストラクタの date オブジェクトを指定のフォーマットで文字列化するメソッド
    * @param {string} format - フォーマットする形式
-   * @return {string} フォーマットされた文字列型の日付
+   * @return {string} フォーマットされた文字列型の日時
    */
   toString(format = 'yyyy/MM/dd HH:mm:ss') {
     const strDate = Datetime.format(this.date, format);
@@ -279,15 +279,27 @@ class Datetime {
   }
 
   /**
-   * 指定のフォーマットで日付を文字列化する静的メソッド
+   * 指定のフォーマットで日時を文字列化する静的メソッド
    * @param {Date} d - Date オブジェクト 文字列型も可
    * @param {string} format - フォーマットする形式
-   * @return {string} フォーマットされた文字列型の日付
+   * @return {string} フォーマットされた文字列型の日時
    */
   static format(d = new Date(), format = 'yyyy/MM/dd HH:mm:ss') {
     const date = new Date(d);
     const strDate = Utilities.formatDate(date, 'JST', format);
     return strDate;
+  }
+
+  /**
+   * 時間の差分を HH:mm:ss 形式で返す静的メソッド
+   * @param {{Date|string|number}} date1 - Date オブジェクトでインスタンス生成可能な引数
+   * @param {{Date|string|number}} date2 - Date オブジェクトでインスタンス生成可能な引数
+   * @return {string} strDiffTime - 時間の差分
+   */
+  static getStrDiffTime(date1, date2) {
+    const diffTime = new Date(Math.abs(new Date(date1).getTime() - new Date(date2).getTime()));
+    const strDiffTime = Utilities.formatDate(diffTime, 'UTC', 'HH:mm:ss');
+    return strDiffTime;
   }
 
 }
