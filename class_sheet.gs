@@ -241,6 +241,29 @@ class Sheet {
   }
 
   /**
+   * Sheet オブジェクトをシートをコピーするメソッド
+   * @return {Sheet} Sheet オブジェクト
+   */
+  copy(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
+    const copiedSheet = this.sheet.copyTo(spreadsheet);
+    const sheet = new Sheet(copiedSheet);
+    return sheet;
+  }
+
+  /**
+   * シートの文字列を一括置換するメソッド
+   * @param {string} string - 置換対象の文字列
+   * @param {string} replaced - 置換後の文字列
+   * @return {Sheet} 文字列置換後の Sheet オブジェクト
+   */
+  replaceAllText(string, replaced) {
+    console.log(string, replaced);
+    const textFinder = this.sheet.createTextFinder(string);
+    textFinder.replaceAllWith(after);
+    return this;
+  }
+
+  /**
    * シートに回答するフォーム オブジェクトを取得するメソッド
    * @return {FormApp.Form} シートに回答するフォーム オブジェクト
    */
