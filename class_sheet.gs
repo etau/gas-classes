@@ -244,10 +244,9 @@ class Sheet {
    * Sheet オブジェクトをシートをコピーするメソッド
    * @return {Sheet} Sheet オブジェクト
    */
-  copy(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
+  copyTo(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
     const copiedSheet = this.sheet.copyTo(spreadsheet);
-    const sheet = new Sheet(copiedSheet);
-    return sheet;
+    return new Sheet(copiedSheet);
   }
 
   /**
