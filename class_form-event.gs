@@ -8,26 +8,19 @@ class FormEvent {
    * @param {Object} e - フォーム送信時のイベント オブジェクト
    */
   constructor(e) {
-    [this.ts, ...this.values] = e.values;
-    this.ts = e.values[0];
     this.namedValues = e.namedValues;
-    this.values = e.values;
-    this.range = e.range;
   }
 
-  /**
-   * イベント オブジェクトから Range オブジェクトを取得するメソッド
-   * @return {SpreadsheetApp.Range} イベントオブジェクト 範囲のスプレッドシートの Range オブジェクト
-   */
-  getRange() {
-    const sheet = this.e.source.getActiveSheet();
-    const { rowStart, rowEnd, columnStart, columnEnd } = this.e.range;
-    const numRows = Math.abs(rowStart - rowEnd) + 1;
-    const numColumns = Math.abs(columnStart - columnEnd) + 1;
-    const sheetRange = sheet.getRange(rowStart, columnStart, numRows, numColumns);
-    return sheetRange;
+  getAsDict() {
+    const keys = Object.keys(this.namedValues);
+    const dict = keys.reduce((pre, cur) =>
+      // pre.set(cur, this.namedValues[cur][0])
+      this.namedValues[cur].length === 1 ?
+        pre.set(cur, this.namedValues[cur][0]) :
+        pre.set(cur, this.namedValues[cur])
+      , new Map());
+    return dict;
   }
-
 
 }
 
