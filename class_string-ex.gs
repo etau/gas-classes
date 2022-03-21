@@ -1,11 +1,6 @@
 'use strict'
 
-class ExtendedString {
-
-
-  /**
-   * 
-   */
+class StringEx {
 
   /**
    * 3 桁をカンマで区切る静的メソッド
@@ -19,11 +14,12 @@ class ExtendedString {
 
   /**
    * 置換リストにしたがって置換する静的メソッド
-   * @param {string} 置換対象の文字列
-   * @param {Array.<Array.<RegExp|string>>} 置換リスト
+   * @param {string} string - 置換対象の文字列
+   * @param {Array.<Array.<RegExp|string>>} replacementLists - 置換リスト
    * @return {string} 置換後の文字列
+   * NOTE: replacementLists は [[/hoge/g, 'HOGE'] のようなもの
    */
-  static replaceByLists(string, replacementLists) {
+  static replaceWithLists(string, replacementLists) {
     const replaced = replacementLists.reduce((acc, list) => acc.replace(...list), string);
     return replaced;
   }

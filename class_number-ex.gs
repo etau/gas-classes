@@ -1,6 +1,6 @@
 'use strict'
 
-class ExtendedNumber {
+class NumberEx {
 
   /**
    * 3 桁をカンマで区切る静的メソッド
