@@ -5,14 +5,17 @@ class Sheet {
   /**
    * シートに関するコンストラクタ
    * @constructor
-   * @param {SpreadsheetApp.sheet} sheet - 対象となるシート。デフォルト引数は「SpreadsheetApp.getActiveSheet()」
-   * @param {number} headerRows - ヘッダー行の数。デフォルト引数は「1」
+   * @param {SpreadsheetApp.sheet} sheet - 対象となるシート
+   * @param {number} headerRows - ヘッダーの行数
+   * @param {number} headerIndex - ヘッダー行のインデックス (ユニークなカラム)
    */
-  constructor(sheet = SpreadsheetApp.getActiveSheet(), headerRows = 1) {
+  constructor(sheet = SpreadsheetApp.getActiveSheet(), headerRows = 1, headerIndex = headerRows - 1) {
     /** @type {SpreadsheetApp.Sheet} */
     this.sheet = sheet;
     /** @type {number} */
     this.headerRows = headerRows;
+    /** @type {number} */
+    this.headerIndex = headerIndex;
   }
 
   /**
@@ -48,13 +51,12 @@ class Sheet {
 
   /**
    * ヘッダー一覧を取得するメソッド
-   * @param {number} index - ヘッダー行のヘッダー一覧となるインデックス。デフォルト引数は「headerRows - 1」
    * @return {Array.<string>} ヘッダー一覧
    */
-  getHeaders(index = this.headerRows - 1) {
+  getHeaders() {
     if (this.headers_ !== undefined) return this.headers_;
     const headerValues = this.getHeaderValues();
-    const headers = headerValues[index];
+    const headers = headerValues[this.headerIndex];
     this.headers_ = headers;
     return headers;
   }
@@ -86,11 +88,10 @@ class Sheet {
   /**
    * ヘッダー情報から列番号を返すメソッド
    * @param {string} header - ヘッダー
-   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
    * @return {number} 列番号
    */
-  getColumnByHeaderName(header, index = this.headerRows - 1) {
-    const columnIndex = this.getColumnIndexByHeaderName(header, index);
+  getColumnByHeaderName(header) {
+    const columnIndex = this.getColumnIndexByHeaderName(header, this.headerIndex);
     const column = columnIndex + 1;
     return column;
   }
@@ -98,11 +99,10 @@ class Sheet {
   /**
    * ヘッダー情報から列インデックスを返すメソッド
    * @param {string} header - ヘッダー
-   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
    * @return {number} 列インデックス
    */
-  getColumnIndexByHeaderName(header, index = this.headerRows - 1) {
-    const headers = this.getHeaders(index);
+  getColumnIndexByHeaderName(header) {
+    const headers = this.getHeaders(this.headerIndex);
     const columnIndex = headers.indexOf(header);
     if (columnIndex === -1) throw new Error('The value "' + header + '" does not exist in the header row.');
     return columnIndex;
@@ -144,8 +144,8 @@ class Sheet {
 
   /**
    * レコード範囲でソートするメソッド
-   * @param {number} column - ソート対象となる列。デフォルト引数は「1」
-   * @param {boolean} ascending - 昇順か降順か。デフォルト引数は「true」
+   * @param {number} column - ソート対象となる列
+   * @param {boolean} ascending - 昇順か降順か
    */
   sortDataRows(column = 1, ascending = true) {
     this.getRange(this.headerRows + 1, 1, this.getLastRow() - this.headerRows, this.getLastColumn()).
@@ -156,7 +156,7 @@ class Sheet {
   /**
    * ヘッダー情報の配列から必要な列だけの値を取得するメソッド
    * @param {Array.<string>} keys - 辞書のキーとなるヘッダー情報
-   * @param {boolean} isAddHeaders - ヘッダー情報を配列に含むかどうか。デフォルト引数は「true」
+   * @param {boolean} isAddHeaders - ヘッダー情報を配列に含むかどうか
    * @return {Array.<Array.<number|string|boolean|Date>>} ヘッダー情報に対応する列の値
    */
   select(keys, isAddHeaders = false) {
@@ -170,12 +170,11 @@ class Sheet {
 
   /**
    * シートの値から、ヘッダー情報をプロパティとして持つ Map 型を生成するメソッド
-   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
    * @return {Array.<Map>} ヘッダー情報を key, 値を value として持つ Map
    */
-  getAsDicts(index = this.headerRows - 1) {
+  getAsDicts() {
     if (this.dicts_ !== undefined) return this.dicts_;
-    const headers = this.getHeaders(index);
+    const headers = this.getHeaders(this.headerIndex);
     const values = this.getDataValues();
     const dicts = values.map((record, i) => record.
       reduce((acc, cur, j) => acc.set(headers[j], cur), new Map([
@@ -191,11 +190,10 @@ class Sheet {
    * フィルター対象の列に合致したレコードを取得するメソッド
    * @param {string} header - フィルター対象の列のヘッダー名
    * @param {string|number|boolean|Date} value - フィルター対象の値
-   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
    * @return {Array.<Array.<string|number|boolean|Date>} フィルターされたレコード
    */
-  filterRecords(header, value, index = this.headerRows - 1) {
-    const filterdDicts = this.filterDicts(header, value, index);
+  filterRecords(header, value) {
+    const filterdDicts = this.filterDicts(header, value, this.headerIndex);
     const records = filterdDicts.map(dict => dict.get('record'));
     return records;
   }
@@ -204,11 +202,10 @@ class Sheet {
    * フィルター対象の列に合致した dicts を取得するメソッド
    * @param {string} header - フィルター対象の列のヘッダー名
    * @param {string|number|boolean|Date} value - フィルター対象の値
-   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
    * @return {Array.<Map>} フィルターされた dicts
    */
-  filterDicts(header, value, index = this.headerRows - 1) {
-    const dicts = this.getAsDicts(index);
+  filterDicts(header, value) {
+    const dicts = this.getAsDicts();
     const filterdDicts = dicts.filter(dict => dict.get(header) === value);
     return filterdDicts;
   }
@@ -217,11 +214,10 @@ class Sheet {
    * 抽出対象の列の一番最初に合致したレコードを取得するメソッド
    * @param {string} header - 抽出対象の列のヘッダー名
    * @param {string|number|boolean|Date} value - 抽出対象の値
-   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
    * @return {Array.<string|number|boolean|Date>} 対象レコード
    */
-  findRecord(header, value, index = this.headerRows - 1) {
-    const dict = this.findDict(header, value, index);
+  findRecord(header, value) {
+    const dict = this.findDict(header, value, this.headerIndex);
     const record = dict === undefined ? null : dict.get('record');
     return record;
   }
@@ -230,11 +226,10 @@ class Sheet {
    * 抽出対象の列の一番最初に合致した dict を取得するメソッド
    * @param {string} header - 抽出対象の列のヘッダー名
    * @param {string|number|boolean|Date} value - 抽出対象の値
-   * @param {number} index - ヘッダー行のヘッダーとなるインデックス。デフォルト引数は「headerRows - 1」
    * @return {Map} dict
    */
-  findDict(header, value, index = this.headerRows - 1) {
-    const dicts = this.getAsDicts(index);
+  findDict(header, value) {
+    const dicts = this.getAsDicts();
     const dict = dicts.find(dict => dict.get(header) === value);
     if (dict === undefined) throw new Error('The value "' + value + '" does not exist in the "' + header + '" column.');
     return dict;
