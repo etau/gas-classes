@@ -39,8 +39,9 @@ class TriggerChangeEvent {
    * @return {boolean}
    */
   isSingleCell() {
-    const numRows = this.range.getNumRows();
-    const numColumns = this.range.getNumColumns();
+    const sourceRange = this.getSourceRange();
+    const numRows = sourceRange.getNumRows();
+    const numColumns = sourceRange.getNumColumns();
     return numRows * numColumns === 1;
   }
 

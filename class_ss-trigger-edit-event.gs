@@ -10,8 +10,10 @@ class TriggerEditEvent {
   constructor(e) {
     /** @type {Object} */
     this.e = e;
-    /** @type {Object} */
+    /** @type {SpreadsheetApp.Spreadsheet} */
     this.source = e.source;
+    /** @type {SpreadsheetApp.Range} */
+    this.range = e.range;
   }
 
   /**
@@ -43,12 +45,13 @@ class TriggerEditEvent {
   }
 
   /**
-   * 単一セルに対する操作かどうかを判定するメソッド
-   * @return {boolean} 単一セルに対する操作かどうか
+   * 単一セルの操作かどうか判定するメソッド
+   * @return {boolean}
    */
   isSingleCell() {
-    const { rowStart, rowEnd, columnStart, columnEnd } = this.e.range;
-    return rowStart === rowEnd && columnStart === columnEnd;
+    const numRows = this.range.getNumRows();
+    const numColumns = this.range.getNumColumns();
+    return numRows * numColumns === 1;
   }
 
 }

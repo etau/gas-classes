@@ -3,9 +3,9 @@
 class Gmail {
 
   /**
-   * Gmail の下書きに関するコンストラクタ
+   * Gmail に関するコンストラクタ
    * @constructor
-   * @param {Array.<string>} record - Gmail の下書きを作成するための配列の値
+   * @param {Array.<string>} record - Gmail を作成するための配列の値
    * NOTE: 配列で各種要素を取得する設計
    */
   constructor(record) {
