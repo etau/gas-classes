@@ -13,6 +13,22 @@ class StringEx {
   }
 
   /**
+   * プレフィックスとサフィックスに挟まれたすべての文字列を抽出する静的メソッド
+   * @param {string} string - 抽出対象の文字列
+   * @param {string} prefix - プレフィックス
+   * @param {string} suffix - サフィックス
+   * @param {boolean} isInclude - プレフィックスとサフィックスを結果にふくむかどうか
+   * @return {Array.<string>} 抽出された文字列
+   */
+  static fetch(string, prefix = '{{', suffix = '}}', isInclude = false) {
+    const regExp = isInclude ?
+      new RegExp(prefix + '[\\s\\S]*?' + suffix, 'g') :
+      new RegExp('(?<=' + prefix + ')[\\s\\S]*?(?=' + suffix + ')', 'g');
+    const fetchStrings = string.match(regExp);
+    return fetchStrings;
+  }
+
+  /**
    * 置換リストにしたがって置換する静的メソッド
    * @param {string} string - 置換対象の文字列
    * @param {Array.<Array.<RegExp|string>>} replacementLists - 置換リスト
@@ -20,7 +36,7 @@ class StringEx {
    * NOTE: replacementLists は [[/hoge/g, 'HOGE'] のようなもの
    */
   static replaceWithLists(string, replacementLists) {
-    const replaced = replacementLists.reduce((acc, list) => acc.replace(...list), string);
+    const replaced = replacementLists.reduce((pre, list) => pre.replace(...list), string);
     return replaced;
   }
 
