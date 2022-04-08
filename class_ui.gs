@@ -2,6 +2,9 @@
 
 class Ui {
 
+  /**
+   * @constructor
+   */
   constructor() {
     /** @type {Ui} */
     this.ui = SpreadsheetApp.getUi();
@@ -14,11 +17,11 @@ class Ui {
   alert(...args) { return this.ui.alert(...args) };
 
   /**
-   * アラートに「はい」と答えたかどうか判定するメソッド
+   * アラートに「はい」ボタンが押されたかどうかを判定するメソッド
    * @param {string} alertMessage - アラート メッセージ
-   * @return {boolean} アラートに「はい」と答えたかどうか
+   * @return {boolean} 「はい」ボタンが押されたかどうか
    */
-  isAnswerYesToAlert(alertMessage) {
+  isClickYesButton(alertMessage) {
     const response = this.alert(alertMessage, this.ui.ButtonSet.YES_NO);
     return response === this.ui.Button.YES;
   }

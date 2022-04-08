@@ -8,7 +8,7 @@ const PROPERTIES = new Properties();
 const SS = SpreadsheetApp.getActiveSpreadsheet();
 
 /**
- * ツールキット クラス
+ * Universal クラス
  */
 class Universal {
 
@@ -25,5 +25,10 @@ class Universal {
   static logDict(dict) {
     console.log([...dict]);
   }
+
+
+
+
+
 
 }

@@ -126,7 +126,7 @@ class Sheet {
   clearDataValues() {
     const values = this.getDataValues();
     if (values.length === 0) return;
-    this.getRange(1 + this.headerRows, 1, values.length, values[0].length).
+    this.getRange(this.headerRows + 1, 1, values.length, values[0].length).  // 範囲が広いかも？
       clearContent();
     return this;
   }
@@ -193,8 +193,8 @@ class Sheet {
    * @return {Array.<Array.<string|number|boolean|Date>} フィルターされたレコード
    */
   filterRecords(header, value) {
-    const filterdDicts = this.filterDicts(header, value, this.headerIndex);
-    const records = filterdDicts.map(dict => dict.get('record'));
+    const filteredDicts = this.filterDicts(header, value, this.headerIndex);
+    const records = filteredDicts.map(dict => dict.get('record'));
     return records;
   }
 
@@ -204,10 +204,10 @@ class Sheet {
    * @param {string|number|boolean|Date} value - フィルター対象の値
    * @return {Array.<Map>} フィルターされた dicts
    */
-  filterDicts(header, value) {
+  filtereDicts(header, value) {
     const dicts = this.getAsDicts();
-    const filterdDicts = dicts.filter(dict => dict.get(header) === value);
-    return filterdDicts;
+    const filteredDicts = dicts.filter(dict => dict.get(header) === value);
+    return filteredDicts;
   }
 
   /**

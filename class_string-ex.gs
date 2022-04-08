@@ -20,7 +20,7 @@ class StringEx {
    * @param {boolean} isInclude - プレフィックスとサフィックスを結果にふくむかどうか
    * @return {Array.<string>} 抽出された文字列
    */
-  static fetch(string, prefix = '{{', suffix = '}}', isInclude = false) {
+  static fetch(string, prefix = '{{', suffix = '}}', isInclude = false) {    // isGlobal のひきすうほしい？ return は、string もありで
     const regExp = isInclude ?
       new RegExp(prefix + '[\\s\\S]*?' + suffix, 'g') :
       new RegExp('(?<=' + prefix + ')[\\s\\S]*?(?=' + suffix + ')', 'g');

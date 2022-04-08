@@ -8,6 +8,7 @@ class FormSubmitEvent {
    * @param {Object} e - フォーム送信イベント オブジェクト
    */
   constructor(e) {
+    /** @type {Object} */
     this.namedValues = e.namedValues;
   }
 
