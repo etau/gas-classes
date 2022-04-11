@@ -26,7 +26,7 @@ class Sheet {
   getRange(...args) { return this.sheet.getRange(...args); }
   getLastRow() { return this.sheet.getLastRow(); }
   getLastColumn() { return this.sheet.getLastColumn(); }
-  getAssociatedFormUrl() { return this.sheet.getFormUrl(); }
+  getFormUrl() { return this.sheet.getFormUrl(); }
 
   /**
    * Sheet オブジェクトを新しく取得し直すメソッド
