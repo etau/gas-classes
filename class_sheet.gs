@@ -87,24 +87,24 @@ class Sheet {
 
   /**
    * ヘッダー情報から列番号を返すメソッド
-   * @param {string} header - ヘッダー
+   * @param {string} headerName - ヘッダー名
    * @return {number} 列番号
    */
-  getColumnByHeaderName(header) {
-    const columnIndex = this.getColumnIndexByHeaderName(header, this.headerIndex);
+  getColumnByHeaderName(headerName) {
+    const columnIndex = this.getColumnIndexByHeaderName(headerName, this.headerIndex);
     const column = columnIndex + 1;
     return column;
   }
 
   /**
    * ヘッダー情報から列インデックスを返すメソッド
-   * @param {string} header - ヘッダー
+   * @param {string} headerName - ヘッダー名
    * @return {number} 列インデックス
    */
-  getColumnIndexByHeaderName(header) {
+  getColumnIndexByHeaderName(headerName) {
     const headers = this.getHeaders(this.headerIndex);
-    const columnIndex = headers.indexOf(header);
-    if (columnIndex === -1) throw new Error('The value "' + header + '" does not exist in the header row.');
+    const columnIndex = headers.indexOf(headerName);
+    if (columnIndex === -1) throw new Error('The value "' + headerName + '" does not exist in the header row.');
     return columnIndex;
   }
 
@@ -127,6 +127,18 @@ class Sheet {
     const values = this.getDataValues();
     if (values.length === 0) return;
     this.getRange(this.headerRows + 1, 1, values.length, values[0].length).  // 範囲が広いかも？
+      clearContent();
+    return this;
+  }
+
+  /**
+   * 列の値をクリアするメソッド
+   * @param {string} headerName - ヘッダー名
+   * @return {Sheet} Sheet オブジェクト
+   */
+  clearColumn(headerName) {
+    const column = this.getColumnByHeaderName(headerName);
+    this.getRange(1 + this.headerRows, column, this.getLastRow() - this.headerRows).
       clearContent();
     return this;
   }
@@ -188,25 +200,25 @@ class Sheet {
 
   /**
    * フィルター対象の列に合致したレコードを取得するメソッド
-   * @param {string} header - フィルター対象の列のヘッダー名
+   * @param {string} headerName - フィルター対象の列のヘッダー名
    * @param {string|number|boolean|Date} value - フィルター対象の値
    * @return {Array.<Array.<string|number|boolean|Date>} フィルターされたレコード
    */
-  filterRecords(header, value) {
-    const filteredDicts = this.filterDicts(header, value, this.headerIndex);
+  filterRecords(headerName, value) {
+    const filteredDicts = this.filterDicts(headerName, value, this.headerIndex);
     const records = filteredDicts.map(dict => dict.get('record'));
     return records;
   }
 
   /**
    * フィルター対象の列に合致した dicts を取得するメソッド
-   * @param {string} header - フィルター対象の列のヘッダー名
+   * @param {string} headerName - フィルター対象の列のヘッダー名
    * @param {string|number|boolean|Date} value - フィルター対象の値
    * @return {Array.<Map>} フィルターされた dicts
    */
-  filtereDicts(header, value) {
+  filtereDicts(headerName, value) {
     const dicts = this.getAsDicts();
-    const filteredDicts = dicts.filter(dict => dict.get(header) === value);
+    const filteredDicts = dicts.filter(dict => dict.get(headerName) === value);
     return filteredDicts;
   }
 
@@ -224,14 +236,14 @@ class Sheet {
 
   /**
    * 抽出対象の列の一番最初に合致した dict を取得するメソッド
-   * @param {string} header - 抽出対象の列のヘッダー名
+   * @param {string} headerName - 抽出対象の列のヘッダー名
    * @param {string|number|boolean|Date} value - 抽出対象の値
    * @return {Map} dict
    */
-  findDict(header, value) {
+  findDict(headerName, value) {
     const dicts = this.getAsDicts();
-    const dict = dicts.find(dict => dict.get(header) === value);
-    if (dict === undefined) throw new Error('The value "' + value + '" does not exist in the "' + header + '" column.');
+    const dict = dicts.find(dict => dict.get(headerName) === value);
+    if (dict === undefined) throw new Error('The value "' + value + '" does not exist in the "' + headerName + '" column.');
     return dict;
   }
 
