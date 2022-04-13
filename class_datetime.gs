@@ -162,7 +162,7 @@ class Datetime {
    */
   calculateDiffDays(date) {
     const start = new Date(this.toString());
-    const end = new Date(Datetime.format(date));
+    const end = new Date(Datetime.format(date, 'yyyy/MM/dd'));
     const diffDays = Math.abs(start.getTime() - end.getTime()) / (1000 * 60 * 60 * 24);
     return diffDays;
   }
@@ -253,7 +253,7 @@ class Datetime {
    */
   isHoliday(date = this.date, holidaysCalendar = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com')) {
     if (date.getDay() % 6 === 0) return true;
-    if (this.holidays !== undefined) return this.holidays.map(holiday => Datetime.format(holiday)).includes(this.toString());
+    if (this.holidays !== undefined) return this.holidays.map(holiday => Datetime.format(holiday, 'yyyy/MM/dd')).includes(this.toString());
     if (this.holidaysCalendar_ === undefined) this.holidaysCalendar_ = holidaysCalendar;
     return this.holidaysCalendar_.getEventsForDay(date).length !== 0;
   }
