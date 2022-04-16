@@ -1,20 +1,5 @@
 {
   "timeZone": "Asia/Tokyo",
   "exceptionLogging": "STACKDRIVER",
-  "runtimeVersion": "V8",
-  "sheets": {
-    "macros": [{
-      "menuName": "copyAllData",
-      "functionName": "copyAllData"
-    }, {
-      "menuName": "myFunction_20220405_112243",
-      "functionName": "myFunction_20220405_112243"
-    }, {
-      "menuName": "onOpen",
-      "functionName": "onOpen"
-    }, {
-      "menuName": "setInitialTriggers",
-      "functionName": "setInitialTriggers"
-    }]
-  }
+  "runtimeVersion": "V8"
 }
