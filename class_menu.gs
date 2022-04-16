@@ -30,12 +30,13 @@ class Menu {
 
   /**
    * メニューに追加するアイテムを取得するメソッド
+   * @param {boolean} isAddNumber - 番号を付与するかどうか
    * @return {Array.<Object.<string>>} メニューに追加するアイテム
    */
-  getItems() {
-    const items = MENU_INFO.FUNCTIONS.map(func => {
+  getItems(isAddNumber = true) {
+    const items = MENU_INFO.FUNCTIONS.map((func, i) => {
       const item = {
-        caption: func.CAPTION,
+        caption: isAddNumber ? (i + 1) + '. ' : '' + func.CAPTION,
         functionName: func.NAME
       }
       return item;
