@@ -254,6 +254,7 @@ class Datetime {
   isHoliday(date = this.date, holidaysCalendar = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com')) {
     if (date.getDay() % 6 === 0) return true;
     if (this.holidays !== undefined) return this.holidays.map(holiday => Datetime.format(holiday, 'yyyy/MM/dd')).includes(this.toString('yyyy/MM/dd'));
+    if (this.repeatedHolidays !== undefined) return this.repeatedHolidays.includes(this.toString('MM/dd'));
     if (this.holidaysCalendar_ === undefined) this.holidaysCalendar_ = holidaysCalendar;
     return this.holidaysCalendar_.getEventsForDay(date).length !== 0;
   }
@@ -269,7 +270,18 @@ class Datetime {
   }
 
   /**
-   * コンストラクタの date オブジェクトを指定のフォーマットで文字列化するメソッド
+   * 繰り返される休日をプロパティに追加するメソッド
+   * @param {Array.<string>} repeatedHolidays - 繰り返される休日 MM/dd 形式の文字列
+   * @return {Datetime} Datetime オブジェクト
+   */
+  addRepeatedHolidays(repeatedHolidays) {
+    this.repeatedHolidays = repeatedHolidays;
+    return this;
+  }
+
+
+  /**
+   * コンストラクタの date プロパティを指定のフォーマットで文字列化するメソッド
    * @param {string} format - フォーマットする形式
    * @return {string} フォーマットされた文字列型の日時
    */

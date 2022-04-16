@@ -216,10 +216,22 @@ class Sheet {
    * @param {string|number|boolean|Date} value - フィルター対象の値
    * @return {Array.<Map>} フィルターされた dicts
    */
-  filtereDicts(headerName, value) {
+  filterDicts(headerName, value) {
     const dicts = this.getAsDicts();
     const filteredDicts = dicts.filter(dict => dict.get(headerName) === value);
     return filteredDicts;
+  }
+
+  /**
+   * フィルター対象の列に値がある dicts を取得するメソッド
+   * @param {string} header - フィルター対象の列のヘッダー名
+   * @param {string|number|boolean|Date} value - フィルター対象の値
+   * @return {Array.<Map>} フィルターされた dicts
+   */
+  filterDictsWithValue(header) {
+    const dicts = this.getAsDicts();
+    const filterdDicts = dicts.filter(dict => dict.get(header) !== '');
+    return filterdDicts;
   }
 
   /**
