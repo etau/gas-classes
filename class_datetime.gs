@@ -184,6 +184,7 @@ class Datetime {
    * @return {Datetime} x 日前の Date オブジェクト
    */
   createBusinessDaysLater(x) {
+    if (x <= 0) throw new Error('The parameter must be greater than 0.');
     let count = 0;
     let dt = this;
     while (count !== x) {
@@ -228,7 +229,6 @@ class Datetime {
    * @return {Datetime} 翌営業日の Datetime オブジェクト
    */
   createPrevBussinessDay(dt = this) {
-    if (x <= 0) throw new Error('The parameter must be greater than 0.');
     let prevDt = dt.createDaysAgo(1);
     while (this.isHoliday(prevDt.date)) {
       prevDt = prevDt.createDaysAgo(1);
