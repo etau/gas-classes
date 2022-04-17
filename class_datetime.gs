@@ -64,10 +64,10 @@ class Datetime {
   }
 
   /**            
-   * 終了時間に達したらエラーを投げるメソッド            
+   * 指定した時間を超えたらエラーを投げるメソッド
+   * @throws 時間を超えたエラー        
    */
-  endLoopIfTimeOver() {
-    const limitSec = 350;
+  thorowTimeOverError(limitSec = 350) {
     if (this.isTimeOver(limitSec)) throw new Error('Processing time exceeded' + limitSec + 'seconds.');
   }
 
@@ -279,7 +279,6 @@ class Datetime {
     this.repeatedHolidays = zeroPaddedRepeatedHolidays;
     return this;
   }
-
 
   /**
    * コンストラクタの date プロパティを指定のフォーマットで文字列化するメソッド
