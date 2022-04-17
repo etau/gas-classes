@@ -275,7 +275,7 @@ class Datetime {
    * @return {Datetime} Datetime オブジェクト
    */
   addRepeatedHolidays(repeatedHolidays) {
-    const zeroPaddedRepeatedHolidays = repeatedHolidays.map(day => day.split('/')).map(md => md.map(n => n.padStart(2, 0)).join('/'));
+    const zeroPaddedRepeatedHolidays = repeatedHolidays.map(day => day.split('/')).map(md => md.map(n => n.padStart(2, 0)).join('/'));  // HACK: MM/dd 形式に変換
     this.repeatedHolidays = zeroPaddedRepeatedHolidays;
     return this;
   }
