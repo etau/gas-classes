@@ -253,8 +253,8 @@ class Datetime {
    */
   isHoliday(date = this.date, holidaysCalendar = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com')) {
     if (date.getDay() % 6 === 0) return true;
-    if (this.holidays !== undefined) return this.holidays.map(holiday => Datetime.format(holiday, 'yyyy/MM/dd')).includes(this.toString('yyyy/MM/dd'));
-    if (this.repeatedHolidays !== undefined) return this.repeatedHolidays.includes(this.toString('MM/dd'));
+    if (this.holidays !== undefined) return this.holidays.map(holiday => Datetime.format(holiday, 'yyyy/MM/dd')).includes(Datetime.format(date, 'yyyy/MM/dd'));
+    if (this.repeatedHolidays !== undefined) return this.repeatedHolidays.includes(Datetime.format(date, 'MM/dd'));
     if (this.holidaysCalendar_ === undefined) this.holidaysCalendar_ = holidaysCalendar;
     return this.holidaysCalendar_.getEventsForDay(date).length !== 0;
   }
