@@ -216,7 +216,7 @@ class Datetime {
     if (x <= 0) throw new Error('The parameter must be greater than 0.');
     let count = 0;
     let dt = this;
-    while (count !== x) {
+    while (count !== x + 1) {
       dt = dt.createPrevBussinessDay();
       count++;
     }
@@ -271,11 +271,12 @@ class Datetime {
 
   /**
    * 繰り返される休日をプロパティに追加するメソッド
-   * @param {Array.<string>} repeatedHolidays - 繰り返される休日 MM/dd 形式の文字列
+   * @param {Array.<string>} repeatedHolidays - 繰り返される休日 MM/dd か M/d 形式の文字列
    * @return {Datetime} Datetime オブジェクト
    */
   addRepeatedHolidays(repeatedHolidays) {
-    this.repeatedHolidays = repeatedHolidays;
+    const zeroPaddedRepeatedHolidays = repeatedHolidays.map(day => day.split('/')).map(md => md.map(n => n.padStart(2, 0)).join('/'));
+    this.repeatedHolidays = zeroPaddedRepeatedHolidays;
     return this;
   }
 
