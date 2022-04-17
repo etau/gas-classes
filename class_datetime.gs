@@ -216,7 +216,7 @@ class Datetime {
     if (x <= 0) throw new Error('The parameter must be greater than 0.');
     let count = 0;
     let dt = this;
-    while (count !== x + 1) {
+    while (count !== x) {
       dt = dt.createPrevBussinessDay();
       count++;
     }
