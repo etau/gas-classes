@@ -36,7 +36,7 @@ class Menu {
   getItems(isAddNumber = true) {
     const items = MENU_INFO.FUNCTIONS.map((func, i) => {
       const item = {
-        caption: isAddNumber ? (i + 1) + '. ' : '' + func.CAPTION,
+        caption: (isAddNumber ? (i + 1) + '. ' : '') + func.CAPTION,
         functionName: func.NAME
       }
       return item;
