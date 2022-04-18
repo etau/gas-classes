@@ -7,9 +7,9 @@ class Datetime {
    * @constructor
    * @param {Date|string|number|...number} date - Date オブジェクトでインスタンス生成可能な引数
    */
-  constructor(date = new Date()) {
+  constructor(...args) {
     /** @type {Date} */
-    this.date = new Date(date);
+    this.date = new Date(...args);
   }
 
   /**
@@ -101,57 +101,13 @@ class Datetime {
   }
 
   /**
-   * x 分前の Datetime オブジェクトを返すメソッド
-   * @param {number} x - 日数差
-   * @return {Datetime} x 日前の Datetime オブジェクト
-   */
-  createMinutesAgo(x) {
-    const d = new Date(this.date);
-    d.setMinutes(d.getMinutes() - x);
-    return new Datetime(d);
-  }
-
-  /**
-   * x 時間前の Datetime オブジェクトを返すメソッド
-   * @param {number} x - 日数差
-   * @return {Datetime} x 日前の Datetime オブジェクト
-   */
-  createHoursAgo(x) {
-    const d = new Date(this.date);
-    d.setHours(d.getHours() - x);
-    return new Datetime(d);
-  }
-
-  /**
    * x 日前の Datetime オブジェクトを返すメソッド
    * @param {number} x - 日数差
    * @return {Datetime} x 日前の Datetime オブジェクト
    */
-  createDaysAgo(x) {
+  getDtDaysAgo(x) {
     const d = new Date(this.date);
     d.setDate(d.getDate() - x);
-    return new Datetime(d);
-  }
-
-  /**
-   * x か月の Datetime オブジェクトを返すメソッド
-   * @param {number} x - 月数差
-   * @return {Datetime} x 日前の Datetime オブジェクト
-   */
-  createMonthsAgo(x) {
-    const d = new Date(this.date);
-    d.setMonth(d.getMonth() - x);
-    return new Datetime(d);
-  }
-
-  /**
-   * x 年の Datetime オブジェクトを返すメソッド
-   * @param {number} x - 年数差
-   * @return {Datetime} x 日前の Datetime オブジェクト
-   */
-  createYearsAgo(x) {
-    const d = new Date(this.date);
-    d.setFullYear(d.getFullYear() - x);
     return new Datetime(d);
   }
 
@@ -183,12 +139,12 @@ class Datetime {
    * @param {number} x - 日数差
    * @return {Datetime} x 日前の Date オブジェクト
    */
-  createBusinessDaysLater(x) {
+  getDtBusinessDaysLater(x) {
     if (x <= 0) throw new Error('The parameter must be greater than 0.');
     let count = 0;
     let dt = this;
     while (count !== x) {
-      dt = dt.createNextBussinessDay();
+      dt = dt.getDtNextBussinessDay();
       count++;
     }
     return dt;
@@ -199,10 +155,10 @@ class Datetime {
    * @param {Datetime} dt - 判定対象となる Datetime オブジェクト。
    * @return {Datetime} 翌営業日の Datetime オブジェクト
    */
-  createNextBussinessDay(dt = this) {
-    let nextDt = dt.createDaysAgo(-1);
+  getDtNextBussinessDay(dt = this) {
+    let nextDt = dt.getDtDaysAgo(-1);
     while (this.isHoliday(nextDt.date)) {
-      nextDt = nextDt.createDaysAgo(-1);
+      nextDt = nextDt.getDtDaysAgo(-1);
     }
     return nextDt;
   }
@@ -212,12 +168,12 @@ class Datetime {
    * @param {number} x - 日数差
    * @return {Datetime} x 日前の Date オブジェクト
    */
-  createBusinessDaysBefore(x) {
+  getDtBusinessDaysBefore(x) {
     if (x <= 0) throw new Error('The parameter must be greater than 0.');
     let count = 0;
     let dt = this;
     while (count !== x) {
-      dt = dt.createPrevBussinessDay();
+      dt = dt.getDtPrevBussinessDay();
       count++;
     }
     return dt;
@@ -228,12 +184,25 @@ class Datetime {
    * @param {Datetime} dt - 判定対象となる Datetime オブジェクト
    * @return {Datetime} 翌営業日の Datetime オブジェクト
    */
-  createPrevBussinessDay(dt = this) {
-    let prevDt = dt.createDaysAgo(1);
+  getDtPrevBussinessDay(dt = this) {
+    let prevDt = dt.getDtDaysAgo(1);
     while (this.isHoliday(prevDt.date)) {
-      prevDt = prevDt.createDaysAgo(1);
+      prevDt = prevDt.getDtDaysAgo(1);
     }
     return prevDt;
+  }
+
+  /**
+   * 最終営業日の Datetime オブジェクトを返すメソッド
+   * @param {Date} date - 判定対象となる Date オブジェクト
+   * @return {Datetime} 最終営業日の Datetime オブジェクト
+   * NOTE: this の holidays, repeatedHolidays プロパティに値がある場合には引き継ぐ
+   */
+  getDtLastBussinessDayOfMonth(date = this.date) {
+    const dtFirstDayOfNextMonth = new Datetime(date.getFullYear(), date.getMonth() + 1, 1);
+    this.setProperties(dtFirstDayOfNextMonth);
+    const dtLastBussinessDayOfMonth = dtFirstDayOfNextMonth.getDtPrevBussinessDay();
+    return dtLastBussinessDayOfMonth;
   }
 
   /**
@@ -278,6 +247,17 @@ class Datetime {
     const zeroPaddedRepeatedHolidays = repeatedHolidays.map(day => day.split('/')).map(md => md.map(n => n.padStart(2, 0)).join('/'));  // HACK: MM/dd 形式に変換
     this.repeatedHolidays = zeroPaddedRepeatedHolidays;
     return this;
+  }
+
+  /**
+   * holidays, repeatedHolidays プロパティに値がある場合にはセットするメソッド
+   * @param {Datetime} プロパティをセットされる Datetime オブジェクト
+   * @return {Datetime} プロパティをセットされた Datetime オブジェクト
+   */
+  setProperties(dt) {
+    if (this.holidays !== undefined) dt.holidays = this.holidays;
+    if (this.repeatedHolidays !== undefined) dt.repeatedHolidays = this.repeatedHolidays;
+    return dt;
   }
 
   /**
