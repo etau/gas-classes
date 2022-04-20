@@ -12,6 +12,16 @@ class SmartHrApi {
   }
 
   /**
+   * 従業員のフル ネームを取得するメソッド
+   * @return {Array.<string>} 従業員のフル ネーム
+   */
+  getEmployeeFullNames() {
+    const employees = this.getEmployees();
+    const employeeFullBusinessNames = employees.map(employee => employee.last_name + ' ' + employee.first_name);
+    return employeeFullBusinessNames;
+  }
+
+  /**
    * 従業員のフル ビジネス ネームを取得するメソッド
    * @return {Array.<string>} 従業員のフル ビジネス ネーム
    */
