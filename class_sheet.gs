@@ -27,6 +27,7 @@ class Sheet {
   getLastRow() { return this.sheet.getLastRow(); }
   getLastColumn() { return this.sheet.getLastColumn(); }
   getFormUrl() { return this.sheet.getFormUrl(); }
+  getName() { return this.sheet.getName(); }
 
   /**
    * Sheet オブジェクトを新しく取得し直すメソッド
@@ -34,7 +35,7 @@ class Sheet {
    */
   flush() {
     SpreadsheetApp.flush();
-    const sheet = new Sheet(this.sheet, this.headerRows);
+    const sheet = new Sheet(this.sheet, this.headerRows, this.headerIndex);
     return sheet;
   }
 
@@ -104,7 +105,7 @@ class Sheet {
   getColumnIndexByHeaderName(headerName) {
     const headers = this.getHeaders(this.headerIndex);
     const columnIndex = headers.indexOf(headerName);
-    if (columnIndex === -1) throw new Error('The value "' + headerName + '" does not exist in the header row.');
+    if (columnIndex === -1) throw new Error('The value "' + headerName + '" does not exist in the header row of sheet' + this.getName() + '.');
     return columnIndex;
   }
 
@@ -255,7 +256,7 @@ class Sheet {
   findDict(headerName, value) {
     const dicts = this.getAsDicts();
     const dict = dicts.find(dict => dict.get(headerName) === value);
-    if (dict === undefined) throw new Error('The value "' + value + '" does not exist in the "' + headerName + '" column.');
+    if (dict === undefined) throw new Error('The value "' + value + '" does not exist in the "' + headerName + '" column of sheet' + this.getName() + '.');
     return dict;
   }
 
