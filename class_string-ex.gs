@@ -3,6 +3,17 @@
 class StringEx {
 
   /**
+   * 改行を削除する静的メソッド
+   * @param {string} string - 改行を削除する文字列
+   * @return {string} 改行を削除した文字列
+   */
+  static deleteNewLine(string) {
+    const replacementLists = [[/\n/g, '']];  // ほかのパターンもあれば追加する
+    const replaced = StringEx.replaceWithLists(string, replacementLists);
+    return replaced;
+  }
+
+  /**
    * 3 桁をカンマで区切る静的メソッド
    * @param {number} number - 3 桁区切り対象の数値
    * @return {string} 3 桁区切りされた文字列
