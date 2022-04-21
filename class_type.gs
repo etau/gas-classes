@@ -19,8 +19,10 @@ const TYPE = Object.freeze(
     OBJECT: 'Object',
     /** 正規表現 */
     REGEXP: 'RegExp',
-    /** Map */
+    /** Map オブジェクト */
     MAP: 'Map',
+    /** Set オブジェクト */
+    SET: 'Set',
     /** JSON */
     JSON: 'JSON',
     /** スプレッドシート オブジェクト*/
@@ -49,9 +51,6 @@ const TYPE = Object.freeze(
 
 
 
-/**
- * 型について判定するクラス
- */
 class Type {
 
   /**
@@ -74,16 +73,19 @@ class Type {
    * @retrun {boolean|Object} 型が一致しているかどうか、一致していない場合にはエラーを投げる
    */
   isValid() {
-    if (this.type === TYPE.INTEGER) return Number.isInteger(this.value) || this.throwAlert();
-    if (this.type === TYPE.DATE) return this.value instanceof Date || this.throwAlert();
-    if (this.type === TYPE.ARRAY) return this.value instanceof Array || this.throwAlert();
-    if (this.type === TYPE.OBJECT) return (this.value instanceof Object && !(this.value instanceof Array)) && !(this.value instanceof Map) || this.throwAlert();  // TODO: Set 型の判定も必要かな？
-    if (this.type === TYPE.REGEXP) return this.value instanceof RegExp || this.throwAlert();
-    if (this.type === TYPE.MAP) return this.value instanceof Map || this.throwAlert();
-    if (this.type === TYPE.JSON) return (typeof this.value === 'string' && JSON.parse(this.value) instanceof Object) || this.throwAlert();
-    if (this.type === TYPE.FOLDER) return this.value.getUrl().includes('/drive/folders/') || this.throwAlert();
-    if (TYPE.TOSTRINGS.includes(this.type)) return this.value.toString() === this.type || this.throwAlert();
-    try {
+    switch (this.type) {
+      case TYPE.INTEGER: return Number.isInteger(this.value) || this.throwAlert();
+      case TYPE.DATE: return this.value instanceof Date || this.throwAlert();
+      case TYPE.ARRAY: return this.value instanceof Array || this.throwAlert();
+      case TYPE.OBJECT: return (this.value instanceof Object && !(this.value instanceof Array)) && !(this.value instanceof Map) && !(this.value instanceof Set) || this.throwAlert();
+      case TYPE.REGEXP: return this.value instanceof RegExp || this.throwAlert();
+      case TYPE.MAP: return this.value instanceof Map || this.throwAlert();
+      case TYPE.SET: return this.value instanceof Set || this.throwAlert();
+      case TYPE.JSON: return (typeof this.value === 'string' && JSON.parse(this.value) instanceof Object) || this.throwAlert();
+      case TYPE.FOLDER: return this.value.getUrl().includes('/drive/folders/') || this.throwAlert();
+    }
+    if (TYPE.TO_STRINGS.includes(this.type)) return this.value.toString() === this.type || this.throwAlert();
+    try {  // NOTE: プリミティブ型の判定
       return typeof this.value === this.type || this.value.getMimeType() === this.type;
     } catch (e) { this.throwAlert(); }
   }
