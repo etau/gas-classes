@@ -217,14 +217,14 @@ class Datetime {
   /**
    * 土日祝かどうかを判定するメソッド
    * @param {Date} date - 判定する日
-   * @param {CalendarApp.Calendar} holidaysCalendar - カレンダー オブジェクト
+   * @param {string} holidaysCalendarId - カレンダー Id
    * @return {boolean} 土日祝のかどうか
    */
-  isHoliday(date = this.date, holidaysCalendar = CalendarApp.getCalendarById('ja.japanese#holiday@group.v.calendar.google.com')) {
+  isHoliday(date = this.date, holidaysCalendarId = 'ja.japanese#holiday@group.v.calendar.google.com') {
     if (date.getDay() % 6 === 0) return true;
     if (this.holidays !== undefined) return this.holidays.map(holiday => Datetime.format(holiday, 'yyyy/MM/dd')).includes(Datetime.format(date, 'yyyy/MM/dd'));
     if (this.repeatedHolidays !== undefined) return this.repeatedHolidays.includes(Datetime.format(date, 'MM/dd'));
-    if (this.holidaysCalendar_ === undefined) this.holidaysCalendar_ = holidaysCalendar;
+    if (this.holidaysCalendar_ === undefined) this.holidaysCalendar_ = CalendarApp.getCalendarById(holidaysCalendarId);
     return this.holidaysCalendar_.getEventsForDay(date).length !== 0;
   }
 
