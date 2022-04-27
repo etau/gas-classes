@@ -215,11 +215,14 @@ class Sheet {
    * フィルター対象の列に合致した dicts を取得するメソッド
    * @param {string} headerName - フィルター対象の列のヘッダー名
    * @param {string|number|boolean|Date} value - フィルター対象の値
+   * @param {boolean} isSameValue - 値が同一のものをフィルタするかどうか。false の場合は同一でないものをフィルタする
    * @return {Array.<Map>} フィルターされた dicts
    */
-  filterDicts(headerName, value) {
+  filterDicts(headerName, value, isSameValue = true) {
     const dicts = this.getAsDicts();
-    const filteredDicts = dicts.filter(dict => dict.get(headerName) === value);
+    const filteredDicts = isSameValue ?
+      dicts.filter(dict => dict.get(headerName) === value) :
+      dicts.filter(dict => dict.get(headerName) !== value);
     return filteredDicts;
   }
 
