@@ -26,7 +26,16 @@ class Universal {
     console.log([...dict]);
   }
 
-
+  /**
+   * 特定列情報だけを抜き出すメソッド
+   * @param {number} number - 列番号
+   * @return {string} A1 表記の列番号
+   */
+  static getColumnA1NotationByNumber(number) {
+    const rangeA1Notation = SpreadsheetApp.getActiveSheet().getRange(1, number).getA1Notation();
+    const columnA1Notation = rangeA1Notation.replace(/\d/, '');
+    return columnA1Notation;
+  }
 
 
 
