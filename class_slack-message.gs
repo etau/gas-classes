@@ -33,6 +33,7 @@ class SlackMessage {
   send(message, isChannelMention = false) {
     const options = {
       method: 'POST',
+      contentType: 'application/json',
       payload: JSON.stringify({
         text: isChannelMention ? '<!channel>\n' + message : message
       })
