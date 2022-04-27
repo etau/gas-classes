@@ -35,21 +35,43 @@ class Datetime {
   }
 
   /**
-   * 指定された日時以前かどうかを判定するメソッド
+   * 日時をformatで指定された形式を比較して、その日時より前かを判定するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
+   * @param {string} format - 比較するフォーマット デフォルト yyyy/MM/dd HH:mm:ss
    * @return {boolean}
    */
-  isBefore(date) {
-    return date.getTime() + (24 * 60 * 60 * 1000) < this.getTime();
+  isBefore(date,format = 'yyyy/MM/dd HH:mm:ss') {
+    return Datetime.format(date, format) < Datetime.format(this.date, format);
   }
 
   /**
-   * 指定された日時以降かどうかを判定するメソッド
+   * 日時をformatで指定された形式を比較して、その日時以前かを判定するメソッド
    * @param {Date} time - 比較対象の Date オブジェクト
+   * @param {string} format - 比較するフォーマット デフォルト yyyy/MM/dd HH:mm:ss
    * @return {boolean}
    */
-  isAfter(date) {
-    return date.getTime() > this.getTime();
+  isSameOrBefore(date,format = 'yyyy/MM/dd HH:mm:ss') {
+    return Datetime.format(date, format) <= Datetime.format(this.date, format);
+  }
+
+  /**
+   * 日時をformatで指定された形式を比較して、その日時より後かを判定するメソッド
+   * @param {Date} time - 比較対象の Date オブジェクト
+   * @param {string} format - 比較するフォーマット デフォルト yyyy/MM/dd HH:mm:ss
+   * @return {boolean}
+   */
+  isAfter(date,format = 'yyyy/MM/dd HH:mm:ss') {
+    return Datetime.format(date, format) > Datetime.format(this.date, format);
+  }
+  
+  /**
+   * 日時をformatで指定された形式を比較して、その日時以降かを判定するメソッド
+   * @param {Date} time - 比較対象の Date オブジェクト
+   * @param {string} format - 比較するフォーマット デフォルト yyyy/MM/dd HH:mm:ss
+   * @return {boolean}
+   */
+  isSameOrAfter(date,format = 'yyyy/MM/dd HH:mm:ss') {
+    return Datetime.format(date, format) >= Datetime.format(this.date, format);
   }
 
   /**           
