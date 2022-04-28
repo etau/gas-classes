@@ -1,5 +1,6 @@
 'use strict'
 
+ // TODO: Universal クラスとの統合を予定
 class Values {
 
   /**

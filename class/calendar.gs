@@ -1,8 +1,5 @@
 'use strict'
 
-/**
- * カレンダーに関するクラス
- */
 class Calendar {
 
   /**

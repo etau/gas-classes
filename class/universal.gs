@@ -1,6 +1,5 @@
-/**
- * Universal クラス
- */
+'use strict'
+
 class Universal {
 
   /**
