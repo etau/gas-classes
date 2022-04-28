@@ -1,6 +1,6 @@
 'use strict'
 
-class Json {  // プロパティを探し当てるやつを作る
+class Json {  // TODO: プロパティを探し当てるやつを作る
 
   constructor(json) {
     /** @type {string} */

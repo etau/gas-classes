@@ -5,7 +5,7 @@ class Form {
   /**
    * フォームに関するコンストラクタ
    * @constructor
-   * @param {FormApp.Form}
+   * @param {FormApp.Form} フォーム オブジェクト
    */
   constructor(form) {
     this.form = form;

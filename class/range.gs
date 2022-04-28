@@ -34,7 +34,7 @@ class Range {
 
   /**
    * 文字色をつけるメソッド
-   * @param {string} color - 文字色。デフォルト引数は「red]
+   * @param {string} color - 文字色
    */
   setFontColor(color = 'red') {
     this.setFontColor(color);
@@ -42,7 +42,7 @@ class Range {
 
   /**
    * 背景色をつけるメソッド
-   * @param {string} color - 背景色。デフォルト引数は「red]
+   * @param {string} color - 背景色
    */
   setBackgroundColor(color = 'red') {
     this.setBackground(color);

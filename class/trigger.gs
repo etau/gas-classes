@@ -14,7 +14,7 @@ class Trigger {
 
   /**
    * retryMins 後にトリガーを設定するメソッド
-   * @param {number} retryMins - 分。デフォルト値は「1」。
+   * @param {number} retryMins - 分
    * @return {Trigger} Trigger オブジェクト
    * NOTE: try...chatch 文とセットで利用する
    */

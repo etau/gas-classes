@@ -6,8 +6,8 @@ class Csv {
    * csv に関するコンストラクタ
    * @constructor
    * @param {Array.<Array.<string|number|boolean|Date>>} values - csv に変換する値
-   * @param {string} os - 文字コードを判定するための OS を指定。デフォルト引数は「unix」
-   * @param {boolean} hasNewLine - csv ファイルのセルに改行があるかどうか。デフォルト引数は「false」
+   * @param {string} os - 文字コードを判定するための OS を指定
+   * @param {boolean} hasNewLine - csv ファイルのセルに改行があるかどうか
    */
   constructor(values, os = 'unix', hasNewLine = false) {
     /** @type {Array.<Array.<string|number|boolean|Date>>} */
@@ -65,7 +65,7 @@ class Csv {
   /**
    * csv ファイルを 2 次元配列化して返すメソッド
    * @param {DriveApp.file} file - 対象となるファイルオブジェクト
-   * @param {string} characterCode - 文字コード。デフォルト引数は「'UTF-8'」
+   * @param {string} characterCode - 文字コード
    * @return {Array.<Array<string|number>>} csv ファイルから取得した 2 次元配列
    */
   static read(file, characterCode = 'UTF-8') {

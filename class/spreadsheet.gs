@@ -5,7 +5,7 @@ class Spreadsheet {
   /**
    * スプレッドシートに関するコンストラクタ
    * @constructor
-   * @param {SpreadsheetApp.spreadsheet} spreadsheet - 対象となるスプレッドシート。デフォルト引数は「SpreadsheetApp.getActiveSpreadsheet()」
+   * @param {SpreadsheetApp.spreadsheet} spreadsheet - 対象となるスプレッドシート
    */
   constructor(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
     /** @type {SpreadsheetApp.spreadsheet} */
@@ -21,8 +21,8 @@ class Spreadsheet {
 
   /**
    * スプレッドシートのコピーを作成するメソッド
-   * @param {string} name - ファイル名。デフォルト引数は、Copy of + コピー元のスプレッドシート名
-   * @param {DriveApp.folder} folder - コピーするスプレッドシートを作成するフォルダー。デフォルト引数はコピー元のスプレッドシートの親フォルダ
+   * @param {string} name - ファイル名
+   * @param {DriveApp.folder} folder - コピーするスプレッドシートを作成するフォルダー
    * @return {Object} 本クラスで生成された Spreadsheet オブジェクト
    */
   copy(name = 'Copy of ' + this.spreadsheet.getName(), folder = this.getParentFolder()) {

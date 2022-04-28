@@ -28,7 +28,7 @@ class SlackMessage {
   /**
    * slack にメッセージを送信する
    * @param {string} message - slack に投稿するメッセージ
-   * @param {boolean} isChannelMention - チャンネルメンションをつけるかどうか。デフォルト引数は「false」
+   * @param {boolean} isChannelMention - チャンネルメンションをつけるかどうか
    */
   send(message, isChannelMention = false) {
     const options = {

@@ -262,8 +262,8 @@ class SlackApi {
 
   /**
    * fetch メソッド用のパラメーターを生成するメソッド
-   * @param {string} method - GET or POST メソッド。デフォルト引数は「POST」
-   * @param {string} token - 利用するトークン。デフォルト引数は this.token
+   * @param {string} method - GET or POST メソッド
+   * @param {string} token - 利用するトークン
    * @return {Object} fetch メソッド用のパラメーター
    */
   getParams(method = 'POST', token = this.token, payload = {}) {
