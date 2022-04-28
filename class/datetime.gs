@@ -35,43 +35,29 @@ class Datetime {
   }
 
   /**
-   * 日時をformatで指定された形式を比較して、その日時より前かを判定するメソッド
+   * 日時を format で指定された形式を比較して、その日時より前 (以前) かどうかを判定するメソッド
    * @param {Date} date - 比較対象の Date オブジェクト
+   * @param {boolean} isOn - 対象の日時もふくむかどうか
    * @param {string} format - 比較するフォーマット
-   * @return {boolean}
+   * @return {boolean} 日時を format で指定された形式を比較して、その日時より前 (以前) かどうか
    */
-  isBefore(date, format = 'yyyy/MM/dd HH:mm:ss') {
-    return Datetime.format(date, format) < Datetime.format(this.date, format);
+  isBefore(date, isOn = false, format = 'yyyy/MM/dd HH:mm:ss') {
+    const strDate = Datetime.format(this.date, format);
+    const strTargetDate = Datetime.format(date, format)
+    return isOn ? strTargetDate <= strDate : strTargetDate < strDate;
   }
 
   /**
-   * 日時を format で指定された形式を比較して、その日時以前かを判定するメソッド
+   * 日時を format で指定された形式を比較して、その日時より後 (以降) かどうかを判定するメソッド
    * @param {Date} date - 比較対象の Date オブジェクト
+   * @param {boolean} isOn - 対象の日時もふくむかどうか
    * @param {string} format - 比較するフォーマット
-   * @return {boolean}
+   * @return {boolean} 日時を format で指定された形式を比較して、その日時より後 (以降) かどうか
    */
-  isOnOrBefore(date, format = 'yyyy/MM/dd HH:mm:ss') {
-    return Datetime.format(date, format) <= Datetime.format(this.date, format);
-  }
-
-  /**
-   * 日時をformatで指定された形式を比較して、その日時より後かを判定するメソッド
-   * @param {Date} date - 比較対象の Date オブジェクト
-   * @param {string} format - 比較するフォーマット
-   * @return {boolean}
-   */
-  isAfter(date, format = 'yyyy/MM/dd HH:mm:ss') {
-    return Datetime.format(date, format) > Datetime.format(this.date, format);
-  }
-
-  /**
-   * 日時をformatで指定された形式を比較して、その日時以降かを判定するメソッド
-   * @param {Date} date - 比較対象の Date オブジェクト
-   * @param {string} format - 比較するフォーマット
-   * @return {boolean}
-   */
-  isOnOrAfter(date, format = 'yyyy/MM/dd HH:mm:ss') {
-    return Datetime.format(date, format) >= Datetime.format(this.date, format);
+  isAfter(date, isOn = false, format = 'yyyy/MM/dd HH:mm:ss') {
+    const strDate = Datetime.format(this.date, format);
+    const strTargetDate = Datetime.format(date, format)
+    return isOn ? strTargetDate >= strDate : strTargetDate > strDate;
   }
 
   /**           
