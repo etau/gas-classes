@@ -33,8 +33,21 @@ class Properties {
    */
   get(key) {
     const strValue = this.scriptProperties.getProperty(key);
-    const value = JSON.parse(strValue) instanceof Object ? JSON.parse(strValue) : strValue;
+    const value = this.parse(strValue);
     return value;
+  }
+
+  /**
+   * JSON 形式のものは、オブジェクトにして返すメソッド
+   * @param {string} 値
+   * @return {string|Array|Object} パースされた値
+   */
+  parse(value) {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
   }
 
   /**
