@@ -28,10 +28,12 @@ class Sheet {
   getLastColumn() { return this.sheet.getLastColumn(); }
   getFormUrl() { return this.sheet.getFormUrl(); }
   getName() { return this.sheet.getName(); }
+  copyTo() { return new Sheet(this.sheet.copyTo(SS), this.headerRows, this.headerIndex); }
 
   /**
    * Sheet オブジェクトを新しく取得し直すメソッド
    * @return {Sheet} 更新された Sheet オブジェクト
+   * TODO: flush メソッドだけでも同じ効果を得られているか確認
    */
   flush() {
     SpreadsheetApp.flush();
@@ -264,15 +266,6 @@ class Sheet {
   }
 
   /**
-   * Sheet オブジェクトをシートをコピーするメソッド
-   * @return {Sheet} Sheet オブジェクト
-   */
-  copyTo(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
-    const copiedSheet = this.sheet.copyTo(spreadsheet);
-    return new Sheet(copiedSheet);
-  }
-
-  /**
    * シートの文字列を一括置換するメソッド
    * @param {string} string - 置換対象の文字列
    * @param {string} replaced - 置換後の文字列
@@ -293,6 +286,15 @@ class Sheet {
     const url = this.getAssociatedFormUrl();
     const form = FormApp.openByUrl(url);
     return form;
+  }
+
+  /**
+   * アクティブなシートを移動させるメソッド
+   * @param {number} pos -  
+   */
+  moveActiveSheet(pos = 1) {
+    this.activate();
+    return SS.moveActiveSheet(pos);
   }
 
   /**

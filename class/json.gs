@@ -31,4 +31,5 @@ class Json {  // TODO: プロパティを探し当てるやつを作る
   //   const json = blob.getDataAsString();
   // }
 
+
 }
