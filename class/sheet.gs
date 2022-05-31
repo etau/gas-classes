@@ -5,7 +5,7 @@ class Sheet {
   /**
    * シートに関するコンストラクタ
    * @constructor
-   * @param {SpreadsheetApp.sheet} sheet - 対象となるシート
+   * @param {SpreadsheetApp.sheet} sheet - 対象となるシート オブジェクト
    * @param {number} headerRows - ヘッダーの行数
    * @param {number} headerIndex - ヘッダー行のインデックス (ユニークなカラム)
    */
@@ -28,7 +28,7 @@ class Sheet {
   getLastColumn() { return this.sheet.getLastColumn(); }
   getFormUrl() { return this.sheet.getFormUrl(); }
   getName() { return this.sheet.getName(); }
-  copyTo() { return new Sheet(this.sheet.copyTo(SS), this.headerRows, this.headerIndex); }
+  copy() { return new Sheet(this.sheet.copyTo(SS), this.headerRows, this.headerIndex); }
 
   /**
    * Sheet オブジェクトを新しく取得し直すメソッド
@@ -193,8 +193,8 @@ class Sheet {
     const values = this.getDataValues();
     const dicts = values.map((record, i) => record.
       reduce((acc, cur, j) => acc.set(headers[j], cur), new Map([
-        ['row', i + this.headerRows + 1],
-        ['record', record]
+        // ['row', i + this.headerRows + 1],  // 必要に応じて追加
+        // ['record', record]  // 必要に応じて追加
       ]))
     );
     this.dicts_ = dicts;
@@ -292,7 +292,7 @@ class Sheet {
    * アクティブなシートを移動させるメソッド
    * @param {number} pos -  
    */
-  moveActiveSheet(pos = 1) {
+  move(pos = 1) {
     this.activate();
     return SS.moveActiveSheet(pos);
   }
