@@ -65,7 +65,7 @@ class Folder {
    * @return {DriveApp.folder}
    */
   static getByUrl(url) {
-    const folderId = url.match(/(?<=drive\/folders\/).*?(?=\/|$)/);
+    const folderId = url.match(/(?<=folders\/).*?(?=\/|$)/);
     const folder = DriveApp.getFolderById(folderId);
     return folder;
   }
