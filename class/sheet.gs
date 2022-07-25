@@ -28,6 +28,7 @@ class Sheet {
   getLastColumn() { return this.sheet.getLastColumn(); }
   getFormUrl() { return this.sheet.getFormUrl(); }
   getName() { return this.sheet.getName(); }
+  getParent() { return this.sheet.getParent(); }
   copy() { return new Sheet(this.sheet.copyTo(SS), this.headerRows, this.headerIndex); }
 
   /**
@@ -129,7 +130,7 @@ class Sheet {
   clearDataValues() {
     const values = this.getDataValues();
     if (values.length === 0) return;
-    this.getRange(this.headerRows + 1, 1, values.length, values[0].length).  // 範囲が広いかも？
+    this.getRange(this.headerRows + 1, 1, values.length, values[0].length).
       clearContent();
     return this;
   }
@@ -139,7 +140,7 @@ class Sheet {
    * @param {string} headerName - ヘッダー名
    * @return {Sheet} Sheet オブジェクト
    */
-  clearColumn(headerName) {
+  clearField(headerName) {
     const column = this.getColumnByHeaderName(headerName);
     this.getRange(1 + this.headerRows, column, this.getLastRow() - this.headerRows).
       clearContent();
@@ -169,23 +170,45 @@ class Sheet {
   }
 
   /**
+   * 列に値が存在するかどうか返すメソッド
+   * @param {string} headerName - 検索対象のヘッダー名
+   * @param {number|string|boolean|Date} value - 検索対象の値
+   * @return {boolean} 列に値が存在するかどうか
+   */
+  hasValueInField(headerName, value) {
+    const fieldValues = this.getFieldValues(headerName);
+    return fieldValues.includes(value);
+  }
+
+  /**
+   * ヘッダー名から列の値を取得するメソッド
+   * @param {string} headerName - ヘッダー名
+   * @param {boolean} isAddHeader - ヘッダー名を配列に含むかどうか
+   * @return {Array.<number|string|boolean|Date>} ヘッダー名に対する列の値
+   */
+  getFieldValues(headerName, isAddHeader = false) {
+    const fieldValues = this.select([headerName], isAddHeader).flat();
+    return fieldValues;
+  }
+
+  /**
    * ヘッダー情報の配列から必要な列だけの値を取得するメソッド
-   * @param {Array.<string>} keys - 辞書のキーとなるヘッダー情報
+   * @param {Array.<string>} headerNames - 辞書のキーとなるヘッダー情報
    * @param {boolean} isAddHeaders - ヘッダー情報を配列に含むかどうか
    * @return {Array.<Array.<number|string|boolean|Date>>} ヘッダー情報に対応する列の値
    */
-  select(keys, isAddHeaders = false) {
+  select(headerNames, isAddHeaders = false) {
     const dicts = this.getAsDicts();
-    const records = dicts.map(dict => keys.
+    const records = dicts.map(dict => headerNames.
       map(key => dict.get(key))
     );
-    const values = isAddHeaders ? [keys, ...records] : records;
+    const values = isAddHeaders ? [headerNames, ...records] : records;
     return values;
   }
 
   /**
    * シートの値から、ヘッダー情報をプロパティとして持つ Map 型を生成するメソッド
-   * @return {Array.<Map>} ヘッダー情報を key, 値を value として持つ Map
+   * @return {Array.<Map>} ヘッダー情報を key, 値を value として持つ Map オブジェクト
    */
   getAsDicts() {
     if (this.dicts_ !== undefined) return this.dicts_;
@@ -295,6 +318,33 @@ class Sheet {
   move(pos = 1) {
     this.activate();
     return SS.moveActiveSheet(pos);
+  }
+
+  /**
+   * Sheet オブジェクトから xlsx 形式の Excel ファイルを作成するメソッド
+   * @param {string} folerdId - 出力先の Google ドライブ フォルダ ID
+   */
+  exportToExcel(xlsxName = EXCEL_INFO.NAME, folerdId = EXCEL_INFO.DRIVE.URL) {
+    this.flush();
+    const url = 'https://docs.google.com/feeds/download/spreadsheets/Export?key=' + this.getParentId() + '&amp;exportFormat=xlsx';
+    const params = {
+      headers: {
+        Authorization: 'Bearer ' + ScriptApp.getOAuthToken()
+      },
+      muteHttpExceptions: true
+    };
+    const blob = UrlFetchApp.fetch(url, params).getBlob().setName(xlsxName);
+    DriveApp.getFolderById(folerdId).createFile(blob);
+  }
+
+  /**
+   * シートの親スプレッドシートの ID を取得するメソッド
+   * @return {string} スプレッドシートの ID
+   */
+  getParentId() {
+    const parent = this.getParent();
+    const parentId = parent.getId();
+    return parentId;
   }
 
   /**
