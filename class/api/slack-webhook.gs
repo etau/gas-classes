@@ -3,7 +3,7 @@
 /** TODO: SlackApi クラスに変更して、SlackWebhookApi は継承する形に変更
  * slack メッセージ送信に関するクラス
  */
-class SlackMessage {
+class SlackWebhook {
 
   /**
    * slack のメッセージ送信に関するコンストラクタ

@@ -207,26 +207,49 @@ class SlackApi {
     return url;
   }
 
-  // /** XXX: 要修正
-  //  * slack のから ユーザーの詳細な情報を持つオブジェクトを取得するメソッド
-  //  * @return {Array.<Objyect>} slack ユーザーの情報
-  //  */
-  // getAllMembers(nextCorsor = '') {
-  //   const payload = JSON.stringify(
-  //     {
-  //       token: this.botToken,
-  //       limit: 1000,
-  //       cursor: nextCorsor
-  //     }
-  //   );
-  //   const params = this.getParamAddPayload('GET', this.botToken, payload);
-  //   const url = 'https://slack.com/api/users.list';
-  //   const response = this.getAsObject(url, params);
-  //   this.members_ = this.members_ === undefined ? response.members : this.members_.concat(response.members);
-  //   this.nextCorsor = response.response_metadata.next_cursor;
-  //   if (this.nextCorsor !== '') return this.getAllMembers(this.nextCorsor);
-  //   return this.members_;
-  // }
+  /** XXX: 要修正
+   * ユーザー情報を取得するメソッド
+   * @return {Array.<Objyect>} slack ユーザーの情報
+   */
+  getAllUsersList(menbers = [], nextCorsor = '') {
+    const payload = JSON.stringify(
+      {
+        token: this.botToken,
+        // limit: 1000,
+        // cursor: nextCorsor
+      }
+    );
+    const params = this.getParams('GET', this.botToken, payload);
+    console.log(params);
+    // const limit = 5;
+    // const url = 'https://slack.com/api/users.list?' +
+    //   'limit=' + limit + '&';//+
+    // // (nextCorsor !== '' ? 'cursor=' + nextCorsor : '');
+    const url = 'https://slack.com/api/users.list?limit=5&pretty=1';
+    const response = this.getAsObject(url, params);
+    console.log(response);
+    // menbers = menbers.concat(response.members);
+    // const allMembers = Object.keys(response.response_metadata).includes('next_cursor') ?
+    //   this.getAllUsersList(menbers, response.response_metadata.next_cursor) :
+    //   menbers;
+    // return allMembers;
+
+
+    // this.members_ = this.members_ === undefined ? response.members : this.members_.concat(response.members);
+    // this.nextCorsor = response.response_metadata.next_cursor;
+    // if (this.nextCorsor !== '') return this.getAllMembers(this.nextCorsor);
+    // return this.members_;
+  }
+
+
+  //  getAllCoursesList(pageToken = '', preCoursesList = { courses: [] }) {
+  //     const coursesList = this.getCoursesList(pageToken);
+  //     preCoursesList.courses = preCoursesList.courses.concat(coursesList.courses);  // HACK: preCoursesList に追加することによって、nextPageToken プロパティのないコース リストに追加
+  //     const allCoursesList = Object.keys(coursesList).includes('nextPageToken') ?
+  //       this.getAllCoursesList(coursesList.nextPageToken, preCoursesList) :
+  //       preCoursesList;
+  //     return allCoursesList;
+  //   }
 
   /**
    * channelId を受け取って slack 名	と slack 表示名を二次元配列で返す関数
