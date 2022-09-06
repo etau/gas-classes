@@ -17,6 +17,27 @@ class Universal {
   }
 
   /**
+   * 配列をランダムにシャッフルする静的メソッド
+   * @param {Array.<>} array - もとの配列
+   * @return {Array.<>} ランダムにシャッフルされた配列
+   */
+  static shuffle(array) {
+    const copiedArray = [...array];
+    for (let i = copiedArray.length - 1; i >= 0; i--) {
+      const r = Math.floor(Math.random() * (i + 1));
+      [copiedArray[i], copiedArray[r]] = [copiedArray[r], copiedArray[i]];
+    }
+    return copiedArray;
+  }
+
+  /**
+   * 
+   */
+  static getRandomId(prefix, digits, suffix) {
+
+  }
+
+  /** TODO: Range クラスで来たら移植
    * 列番号から A1 表記を取得するメソッド
    * @param {number} number - 列番号
    * @return {string} A1 表記の列番号

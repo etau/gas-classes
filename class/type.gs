@@ -23,7 +23,6 @@ const TYPE = Object.freeze(
       'Calendar'
     ]),
     FOLDER: 'folder',
-
     FILE: Object.freeze({  // ファイル オブジェクトの各種 Mine Type
       SPREADSHEET: 'application/vnd.google-apps.spreadsheet',
       PRESENTATION: 'application/vnd.google-apps.presentation',
@@ -45,28 +44,28 @@ class Type {
    */
   static valid(value, type) {
     switch (type) {
-      case TYPE.INTEGER: return Number.isInteger(value) ? value : Type.throwAlert(type);
-      case TYPE.DATE: return value instanceof Date ? value : Type.throwAlert(type);
-      case TYPE.ARRAY: return value instanceof Array ? value : Type.throwAlert(type);
-      case TYPE.OBJECT: return (value instanceof Object && !(value instanceof Array)) && !(value instanceof Map) && !(value instanceof Set) ? value : Type.throwAlert(type);
-      case TYPE.REGEXP: return value instanceof RegExp ? value : Type.throwAlert(type);
-      case TYPE.MAP: return value instanceof Map ? value : Type.throwAlert(type);
-      case TYPE.SET: return value instanceof Set ? value : Type.throwAlert(type);
-      case TYPE.JSON: return (typeof value === 'string' && JSON.parse(value) instanceof Object) ? value : Type.throwAlert(type);
-      case TYPE.FOLDER: return value.getUrl().includes('/drive/folders/') ? value : Type.throwAlert(type);
+      case TYPE.INTEGER: return Number.isInteger(value) ? value : this.throwAlert_(type);
+      case TYPE.DATE: return value instanceof Date ? value : this.throwAlert_(type);
+      case TYPE.ARRAY: return value instanceof Array ? value : this.throwAlert_(type);
+      case TYPE.OBJECT: return (value instanceof Object && !(value instanceof Array)) && !(value instanceof Map) && !(value instanceof Set) ? value : this.throwAlert_(type);
+      case TYPE.REGEXP: return value instanceof RegExp ? value : this.throwAlert_(type);
+      case TYPE.MAP: return value instanceof Map ? value : this.throwAlert_(type);
+      case TYPE.SET: return value instanceof Set ? value : this.throwAlert_(type);
+      case TYPE.JSON: return (typeof value === 'string' && JSON.parse(value) instanceof Object) ? value : this.throwAlert_(type);
+      case TYPE.FOLDER: return value.getUrl().includes('/drive/folders/') ? value : this.throwAlert_(type);
     }
-    if (TYPE.TO_STRINGS.includes(type)) return value.toString() === type ? value : Type.throwAlert(type);
+    if (TYPE.TO_STRINGS.includes(type)) return value.toString() === type ? value : this.throwAlert_(type);
     try {
       if (typeof value === type || value.getMimeType() === type) return value;
-    } catch (e) { Type.throwAlert(type); }
+    } catch (e) { this.throwAlert_(type); }
   }
 
   /**
    * 型エラーを投げる静的メソッド
    * @throws 型のエラー
    */
-  static throwAlert(type) {
-    throw new Error('This type is not a "' + type + '".');
+  throwAlert_(type) {
+    throw new TypeError('This type is not a "' + type + '".');
   }
 
 }
@@ -74,13 +73,15 @@ class Type {
 
 'use strict'
 
-function myFunction_20220509_083011() {
+function myFunction_testType() {
 
-  const string = 'hoge';
-  console.log(Type.valid(string, TYPE.STRING));
+  const string1 = Type.valid('hogehoge', TYPE.STRING);
+  console.log(string1);  // hogehoge
 
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  console.log(Type.valid(ss, TYPE.SPREADSHEET));
+  const string2 = Type.valid(2, TYPE.STRING);
+  console.log(string2);  // TypeError: This type is not a "string".
+
+  console.log(Type.valid(SpreadsheetApp.getActiveSpreadsheet(), TYPE.SPREADSHEET));
 
 }
 

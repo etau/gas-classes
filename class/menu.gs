@@ -19,7 +19,7 @@ class Menu {
   /**
    * メニューを作成するメソッド
    * @param {string} title - メニュー名
-   * @param {Array.<Object.<string>>} items - メニューの情報
+   * @param {Array.<Object.<string>>} items - メニューに追加するアイテム
    * @return {Menu} メニュー オブジェクト
    */
   create(title = MENU_INFO.TITLE, items = this.getItems()) {

@@ -14,14 +14,13 @@ class Datetime {
 
   /**
    * Date オブジェクトから委譲されたメソッド
-   * NOTE: getMonth, setMonth の戻り値、仮引数は 0 - 11 を 1 - 12 に変更  
    */
   getFullYear() { return this.date.getFullYear(); }
-  getMonth() { return this.date.getMonth() + 1; }
+  getMonth() { return this.date.getMonth(); }
   getDate() { return this.date.getDate(); }
   getTime() { return this.date.getTime(); }
   setFullYear(arg) { return this.date.setFullYear(arg); }
-  setMonth(arg) { return this.date.setMonth(arg - 1); }
+  setMonth(arg) { return this.date.setMonth(arg); }
   setDate(arg) { return this.date.setDate(arg); }
 
   /**
@@ -116,7 +115,8 @@ class Datetime {
   getDtDaysAgo(x) {
     const d = new Date(this.date);
     d.setDate(d.getDate() - x);
-    return new Datetime(d);
+    const dt = new Datetime(d);
+    return dt;
   }
 
   /**
@@ -132,13 +132,25 @@ class Datetime {
   }
 
   /**
-   * コンストラクタの date オブジェクトから diffDays 分、1 日ずつの Date オブジェクトを配列化する関数
-   * @param {number} diffDays - コンストラクタの date オブジェクトからの日数差
-   * @return {Array.<Date>} コンストラクタの date オブジェクトから diffDays 分、1 日ずつの Date オブジェクト
+   * 今月の日付を配列として取得するメソッド
+   * @return {Array.<Date>} 今月の日付
    */
-  getDates(diffDays) {
+  getThisMonthDates() {
+    const firstDate = new Date(this.getFullYear(), this.getMonth(), 1);
+    const dates = this.getDates(31, firstDate);
+    const thisMonthDates = dates.filter(date => date.getMonth() === this.getMonth());
+    return thisMonthDates;
+  }
+
+  /**
+   * Date オブジェクトから diffDays 分、1 日ずつの Date オブジェクトを配列化するメソッド
+   * @param {Date} date - 起点となる日付
+   * @param {number} diffDays - Date オブジェクトからの日数差
+   * @return {Array.<Date>} Date オブジェクトから diffDays 分、1 日ずつの Date オブジェクト
+   */
+  getDates(diffDays, date = this.date,) {
     const nums = new Array(Math.abs(diffDays) + 1).fill().map((_, i) => i);
-    const dates = nums.map(num => new Date(this.getFullYear(), this.getMonth(), this.getDate() + num));
+    const dates = nums.map(num => new Date(date.getFullYear(), date.getMonth(), date.getDate() + num));
     return dates;
   }
 

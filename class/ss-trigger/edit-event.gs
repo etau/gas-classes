@@ -26,15 +26,6 @@ class TriggerEditEvent {
   }
 
   /**
-   * イベントが実行された範囲を取得するメソッド
-   * @return {SpreadsheetApp.Range} Range オブジェクト
-   */
-  getSourceRange() {
-    const sourceRange = this.source.getActiveRange();
-    return sourceRange;
-  }
-
-  /**
    * 編集前後の値が同じかどうかを判定するメソッド
    * @return {boolean|undefined} 編集前後の値が同じかどうか
    * NOTE: 同じ値をコピー・アンド・ペーストした場合でも編集と判定されるため
@@ -45,13 +36,21 @@ class TriggerEditEvent {
   }
 
   /**
-   * 単一セルの操作かどうか判定するメソッド
-   * @return {boolean}
+   * 単一セルの編集かどうか判定するメソッド
+   * @return {boolean} 単一セルへの編集かどうか
    */
   isSingleCell() {
     const numRows = this.range.getNumRows();
     const numColumns = this.range.getNumColumns();
     return numRows * numColumns === 1;
+  }
+
+  /**
+   * 編集範囲の値をクリアする関数
+   */
+  clearContent() {
+    const range = this.range;
+    range.clearContent();
   }
 
 }

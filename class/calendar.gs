@@ -9,7 +9,7 @@ class Calendar {
    */
   constructor(calendar = CalendarApp.getDefaultCalendar()) {
     /** @type {CalendarApp.Calendar} */
-    this.calendar = calendar;
+    this.calendar = Type.valid(calendar, TYPE.CALENDAR);
     /** @type {HolidayCalendar} */
     this.holiday = new HolidayCalendar();
   }

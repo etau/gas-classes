@@ -34,12 +34,18 @@ class Sheet {
   /**
    * Sheet オブジェクトを新しく取得し直すメソッド
    * @return {Sheet} 更新された Sheet オブジェクト
-   * TODO: flush メソッドだけでも同じ効果を得られているか確認
    */
   flush() {
     SpreadsheetApp.flush();
-    const sheet = new Sheet(this.sheet, this.headerRows, this.headerIndex);
-    return sheet;
+    /** 元のオブジェクトのプロパティをリセットする場合 */
+    // this.dataRangeValues_ = undefined;
+    // this.headers_ = undefined
+    // this.headerValues_ = undefined;
+    // this.dataValues_ = undefined;
+    // this.dicts_ = undefined;
+    /** オブジェクトを新しく作る場合 */
+    // const sheet = new Sheet(this.sheet, this.headerRows, this.headerIndex);
+    // return sheet;
   }
 
   /**
@@ -54,7 +60,7 @@ class Sheet {
   }
 
   /**
-   * ヘッダー一覧を取得するメソッド
+   * ヘッダーを取得するメソッド
    * @return {Array.<string>} ヘッダー一覧
    */
   getHeaders() {
@@ -108,7 +114,7 @@ class Sheet {
   getColumnIndexByHeaderName(headerName) {
     const headers = this.getHeaders(this.headerIndex);
     const columnIndex = headers.indexOf(headerName);
-    if (columnIndex === -1) throw new Error('The value "' + headerName + '" does not exist in the header row of sheet' + this.getName() + '.');
+    if (columnIndex === -1) throw new Error('The value "' + headerName + '" does not exist in the header row of sheet "' + this.getName() + '".');
     return columnIndex;
   }
 

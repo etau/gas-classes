@@ -114,7 +114,7 @@ function setInitialTriggers() {
 
 // NOTE: 以下のような Enum を設定しておくとよい
 /** @enum {string} */
-const TRIGGER_TYPE = Object.freeze({
+const TRIGGER_TYPE = {
   ON_CHANGE: [
     { NAME: 'hoge' }
   ],
@@ -131,4 +131,4 @@ const TRIGGER_TYPE = Object.freeze({
         }
       ]
   }
-});
+};

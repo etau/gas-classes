@@ -17,7 +17,6 @@ class Spreadsheet {
    * NOTE: https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app
    */
   getId() { return this.spreadsheet.getId(); }
-  getById() { return this.spreadsheet.openById(); }
 
   /**
    * スプレッドシートのコピーを作成するメソッド
@@ -27,9 +26,7 @@ class Spreadsheet {
    */
   copy(name = 'Copy of ' + this.spreadsheet.getName(), folder = this.getParentFolder()) {
     const file = DriveApp.getFileById(this.getId());
-    const newFile = file.makeCopy(name, folder);
-    const spreadsheet = this.getById(newFile.getId());
-    return new Spreadsheet(spreadsheet);
+    file.makeCopy(name, folder);
   }
 
   /**
