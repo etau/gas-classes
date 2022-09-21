@@ -312,7 +312,7 @@ class Sheet {
    * @return {FormApp.Form} シートに回答するフォーム オブジェクト
    */
   getAssociatedForm() {
-    const url = this.getAssociatedFormUrl();
+    const url = this.sheet.getFormUrl();
     const form = FormApp.openByUrl(url);
     return form;
   }
