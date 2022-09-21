@@ -29,6 +29,7 @@ class Sheet {
   getFormUrl() { return this.sheet.getFormUrl(); }
   getName() { return this.sheet.getName(); }
   getParent() { return this.sheet.getParent(); }
+  getFormUrl() { return this.sheet.getFormUrl(); };
   copy() { return new Sheet(this.sheet.copyTo(SS), this.headerRows, this.headerIndex); }
 
   /**
@@ -312,7 +313,7 @@ class Sheet {
    * @return {FormApp.Form} シートに回答するフォーム オブジェクト
    */
   getAssociatedForm() {
-    const url = this.sheet.getFormUrl();
+    const url = this.getFormUrl();
     const form = FormApp.openByUrl(url);
     return form;
   }
