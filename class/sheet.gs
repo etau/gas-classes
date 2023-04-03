@@ -124,8 +124,8 @@ class Sheet {
    * @param {Array.<Array.<number|string|boolean|Date>>} values - 貼り付ける値
    */
   setValuesHeaderRowsAfter(values) {
-    this.clearDataValues();
     if (values.length === 0) return;
+    this.clearDataValues();
     this.getRange(this.headerRows + 1, 1, values.length, values[0].length).
       setValues(values);
     return this;
@@ -200,16 +200,16 @@ class Sheet {
 
   /**
    * ヘッダー情報の配列から必要な列だけの値を取得するメソッド
-   * @param {Array.<string>} headerNames - 辞書のキーとなるヘッダー情報
+   * @param {Array.<string>} headers - 辞書のキーとなるヘッダー情報
    * @param {boolean} isAddHeaders - ヘッダー情報を配列に含むかどうか
    * @return {Array.<Array.<number|string|boolean|Date>>} ヘッダー情報に対応する列の値
    */
-  select(headerNames, isAddHeaders = false) {
+  select(headers, isAddHeaders = true) {
     const dicts = this.getAsDicts();
-    const records = dicts.map(dict => headerNames.
+    const records = dicts.map(dict => headers.
       map(key => dict.get(key))
     );
-    const values = isAddHeaders ? [headerNames, ...records] : records;
+    const values = isAddHeaders ? [headers, ...records] : records;
     return values;
   }
 
@@ -320,7 +320,7 @@ class Sheet {
 
   /**
    * アクティブなシートを移動させるメソッド
-   * @param {number} pos -  
+   * @param {number} pos - シートの位置 (一番左から 1, 2, 3,...)
    */
   move(pos = 1) {
     this.activate();

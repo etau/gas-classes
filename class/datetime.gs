@@ -35,27 +35,27 @@ class Datetime {
 
   /**
    * 日時を format で指定された形式を比較して、その日時より前 (以前) かどうかを判定するメソッド
-   * @param {Date} date - 比較対象の Date オブジェクト
+   * @param {Datetime} datetime - 比較対象の Date オブジェクト
    * @param {boolean} isOn - 対象の日時もふくむかどうか
    * @param {string} format - 比較するフォーマット
    * @return {boolean} 日時を format で指定された形式を比較して、その日時より前 (以前) かどうか
    */
-  isBefore(date, isOn = false, format = 'yyyy/MM/dd HH:mm:ss') {
+  isBefore(datetime, isOn = false, format = 'yyyy/MM/dd HH:mm:ss') {
     const strDate = Datetime.format(this.date, format);
-    const strTargetDate = Datetime.format(date, format)
+    const strTargetDate = Datetime.format(datetime.date, format);
     return isOn ? strTargetDate <= strDate : strTargetDate < strDate;
   }
 
   /**
    * 日時を format で指定された形式を比較して、その日時より後 (以降) かどうかを判定するメソッド
-   * @param {Date} date - 比較対象の Date オブジェクト
+   * @param {Datetime} datetime - 比較対象の Date オブジェクト
    * @param {boolean} isOn - 対象の日時もふくむかどうか
    * @param {string} format - 比較するフォーマット
    * @return {boolean} 日時を format で指定された形式を比較して、その日時より後 (以降) かどうか
    */
-  isAfter(date, isOn = false, format = 'yyyy/MM/dd HH:mm:ss') {
+  isAfter(datetime, isOn = false, format = 'yyyy/MM/dd HH:mm:ss') {
     const strDate = Datetime.format(this.date, format);
-    const strTargetDate = Datetime.format(date, format)
+    const strTargetDate = Datetime.format(datetime.date, format);
     return isOn ? strTargetDate >= strDate : strTargetDate > strDate;
   }
 

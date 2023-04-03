@@ -2,6 +2,9 @@
 
 class Json {  // TODO: プロパティを探し当てるやつを作る
 
+  /**
+   * @constructor
+   */
   constructor(json) {
     /** @type {string} */
     this.json = json;
