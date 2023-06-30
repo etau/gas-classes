@@ -238,7 +238,7 @@ class Sheet {
    * @return {Array.<Array.<string|number|boolean|Date>} フィルターされたレコード
    */
   filterRecords(headerName, value) {
-    const filteredDicts = this.filterDicts(headerName, value, this.headerIndex);
+    const filteredDicts = this.filterDicts(headerName, value);
     const records = filteredDicts.map(dict => dict.get('record'));
     return records;
   }
