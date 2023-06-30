@@ -224,7 +224,7 @@ class Sheet {
     const dicts = values.map((record, i) => record.
       reduce((acc, cur, j) => acc.set(headers[j], cur), new Map([
         // ['row', i + this.headerRows + 1],  // 必要に応じて追加
-        // ['record', record]  // 必要に応じて追加
+        // ['record', record]  // 必要に応じて追加 dict.get('record') を使っているメソッド
       ]))
     );
     this.dicts_ = dicts;
