@@ -3,6 +3,7 @@
 class Menu {
 
   /**
+   * 
    * @constructor
    */
   constructor() {

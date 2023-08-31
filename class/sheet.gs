@@ -29,7 +29,7 @@ class Sheet {
   getFormUrl() { return this.sheet.getFormUrl(); }
   getName() { return this.sheet.getName(); }
   getParent() { return this.sheet.getParent(); }
-  getFormUrl() { return this.sheet.getFormUrl(); };
+  getFormUrl() { return this.sheet.getFormUrl(); }
   copy() { return new Sheet(this.sheet.copyTo(SS), this.headerRows, this.headerIndex); }
 
   /**
@@ -94,6 +94,23 @@ class Sheet {
     const dataValues = values.filter((_, i) => i >= this.headerRows);
     this.dataValues_ = dataValues;
     return dataValues;
+  }
+
+  /**
+   * SHEET_INFO の COLUMN プロパティから、カラム名をプロパティ、カラム インデックスを値としてもつオブジェクトを生成するメソッド
+   * @param {Object.<string>} columnEnum - SHEET_INFO の COLUMN プロパティ 例: SHEET_INFO.SHEET_INFO.SHEET1.COLUMN
+   * @return {Object.<number>} カラム名をプロパティ、カラム インデックスを値としてもつオブジェクト
+   */
+  getColumnIndexesObject(columnEnum) {
+    if (this.columnIndexesObject_ !== undefined) return this.columnIndexesObject_;
+    const columns = Object.values(columnEnum);
+    const headers = this.getHeaders();
+    const columnIndexesObject = columns.reduce((pre, cur) => {
+      pre[cur] = headers.indexOf(cur);
+      return pre;
+    }, {});
+    this.columnIndexesObject_ = columnIndexesObject;
+    return columnIndexesObject;
   }
 
   /**
@@ -223,8 +240,8 @@ class Sheet {
     const values = this.getDataValues();
     const dicts = values.map((record, i) => record.
       reduce((acc, cur, j) => acc.set(headers[j], cur), new Map([
-        // ['row', i + this.headerRows + 1],  // 必要に応じて追加
-        // ['record', record]  // 必要に応じて追加 dict.get('record') を使っているメソッド
+        ['row', i + this.headerRows + 1],  // 必要に応じて削除
+        ['record', record]  // dict.get('record') を使っているメソッドがなければ削除
       ]))
     );
     this.dicts_ = dicts;
@@ -365,4 +382,24 @@ class Sheet {
     return sheet;
   }
 
+}
+
+
+
+/**
+ * SHEET_INFO enum の例
+ */
+
+const SHEET_INFO = {
+  SHEET1: {
+    NAME: 'シート1',
+    HEADERS: {
+      ROWS: 1,
+      ROW_INDEX: 0,
+    },
+    COLUMN: {
+      NAME: '名前',
+      AGE: '年齢',
+    },
+  },
 }

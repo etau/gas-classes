@@ -3,6 +3,7 @@
 class Ui {
 
   /**
+   * ユーザーインターフェースに関するコンストラクタ
    * @constructor
    */
   constructor() {
