@@ -17,10 +17,29 @@ class Folder {
    * NOTE: https://developers.google.com/apps-script/reference/drive/folder
    */
   getId() { return this.folder.getId(); }
-  getFiles() { return this.folder.getFiles(); }
   getUrl() { return this.folder.getUrl(); }
   createFolder(...args) { return this.folder.createFolder(...args); }
   setName(...args) { return this.folder.setName(...args); }
+
+  /**
+   * フォルダー内のファイルを配列で取得するメソッド
+   * @return {Array.<File>} フォルダー内のファイルの配列
+   */
+  getFiles() {
+    const fileIterator = this.folder.getFiles();
+    const files = Array.from(this.generator(fileIterator)).map(file => new File(file));
+    return files;
+  }
+
+  /**
+   * フォルダー内のフォルダーを配列で取得するメソッド
+   * @return {Array.<Folder>} フォルダー内のフォルダーの配列
+   */
+  getFolders() {
+    const folderIterator = this.folder.getFolders();
+    const folders = Array.from(this.generator(folderIterator)).map(folder => new Folder(folder));
+    return folders;
+  }
 
   /**
    * 子フォルダーを作成する (同名のフォルダーがある場合は作成しない) メソッド 
@@ -46,29 +65,15 @@ class Folder {
   }
 
   /**
-   * ファイル イテレーターからファイル オブジェクトを配列として取得するメソッド
-   * @param {DriveApp.FileIterator} - ファイル イテレーター
-   * @return {Array.<DriveApp.File>} ファイル オブジェクトを要素として持つ配列
+   * イテレーターからジェネレーターを生成するメソッド
+   * @param {DriveApp.FileIterator | DriveApp.FolderIterator} iterator - ファイル オブジェクト・フォルダ オブジェクトのイテレーター
+   * @return {Generator} ジェネレーター オブジェクト
    */
-  createArrayFiles(files = this.getFiles()) {
-    const filesAsArray = [];
-    while (files.hasNext()) {
-      filesAsArray.push(files.next());
+  * generator(iterator) {
+    while (iterator.hasNext()) {
+      yield iterator.next();
     }
-    return filesAsArray;
   }
-
-  // /**
-  //  * ファイル名からファイルを取得するメソッド
-  //  * @param {string} name - ファイル名
-  //  * @return {DriveApp.File} ファイル オブジェクト
-  //  */
-  // getByName(name) {
-  //   const files = DriveApp.getFilesByName(name);
-  //   try {
-  //     return files.next();
-  //   } catch (e) { throw new Error('The specified file could not be found'); }
-  // }
 
   /**
    * フォルダー URL から Folder オブジェクトを取得する静的メソッド

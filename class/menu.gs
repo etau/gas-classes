@@ -3,7 +3,7 @@
 class Menu {
 
   /**
-   * 
+   * メニューに関するコンストラクタ
    * @constructor
    */
   constructor() {

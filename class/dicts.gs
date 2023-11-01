@@ -14,7 +14,6 @@ class Dicts {
    */
   getAsValues(isAddHeaders = false) {
     const headers = this.dicts[0].keys();
-    console.log(headers);
     const records = this.dicts.map(dict => headers.
       map(key => dict.get(key))
     );

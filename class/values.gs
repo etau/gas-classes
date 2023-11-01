@@ -28,7 +28,7 @@ class Values {
    * @return {stirng|number|boolean|Date} 指定された配列内の値
    */
   getValueByA1Notation(a1Notation) {
-    const rc = this.getRCByA1Notation(a1Notation);
+    const rc = this.getRcByA1Notation(a1Notation);
     const value = this.values[rc.row - 1][rc.column - 1];
     return value;
   }
@@ -40,7 +40,7 @@ class Values {
    */
   getValuesByA1Notation(a1Notation) {
     const a1Notations = a1Notation.split(':');
-    const rcs = a1Notations.map(a1 => this.getRCByA1Notation(a1));
+    const rcs = a1Notations.map(a1 => this.getRcByA1Notation(a1));
     const rows = rcs.map(rc => rc.row);
     const columns = rcs.map(rc => rc.column);
     const values = this.values.filter((_, i) => Math.min(...rows) <= i + 1 && i + 1 <= Math.max(...rows)).
