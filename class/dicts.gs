@@ -13,7 +13,7 @@ class Dicts {
    * @return {Array.<Array>} ヘッダー情報に対応する列の値
    */
   getAsValues(isAddHeaders = false) {
-    const headers = this.dicts[0].keys();
+    const headers = [...this.dicts[0].keys()];
     const records = this.dicts.map(dict => headers.
       map(key => dict.get(key))
     );

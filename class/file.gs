@@ -18,7 +18,7 @@ class File {
    */
   getUrl() { return this.file.getUrl(); }
   getId() { return this.file.getId(); }
-  getName() { return this.file.getName() };
+  getName() { return this.file.getName(); }
   setName(...args) { return this.file.setName(...args); }
   makeCopy(...args) { return this.file.makeCopy(...args); }
 
