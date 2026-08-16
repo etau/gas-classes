@@ -92,7 +92,7 @@ class SlackApi {
   /**
    * fetch メソッドで利用する chat.delete の URL を生成するメソッド
    * @param {string} channel - チャンネル ID
-   * @param {stirng} ts - 削除するメッセージの ts
+   * @param {string} ts - 削除するメッセージの ts
    * @return {string} fetch メソッド用の URL
    */
   buildChatDeleteURL(channel, ts) {
@@ -197,70 +197,51 @@ class SlackApi {
 
   /**
    * fetch メソッドで利用する users.list の URL を生成するメソッド
+   * @param {string} teamId - チーム ID
+   * @param {string} cursor - ページネーション用のカーソル
    * @return {string} fetch メソッド用の URL
    */
-  buildUsersListUrl(teamId) {
+  buildUsersListUrl(teamId, cursor = '') {
     const limit = 1000;
     const url = 'https://slack.com/api/users.list?' +
       'limit=' + limit + '&' +
-      'team_id=' + teamId;
+      'team_id=' + teamId +
+      (cursor === '' ? '' : '&cursor=' + cursor);
     return url;
   }
 
-  /** XXX: 要修正
-   * ユーザー情報を取得するメソッド
-   * @return {Array.<Objyect>} slack ユーザーの情報
+  /**
+   * ページネーションをたどってすべてのユーザー情報を取得するメソッド
+   * @param {string} teamId - チーム ID
+   * @param {Array.<Object>} members - 再帰呼び出しで蓄積されるユーザー情報
+   * @param {string} cursor - ページネーション用のカーソル
+   * @return {Array.<Object>} すべての slack ユーザーの情報
+   * NOTE: https://api.slack.com/docs/pagination
    */
-  getAllUsersList(menbers = [], nextCorsor = '') {
-    const payload = JSON.stringify(
-      {
-        token: this.botToken,
-        // limit: 1000,
-        // cursor: nextCorsor
-      }
-    );
-    const params = this.getParams('GET', this.botToken, payload);
-    console.log(params);
-    // const limit = 5;
-    // const url = 'https://slack.com/api/users.list?' +
-    //   'limit=' + limit + '&';//+
-    // // (nextCorsor !== '' ? 'cursor=' + nextCorsor : '');
-    const url = 'https://slack.com/api/users.list?limit=5&pretty=1';
+  getAllMembers(teamId, members = [], cursor = '') {
+    const url = this.buildUsersListUrl(teamId, cursor);
+    const params = this.getParams('GET', this.botToken);
     const response = this.getAsObject(url, params);
-    console.log(response);
-    // menbers = menbers.concat(response.members);
-    // const allMembers = Object.keys(response.response_metadata).includes('next_cursor') ?
-    //   this.getAllUsersList(menbers, response.response_metadata.next_cursor) :
-    //   menbers;
-    // return allMembers;
-
-
-    // this.members_ = this.members_ === undefined ? response.members : this.members_.concat(response.members);
-    // this.nextCorsor = response.response_metadata.next_cursor;
-    // if (this.nextCorsor !== '') return this.getAllMembers(this.nextCorsor);
-    // return this.members_;
+    const allMembers = [...members, ...response.members];
+    const nextCursor = response.response_metadata === undefined ?
+      '' :
+      response.response_metadata.next_cursor;
+    if (nextCursor === undefined || nextCursor === '') return allMembers;
+    return this.getAllMembers(teamId, allMembers, nextCursor);
   }
-
-
-  //  getAllCoursesList(pageToken = '', preCoursesList = { courses: [] }) {
-  //     const coursesList = this.getCoursesList(pageToken);
-  //     preCoursesList.courses = preCoursesList.courses.concat(coursesList.courses);  // HACK: preCoursesList に追加することによって、nextPageToken プロパティのないコース リストに追加
-  //     const allCoursesList = Object.keys(coursesList).includes('nextPageToken') ?
-  //       this.getAllCoursesList(coursesList.nextPageToken, preCoursesList) :
-  //       preCoursesList;
-  //     return allCoursesList;
-  //   }
 
   /**
    * channelId を受け取って slack 名	と slack 表示名を二次元配列で返す関数
    * @param {string} channelId - 特定のチャンネルの ID
-   * @param {array} slackNameValues - slack 名	と slack 表示名の二次元配列
+   * @param {string} teamId - チーム ID
+   * @return {Array.<Array.<string>>} slack 名と slack 表示名の二次元配列
    */
-  getSlackNameValuesById(channelId) {
+  getSlackNameValuesById(channelId, teamId) {
     const memberIds = this.getConversationsMemberIds(channelId);
-    const membersValues = this.getMembersValues();
+    const membersValues = this.getMembersValues(teamId);
     const slackNameValues = memberIds.map(memberId => membersValues.
       find(record => record[2] === memberId)).
+      filter(record => record !== undefined).  // NOTE: users.list に存在しないメンバーを除外する
       map(record => [record[0], record[1], record[2]]);
     return slackNameValues;
   }
