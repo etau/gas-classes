@@ -70,7 +70,7 @@ class SlackApi {
     const limit = 1000;
     const url = 'https://slack.com/api/conversations.list?' +
       'limit=' + limit + '&' +
-      'team_id=' + teamId;
+      'team_id=' + encodeURIComponent(teamId);
     return url;
   }
 
@@ -97,8 +97,8 @@ class SlackApi {
    */
   buildChatDeleteURL(channel, ts) {
     const url = 'https://slack.com/api/chat.delete?' +
-      'channel=' + channel + '&' +
-      'ts=' + ts;
+      'channel=' + encodeURIComponent(channel) + '&' +
+      'ts=' + encodeURIComponent(ts);
     return url;
   }
 
@@ -127,9 +127,9 @@ class SlackApi {
   buildConversationsHistoryUrl(channel, latest) {
     const limit = 300;
     const url = 'https://slack.com/api/conversations.history?' +
-      'channel=' + channel + '&' +
+      'channel=' + encodeURIComponent(channel) + '&' +
       'limit=' + limit + '&' +
-      'latest=' + latest;
+      'latest=' + encodeURIComponent(latest);
     return url;
   }
 
@@ -160,10 +160,10 @@ class SlackApi {
   buildConversationsRepliesUrl(channel, ts, latest) {
     const limit = 300;
     const url = 'https://slack.com/api/conversations.replies?' +
-      'channel=' + channel + '&' +
-      'ts=' + ts + '&' +
+      'channel=' + encodeURIComponent(channel) + '&' +
+      'ts=' + encodeURIComponent(ts) + '&' +
       'limit=' + limit + '&' +
-      'latest=' + latest;
+      'latest=' + encodeURIComponent(latest);
     return url;
   }
 
@@ -205,8 +205,8 @@ class SlackApi {
     const limit = 1000;
     const url = 'https://slack.com/api/users.list?' +
       'limit=' + limit + '&' +
-      'team_id=' + teamId +
-      (cursor === '' ? '' : '&cursor=' + cursor);
+      'team_id=' + encodeURIComponent(teamId) +
+      (cursor === '' ? '' : '&cursor=' + encodeURIComponent(cursor));
     return url;
   }
 
@@ -281,7 +281,7 @@ class SlackApi {
   buildConversationsMembersUrl(channelId, limit) {
     const url = 'https://slack.com/api/conversations.members?' +
       'limit=' + limit + '&' +
-      'channel=' + channelId;
+      'channel=' + encodeURIComponent(channelId);
     return url;
   }
 
@@ -306,7 +306,7 @@ class SlackApi {
    */
   buildConversationsArchiveUrl(channelId) {
     const url = 'https://slack.com/api/conversations.archive?' +
-      'channel=' + channelId;
+      'channel=' + encodeURIComponent(channelId);
     return url;
   }
 
