@@ -33,12 +33,9 @@ const TYPE = Object.freeze({
   SPREADSHEET: 'Spreadsheet',
   SHEET: 'Sheet',
   CALENDAR: 'Calendar',
-  TO_STRINGS: Object.freeze([
-    // toString メソッドで型判定をおこなう対象のオブジェクト NOTE: Type クラスの valid メソッドの 引数 type には指定しない
-    'Spreadsheet',
-    'Sheet',
-    'Calendar',
-  ]),
+  // toString メソッドで型判定をおこなう対象のオブジェクト
+  // NOTE: Type クラスの valid メソッドの引数 type には指定しない
+  TO_STRINGS: Object.freeze(['Spreadsheet', 'Sheet', 'Calendar']),
   FOLDER: 'folder',
   FILE: Object.freeze({
     // ファイル オブジェクトの各種 Mime Type

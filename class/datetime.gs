@@ -14,6 +14,7 @@ class Datetime {
 
   /**
    * Date オブジェクトから委譲されたメソッド
+   * NOTE: https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Date
    */
   getFullYear() { return this.date.getFullYear(); }
   getMonth() { return this.date.getMonth(); }
@@ -59,20 +60,20 @@ class Datetime {
     return isOn ? strTargetDate >= strDate : strTargetDate > strDate;
   }
 
-  /**           
-   * Date オブジェクトに n 日足すメソッド            
-   * @param {Date} time - Date オブジェクト            
-   * @param {number} n -  追加する日数            
-   * @return {Date} time - Date オブジェクト            
+  /**
+   * Date オブジェクトに n 日足すメソッド
+   * @param {number} n - 追加する日数
+   * @return {Date} n 日後の Date オブジェクト
    */
   addDays(n) {
     this.date.setDate(this.getDate() + n);
     return this.date;
   }
 
-  /**            
+  /**
    * 指定した時間を超えたらエラーを投げるメソッド
-   * @throws 時間を超えたエラー        
+   * @param {number} limitSec - 判定する秒数
+   * @throws 時間を超えたエラー
    */
   throwTimeOverError(limitSec = 350) {
     if (this.isTimeOver(limitSec)) throw new Error('Processing time exceeded' + limitSec + 'seconds.');
@@ -83,9 +84,9 @@ class Datetime {
    * @param {number} limitSec - 判定する秒数
    * @return {boolean} インスタンスを生成してからの時間が指定の時間を超えたかどうか
    */
-  isTimeOver(limitSec = /* GAS 360 秒の壁*/ 350) {
-    const runtime_sec = this.getRuntimeSec();
-    return runtime_sec > limitSec;
+  isTimeOver(limitSec = /* GAS 360 秒の壁 */ 350) {
+    const runtimeSec = this.getRuntimeSec();
+    return runtimeSec > limitSec;
   }
 
   /**
@@ -162,6 +163,7 @@ class Datetime {
    */
   getDtBusinessDaysLater(x) {
     if (x <= 0) throw new Error('The parameter must be greater than 0.');
+    // NOTE: 例外 2 - 営業日を N 日進める処理のため、反復メソッドではなく while 文を使用する
     let count = 0;
     let dt = this;
     while (count !== x) {
@@ -178,6 +180,7 @@ class Datetime {
    * NOTE: 連続して呼び出せるよう、返り値に holidays, repeatedHolidays を引き継ぐ
    */
   getDtNextBusinessDay(dt = this) {
+    // NOTE: 例外 2 - 休日をスキップする処理のため、反復メソッドではなく while 文を使用する
     let nextDt = dt.getDtDaysAgo(-1);
     while (this.isHoliday(nextDt.date)) {
       nextDt = nextDt.getDtDaysAgo(-1);
@@ -192,6 +195,7 @@ class Datetime {
    */
   getDtBusinessDaysBefore(x) {
     if (x <= 0) throw new Error('The parameter must be greater than 0.');
+    // NOTE: 例外 2 - 営業日を N 日戻す処理のため、反復メソッドではなく while 文を使用する
     let count = 0;
     let dt = this;
     while (count !== x) {
@@ -208,6 +212,7 @@ class Datetime {
    * NOTE: 連続して呼び出せるよう、返り値に holidays, repeatedHolidays を引き継ぐ
    */
   getDtPrevBusinessDay(dt = this) {
+    // NOTE: 例外 2 - 休日をスキップする処理のため、反復メソッドではなく while 文を使用する
     let prevDt = dt.getDtDaysAgo(1);
     while (this.isHoliday(prevDt.date)) {
       prevDt = prevDt.getDtDaysAgo(1);
@@ -313,8 +318,8 @@ class Datetime {
 
   /**
    * 時間の差分を HH:mm:ss 形式で返す静的メソッド
-   * @param {{Date|string|number}} date1 - Date オブジェクトでインスタンス生成可能な引数
-   * @param {{Date|string|number}} date2 - Date オブジェクトでインスタンス生成可能な引数
+   * @param {Date|string|number} date1 - Date オブジェクトでインスタンス生成可能な引数
+   * @param {Date|string|number} date2 - Date オブジェクトでインスタンス生成可能な引数
    * @return {string} strDiffTime - 時間の差分
    */
   static getStrDiffTime(date1, date2) {

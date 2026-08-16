@@ -74,6 +74,7 @@ class Folder {
    * @return {Generator} ジェネレーター オブジェクト
    */
   * generator(iterator) {
+    // NOTE: 例外 1 - DriveApp のイテレータは配列ではないため反復メソッドが使えない
     while (iterator.hasNext()) {
       yield iterator.next();
     }

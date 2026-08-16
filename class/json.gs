@@ -10,6 +10,11 @@ class Json {  // TODO: プロパティを探し当てるやつを作る
     this.json = json;
   }
 
+  /**
+   * オブジェクトのプロパティから値を取得するメソッド
+   * @param {string} property - プロパティ名
+   * @return {*} プロパティに対応する値
+   */
   getValueFromProperty(property) {
     const object = this.getAsObject();
     return object[property];
@@ -40,15 +45,13 @@ class Json {  // TODO: プロパティを探し当てるやつを作る
     return this.getValueFromObject_(paths.slice(1).join('.'), object[key]);
   }
 
+  /**
+   * JSON 文字列をオブジェクト化するメソッド
+   * @return {Object} オブジェクト化された JSON
+   */
   getAsObject() {
     const object = JSON.parse(this.json);
     return object;
   }
-
-  // getAsJson(id) {
-  //   const blob = DriveApp.getFileById(id).getBlob();
-  //   const json = blob.getDataAsString();
-  // }
-
 
 }

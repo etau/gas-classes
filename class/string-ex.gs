@@ -8,7 +8,7 @@ class StringEx {
    * @return {string} 改行を削除した文字列
    */
   static deleteNewLine(string) {
-    const replacementLists = [[/\n/g, '']];  // ほかのパターンもあれば追加する
+    const replacementLists = [[/\n/g, '']]; // TODO: ほかのパターンもあれば追加する
     const replaced = StringEx.replaceWithLists(string, replacementLists);
     return replaced;
   }
@@ -21,7 +21,7 @@ class StringEx {
    * @param {boolean} isInclude - プレフィックスとサフィックスを結果にふくむかどうか
    * @return {Array.<string>} 抽出された文字列
    */
-  static fetch(string, prefix = '{{', suffix = '}}', isInclude = false) {    // isGlobal のひきすうほしい？ return は、string もありで
+  static fetch(string, prefix = '{{', suffix = '}}', isInclude = false) {
     const regExp = isInclude ?
       new RegExp(prefix + '[\\s\\S]*?' + suffix, 'g') :
       new RegExp('(?<=' + prefix + ')[\\s\\S]*?(?=' + suffix + ')', 'g');
