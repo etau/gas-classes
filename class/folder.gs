@@ -47,7 +47,7 @@ class Folder {
    * @return {Folder} 新しく作成された (もしくは既に存在していた) フォルダーの Folder オブジェクト
    */
   createChildFolder(folderName) {
-    const folders = this.getFoldersByName(folderName);
+    const folders = this.folder.getFoldersByName(folderName);
     const childFolder = folders.hasNext() ? folders.next() : this.createFolder(folderName);
     return new Folder(childFolder);
   }
@@ -81,7 +81,7 @@ class Folder {
    * @return {Folder} Folder オブジェクト
    */
   static getByUrl(folderUrl) {
-    const folderId = folderUrl.match(/(?<=folders\/).*?(?=\/|$)/);
+    const folderId = folderUrl.match(/(?<=folders\/).*?(?=\/|$)/)[0];
     const folder = new Folder(DriveApp.getFolderById(folderId));
     return folder;
   }
