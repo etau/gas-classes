@@ -74,7 +74,7 @@ class Datetime {
    * 指定した時間を超えたらエラーを投げるメソッド
    * @throws 時間を超えたエラー        
    */
-  thorowTimeOverError(limitSec = 350) {
+  throwTimeOverError(limitSec = 350) {
     if (this.isTimeOver(limitSec)) throw new Error('Processing time exceeded' + limitSec + 'seconds.');
   }
 
@@ -123,9 +123,10 @@ class Datetime {
    * コンストラクタの date オブジェクトとの日数差を返すメソッド
    * @param {Date} date - コンストラクタの date オブジェクトとの日数差を計算する対象となる Date オブジェクト
    * @return {number} コンストラクタの date オブジェクトと param との日数差
+   * NOTE: 時刻部分を含めると小数になるため、日付のみで比較する
    */
   calculateDiffDays(date) {
-    const start = new Date(this.toString());
+    const start = new Date(this.toString('yyyy/MM/dd'));
     const end = new Date(Datetime.format(date, 'yyyy/MM/dd'));
     const diffDays = Math.abs(start.getTime() - end.getTime()) / (1000 * 60 * 60 * 24);
     return diffDays;
@@ -164,7 +165,7 @@ class Datetime {
     let count = 0;
     let dt = this;
     while (count !== x) {
-      dt = dt.getDtNextBussinessDay();
+      dt = dt.getDtNextBusinessDay();
       count++;
     }
     return dt;
@@ -174,13 +175,14 @@ class Datetime {
    * 翌営業日の Datetime オブジェクトを返すメソッド
    * @param {Datetime} dt - 判定対象となる Datetime オブジェクト。
    * @return {Datetime} 翌営業日の Datetime オブジェクト
+   * NOTE: 連続して呼び出せるよう、返り値に holidays, repeatedHolidays を引き継ぐ
    */
-  getDtNextBussinessDay(dt = this) {
+  getDtNextBusinessDay(dt = this) {
     let nextDt = dt.getDtDaysAgo(-1);
     while (this.isHoliday(nextDt.date)) {
       nextDt = nextDt.getDtDaysAgo(-1);
     }
-    return nextDt;
+    return this.setProperties(nextDt);
   }
 
   /**
@@ -193,7 +195,7 @@ class Datetime {
     let count = 0;
     let dt = this;
     while (count !== x) {
-      dt = dt.getDtPrevBussinessDay();
+      dt = dt.getDtPrevBusinessDay();
       count++;
     }
     return dt;
@@ -202,14 +204,15 @@ class Datetime {
   /**
    * 前営業日の Datetime オブジェクトを返すメソッド
    * @param {Datetime} dt - 判定対象となる Datetime オブジェクト
-   * @return {Datetime} 翌営業日の Datetime オブジェクト
+   * @return {Datetime} 前営業日の Datetime オブジェクト
+   * NOTE: 連続して呼び出せるよう、返り値に holidays, repeatedHolidays を引き継ぐ
    */
-  getDtPrevBussinessDay(dt = this) {
+  getDtPrevBusinessDay(dt = this) {
     let prevDt = dt.getDtDaysAgo(1);
     while (this.isHoliday(prevDt.date)) {
       prevDt = prevDt.getDtDaysAgo(1);
     }
-    return prevDt;
+    return this.setProperties(prevDt);
   }
 
   /**
@@ -218,11 +221,11 @@ class Datetime {
    * @return {Datetime} 最終営業日の Datetime オブジェクト
    * NOTE: this の holidays, repeatedHolidays プロパティに値がある場合には引き継ぐ
    */
-  getDtLastBussinessDayOfMonth(date = this.date) {
+  getDtLastBusinessDayOfMonth(date = this.date) {
     const dtFirstDayOfNextMonth = new Datetime(date.getFullYear(), date.getMonth() + 1, 1);
     this.setProperties(dtFirstDayOfNextMonth);
-    const dtLastBussinessDayOfMonth = dtFirstDayOfNextMonth.getDtPrevBussinessDay();
-    return dtLastBussinessDayOfMonth;
+    const dtLastBusinessDayOfMonth = dtFirstDayOfNextMonth.getDtPrevBusinessDay();
+    return dtLastBusinessDayOfMonth;
   }
 
   /**
@@ -230,7 +233,7 @@ class Datetime {
    * @param {Date} date - 判定する日
    * @return {boolean} 営業日かどうか
    */
-  isBussinessDay(date = this.date) {
+  isBusinessDay(date = this.date) {
     return !this.isHoliday(date);
   }
 
@@ -239,11 +242,17 @@ class Datetime {
    * @param {Date} date - 判定する日
    * @param {string} holidaysCalendarId - カレンダー Id
    * @return {boolean} 土日祝のかどうか
+   * NOTE: holidays と repeatedHolidays は併用できる
    */
   isHoliday(date = this.date, holidaysCalendarId = 'ja.japanese#holiday@group.v.calendar.google.com') {
     if (date.getDay() % 6 === 0) return true;
-    if (this.holidays !== undefined) return this.holidays.map(holiday => Datetime.format(holiday, 'yyyy/MM/dd')).includes(Datetime.format(date, 'yyyy/MM/dd'));
-    if (this.repeatedHolidays !== undefined) return this.repeatedHolidays.includes(Datetime.format(date, 'MM/dd'));
+    const hasHolidays = this.holidays !== undefined;
+    const hasRepeatedHolidays = this.repeatedHolidays !== undefined;
+    if (hasHolidays &&
+      this.holidays.map(holiday => Datetime.format(holiday, 'yyyy/MM/dd')).includes(Datetime.format(date, 'yyyy/MM/dd'))) return true;
+    if (hasRepeatedHolidays &&
+      this.repeatedHolidays.includes(Datetime.format(date, 'MM/dd'))) return true;
+    if (hasHolidays || hasRepeatedHolidays) return false;  // NOTE: 休日が指定されている場合はカレンダーを参照しない
     if (this.holidaysCalendar_ === undefined) this.holidaysCalendar_ = CalendarApp.getCalendarById(holidaysCalendarId);
     return this.holidaysCalendar_.getEventsForDay(date).length !== 0;
   }
