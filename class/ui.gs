@@ -15,7 +15,7 @@ class Ui {
    * Class Ui から委譲されたメソッド
    * NOTE: https://developers.google.com/apps-script/reference/base/ui
    */
-  alert(...args) { return this.ui.alert(...args) };
+  alert(...args) { return this.ui.alert(...args); }
 
   /**
    * アラートに「はい」ボタンが押されたかどうかを判定するメソッド
