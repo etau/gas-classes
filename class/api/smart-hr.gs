@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class SmartHrApi {
 
@@ -7,8 +7,8 @@ class SmartHrApi {
    * @constructor
    */
   constructor() {
-    this.tenantId = PROPERTIES.get('TENANT_ID');
-    this.token = PROPERTIES.get('TOKEN');
+    this.tenantId = PROPERTIES.get(PROPERTY_KEYS.TENANT_ID);
+    this.token = PROPERTIES.get(PROPERTY_KEYS.TOKEN);
   }
 
   /**

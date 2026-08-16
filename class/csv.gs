@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class Csv {
 
@@ -57,8 +57,9 @@ class Csv {
    */
   getData(format) {
     if (!format.get('hasNewLine')) return this.values.join(format.get('newLine'));
-    const data = this.values.map(record => record.map(value => '"' + String(value).replace(/\"/g, '\""') + '"')).
-      join(format.get('newLine'));
+    const data = this.values
+      .map(record => record.map(value => '"' + String(value).replace(/\"/g, '\""') + '"'))
+      .join(format.get('newLine'));
     return data;
   }
 

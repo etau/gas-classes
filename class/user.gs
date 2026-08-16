@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class User {
 
@@ -31,7 +31,7 @@ class User {
    * NOTE: Properties クラスを new して利用
    */
   getAdminEmails() {
-    const adminEmails = PROPERTIES.get('ADMIN_EMAILS');
+    const adminEmails = PROPERTIES.get(PROPERTY_KEYS.ADMIN_EMAILS);
     return adminEmails === null ? [] : adminEmails;  // NOTE: プロパティ未設定の場合に null が返るため
   }
 
@@ -41,7 +41,7 @@ class User {
    * NOTE: Properties クラスを利用
    */
   static setAdminEmails(adminEmails) {
-    Properties.set('ADMIN_EMAILS', adminEmails);
+    Properties.set(PROPERTY_KEYS.ADMIN_EMAILS, adminEmails);
   }
 
 }

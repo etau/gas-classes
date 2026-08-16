@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 /**
  * グローバル定数宣言

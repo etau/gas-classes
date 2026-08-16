@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class ReceivedGmail {
 
@@ -40,9 +40,10 @@ class ReceivedGmail {
    */
   static fetchSentence(string, prefix, suffix) {
     const regExp = new RegExp(prefix + '.*?' + suffix);
-    const sentence = string.match(regExp)[0].
-      replace(prefix, '').
-      replace(suffix, '');
+    const sentence = string
+      .match(regExp)[0]
+      .replace(prefix, '')
+      .replace(suffix, '');
     return sentence;
   }
 

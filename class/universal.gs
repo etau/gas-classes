@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 /**
  * 汎用機能を提供するクラス

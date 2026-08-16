@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class Menu {
 
@@ -47,15 +47,3 @@ class Menu {
   }
 
 }
-
-// NOTE: 以下のような Enum を設定しておくとよい
-/** @enum {string} */
-const MENU_INFO = {
-  TITLE: '【GAS MENU】',
-  FUNCTIONS: [
-    {
-      NAME: 'myFunction',
-      CAPTION: 'hogehoge'
-    }
-  ],
-};

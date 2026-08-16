@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class SlackApi {
 
@@ -8,9 +8,9 @@ class SlackApi {
    */
   constructor() {
     /** @type {string} */
-    this.token = PROPERTIES.get('USER_OAUTH_TOKEN');
+    this.token = PROPERTIES.get(PROPERTY_KEYS.USER_OAUTH_TOKEN);
     /** @type {string} */
-    this.botToken = PROPERTIES.get('BOT_USER_OAUTH_TOKEN');
+    this.botToken = PROPERTIES.get(PROPERTY_KEYS.BOT_USER_OAUTH_TOKEN);
   }
 
   /**
@@ -239,10 +239,10 @@ class SlackApi {
   getSlackNameValuesById(channelId, teamId) {
     const memberIds = this.getConversationsMemberIds(channelId);
     const membersValues = this.getMembersValues(teamId);
-    const slackNameValues = memberIds.map(memberId => membersValues.
-      find(record => record[2] === memberId)).
-      filter(record => record !== undefined).  // NOTE: users.list に存在しないメンバーを除外する
-      map(record => [record[0], record[1], record[2]]);
+    const slackNameValues = memberIds
+      .map(memberId => membersValues.find(record => record[2] === memberId))
+      .filter(record => record !== undefined) // NOTE: users.list に存在しないメンバーを除外する
+      .map(record => [record[0], record[1], record[2]]);
     return slackNameValues;
   }
 

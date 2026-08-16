@@ -1,38 +1,4 @@
-'use strict'
-
-/** @enum {string} */
-const TYPE = Object.freeze(
-  {
-    STRING: 'string',
-    NUMBER: 'number',
-    INTEGER: 'integer',
-    BOOLEAN: 'boolean',
-    DATE: 'Date',
-    ARRAY: 'Array',
-    OBJECT: 'Object',
-    REGEXP: 'RegExp',
-    MAP: 'Map',
-    SET: 'Set',
-    JSON: 'JSON',
-    SPREADSHEET: 'Spreadsheet',
-    SHEET: 'Sheet',
-    CALENDAR: 'Calendar',
-    TO_STRINGS: Object.freeze([  // toString メソッドで型判定をおこなう対象のオブジェクト NOTE: Type クラスの valid メソッドの 引数 type には指定しない
-      'Spreadsheet',
-      'Sheet',
-      'Calendar'
-    ]),
-    FOLDER: 'folder',
-    FILE: Object.freeze({  // ファイル オブジェクトの各種 Mine Type
-      SPREADSHEET: 'application/vnd.google-apps.spreadsheet',
-      PRESENTATION: 'application/vnd.google-apps.presentation',
-      DOCUMENT: 'application/vnd.google-apps.document',
-      SCRIPT: 'application/vnd.google-apps.script'
-    })
-  }
-);
-
-
+'use strict';
 
 class Type {
 

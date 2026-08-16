@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class Sheet {
 
@@ -151,8 +151,8 @@ class Sheet {
   setValuesHeaderRowsAfter(values) {
     if (values.length === 0) return;
     this.clearDataValues();
-    this.getRange(this.headerRows + 1, 1, values.length, values[0].length).
-      setValues(values);
+    this.getRange(this.headerRows + 1, 1, values.length, values[0].length)
+      .setValues(values);
     return this;
   }
 
@@ -162,8 +162,8 @@ class Sheet {
   clearDataValues() {
     const values = this.getDataValues();
     if (values.length === 0) return;
-    this.getRange(this.headerRows + 1, 1, values.length, values[0].length).
-      clearContent();
+    this.getRange(this.headerRows + 1, 1, values.length, values[0].length)
+      .clearContent();
     return this;
   }
 
@@ -174,8 +174,8 @@ class Sheet {
    */
   clearField(headerName) {
     const column = this.getColumnByHeaderName(headerName);
-    this.getRange(1 + this.headerRows, column, this.getLastRow() - this.headerRows).
-      clearContent();
+    this.getRange(1 + this.headerRows, column, this.getLastRow() - this.headerRows)
+      .clearContent();
     return this;
   }
 
@@ -185,8 +185,8 @@ class Sheet {
    */
   appendRows(values) {
     if (values.length === 0) return;
-    this.getRange(this.getLastRow() + 1, 1, values.length, values[0].length).
-      setValues(values);
+    this.getRange(this.getLastRow() + 1, 1, values.length, values[0].length)
+      .setValues(values);
     return this;
   }
 
@@ -196,8 +196,8 @@ class Sheet {
    * @param {boolean} ascending - 昇順か降順か
    */
   sortDataRows(column = 1, ascending = true) {
-    this.getRange(this.headerRows + 1, 1, this.getLastRow() - this.headerRows, this.getLastColumn()).
-      sort({ column: column, ascending: ascending });
+    this.getRange(this.headerRows + 1, 1, this.getLastRow() - this.headerRows, this.getLastColumn())
+      .sort({ column: column, ascending: ascending });
     return this;
   }
 
@@ -231,8 +231,8 @@ class Sheet {
    */
   select(headers, isAddHeaders = true) {
     const dicts = this.getAsDicts();
-    const records = dicts.map(dict => headers.
-      map(key => dict.get(key))
+    const records = dicts.map(dict =>
+      headers.map(key => dict.get(key)),
     );
     const values = isAddHeaders ? [headers, ...records] : records;
     return values;
@@ -246,11 +246,14 @@ class Sheet {
     if (this.dicts_ !== undefined) return this.dicts_;
     const headers = this.getHeaders(this.headerIndex);
     const values = this.getDataValues();
-    const dicts = values.map((record, i) => record.
-      reduce((acc, cur, j) => acc.set(headers[j], cur), new Map([
-        ['row', i + this.headerRows + 1],  // 必要に応じて削除
-        ['record', record]  // dict.get('record') を使っているメソッドがなければ削除
-      ]))
+    const dicts = values.map((record, i) =>
+      record.reduce(
+        (acc, cur, j) => acc.set(headers[j], cur),
+        new Map([
+          ['row', i + this.headerRows + 1], // NOTE: 必要に応じて削除
+          ['record', record], // NOTE: dict.get('record') を使っているメソッドがなければ削除
+        ]),
+      ),
     );
     this.dicts_ = dicts;
     return dicts;
@@ -390,24 +393,4 @@ class Sheet {
     return sheet;
   }
 
-}
-
-
-
-/**
- * SHEET_INFO enum の例
- */
-
-const SHEET_INFO = {
-  SHEET1: {
-    NAME: 'シート1',
-    HEADERS: {
-      ROWS: 1,
-      ROW_INDEX: 0,
-    },
-    COLUMN: {
-      NAME: '名前',
-      AGE: '年齢',
-    },
-  },
 }
