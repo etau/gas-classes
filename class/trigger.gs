@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class Trigger {
 
@@ -31,10 +31,10 @@ class Trigger {
    * @return {Trigger} Trigger オブジェクト
    */
   createTimeBased(triggerTime) {
-    ScriptApp.newTrigger(this.functionName).
-      timeBased().
-      at(triggerTime).
-      create();
+    ScriptApp.newTrigger(this.functionName)
+      .timeBased()
+      .at(triggerTime)
+      .create();
     return this;
   }
 
@@ -44,10 +44,10 @@ class Trigger {
    */
   createOnChangeForSpreadsheet() {
     this.delete();
-    ScriptApp.newTrigger(this.functionName).
-      forSpreadsheet(SS).
-      onChange().
-      create();
+    ScriptApp.newTrigger(this.functionName)
+      .forSpreadsheet(SS)
+      .onChange()
+      .create();
     return this;
   }
 
@@ -57,10 +57,10 @@ class Trigger {
    */
   createOnEditForSpreadsheet() {
     this.delete();
-    ScriptApp.newTrigger(this.functionName).
-      forSpreadsheet(SS).
-      onEdit().
-      create();
+    ScriptApp.newTrigger(this.functionName)
+      .forSpreadsheet(SS)
+      .onEdit()
+      .create();
     return this;
   }
 
@@ -72,11 +72,11 @@ class Trigger {
    */
   createAtHour(hour, everyDays) {
     this.delete();
-    ScriptApp.newTrigger(this.functionName).
-      timeBased().
-      atHour(hour).
-      everyDays(everyDays).
-      create();
+    ScriptApp.newTrigger(this.functionName)
+      .timeBased()
+      .atHour(hour)
+      .everyDays(everyDays)
+      .create();
     return this;
   }
 
@@ -111,24 +111,3 @@ function setInitialTriggers() {
   atHourTriggers.forEach(trigger => new Trigger(trigger.NAME).createAtHour(trigger.HOUR, trigger.EVERY_DAYS));
 
 }
-
-// NOTE: 以下のような Enum を設定しておくとよい
-/** @enum {string} */
-const TRIGGER_TYPE = {
-  ON_CHANGE: [
-    { NAME: 'hoge' }
-  ],
-  ON_EDIT: [
-    { NAME: 'fuga' }
-  ],
-  TIME_BASE: {
-    AT_HOUR:
-      [
-        {
-          NAME: 'piyo',
-          HOUR: 0,
-          EVERY_DAYS: 1
-        }
-      ]
-  }
-};

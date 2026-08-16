@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class Dicts {
 
@@ -19,8 +19,8 @@ class Dicts {
    */
   getAsValues(isAddHeaders = false) {
     const headers = [...this.dicts[0].keys()];
-    const records = this.dicts.map(dict => headers.
-      map(key => dict.get(key))
+    const records = this.dicts.map(dict =>
+      headers.map(key => dict.get(key)),
     );
     const values = isAddHeaders ? [headers, ...records] : records;
     return values;

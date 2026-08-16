@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class SlackWebhook { // TODO: SlackApi クラスに変更して、SlackWebhookApi は継承する形に変更
 
@@ -43,7 +43,7 @@ class SlackWebhook { // TODO: SlackApi クラスに変更して、SlackWebhookAp
    * NOTE: class properties がある場合は不要
    */
   static setWebhookUrl(webhookUrl) {
-    PropertiesService.getScriptProperties().setProperty('WEBHOOK_URL', webhookUrl);
+    Properties.set(PROPERTY_KEYS.WEBHOOK_URL, webhookUrl);
   }
 
 }

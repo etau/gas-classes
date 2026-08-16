@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 // TODO: Universal クラスとの統合を予定
 class Values {
@@ -43,9 +43,10 @@ class Values {
     const rcs = a1Notations.map(a1 => this.getRcByA1Notation(a1));
     const rows = rcs.map(rc => rc.row);
     const columns = rcs.map(rc => rc.column);
-    const values = this.values.filter((_, i) => Math.min(...rows) <= i + 1 && i + 1 <= Math.max(...rows)).
-      map(r => r.
-        filter((_, i) => Math.min(...columns) <= i + 1 && i + 1 <= Math.max(...columns))
+    const values = this.values
+      .filter((_, i) => Math.min(...rows) <= i + 1 && i + 1 <= Math.max(...rows))
+      .map(r =>
+        r.filter((_, i) => Math.min(...columns) <= i + 1 && i + 1 <= Math.max(...columns)),
       );
     return values;
   }

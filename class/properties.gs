@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class Properties {
 
@@ -57,8 +57,10 @@ class Properties {
    * NOTE: オブジェクトは JSON 形式にしてセットする
    */
   static set(key, value) {
-    PropertiesService.getScriptProperties().
-      setProperty(key, typeof value === 'object' ? JSON.stringify(value) : value);
+    PropertiesService.getScriptProperties().setProperty(
+      key,
+      typeof value === 'object' ? JSON.stringify(value) : value,
+    );
   }
 
 }

@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class Json {  // TODO: プロパティを探し当てるやつを作る
 
