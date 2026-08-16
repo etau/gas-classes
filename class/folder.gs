@@ -18,8 +18,12 @@ class Folder {
    */
   getId() { return this.folder.getId(); }
   getUrl() { return this.folder.getUrl(); }
+  getName() { return this.folder.getName(); }
+  getParents() { return this.folder.getParents(); }
   createFolder(...args) { return this.folder.createFolder(...args); }
+  createFile(...args) { return this.folder.createFile(...args); }
   setName(...args) { return this.folder.setName(...args); }
+  setTrashed(...args) { return this.folder.setTrashed(...args); }
 
   /**
    * フォルダー内のファイルを配列で取得するメソッド

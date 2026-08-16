@@ -17,7 +17,8 @@ class Gmail {
       this.name,
       this.cc,
       this.bcc,
-      this.htmlBody
+      this.htmlBody,
+      this.attachmentFolderId
     ] = record;
 
   }
@@ -65,15 +66,12 @@ class Gmail {
   /**
    * 添付ファイルを取得するメソッド
    * @param {string} folderId - 添付ファイルを格納している対象のフォルダ ID
-   * @return {Array.<Object>} Blob オブジェクトの配列
+   * @return {Array.<Object>} Blob オブジェクトの配列。フォルダ ID がない場合は空配列
    */
-  getAttachments(folderId = 'hogehoge') {
-    const folder = DriveApp.getFolderById(folderId);
-    const files = folder.getFiles();
-    const attachments = [];
-    while (files.hasNext()) {
-      attachments.push(files.next().getBlob());
-    }
+  getAttachments(folderId = this.attachmentFolderId) {
+    if (folderId === undefined || folderId === '') return [];
+    const folder = new Folder(DriveApp.getFolderById(folderId));
+    const attachments = folder.getFiles().map(file => file.getBlob());
     return attachments;
   }
 

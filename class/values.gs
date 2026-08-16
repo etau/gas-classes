@@ -25,7 +25,7 @@ class Values {
   /**
    * 配列内から A1 型式の場所の要素を返すメソッド
    * @param {string} a1Notation - A1 形式表記
-   * @return {stirng|number|boolean|Date} 指定された配列内の値
+   * @return {string|number|boolean|Date} 指定された配列内の値
    */
   getValueByA1Notation(a1Notation) {
     const rc = this.getRcByA1Notation(a1Notation);
@@ -36,7 +36,7 @@ class Values {
   /**
    * 配列内から A1 型式の場所の要素を返すメソッド
    * @param {string} a1Notation - A1 形式表記
-   * @return {stirng|number|boolean|Date} 指定された配列内の値
+   * @return {string|number|boolean|Date} 指定された配列内の値
    */
   getValuesByA1Notation(a1Notation) {
     const a1Notations = a1Notation.split(':');

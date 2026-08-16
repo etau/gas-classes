@@ -29,8 +29,18 @@ class Sheet {
   getFormUrl() { return this.sheet.getFormUrl(); }
   getName() { return this.sheet.getName(); }
   getParent() { return this.sheet.getParent(); }
-  getFormUrl() { return this.sheet.getFormUrl(); }
+  getSheetId() { return this.sheet.getSheetId(); }
+  activate() { return this.sheet.activate(); }
   copy() { return new Sheet(this.sheet.copyTo(SS), this.headerRows, this.headerIndex); }
+
+  /**
+   * シートの URL を取得するメソッド
+   * @return {string} シートに直接アクセスできる URL
+   */
+  getUrl() {
+    const url = this.getParent().getUrl() + '#gid=' + this.getSheetId();
+    return url;
+  }
 
   /**
    * Sheet オブジェクトを新しく取得し直すメソッド
@@ -38,15 +48,13 @@ class Sheet {
    */
   flush() {
     SpreadsheetApp.flush();
-    /** 元のオブジェクトのプロパティをリセットする場合 */
-    // this.dataRangeValues_ = undefined;
-    // this.headers_ = undefined
-    // this.headerValues_ = undefined;
-    // this.dataValues_ = undefined;
-    // this.dicts_ = undefined;
-    /** オブジェクトを新しく作る場合 */
-    // const sheet = new Sheet(this.sheet, this.headerRows, this.headerIndex);
-    // return sheet;
+    this.dataRangeValues_ = undefined;
+    this.headers_ = undefined;
+    this.headerValues_ = undefined;
+    this.dataValues_ = undefined;
+    this.dicts_ = undefined;
+    this.columnIndexesObject_ = undefined;
+    return this;
   }
 
   /**
@@ -283,8 +291,8 @@ class Sheet {
    */
   filterDictsWithValue(header) {
     const dicts = this.getAsDicts();
-    const filterdDicts = dicts.filter(dict => dict.get(header) !== '');
-    return filterdDicts;
+    const filteredDicts = dicts.filter(dict => dict.get(header) !== '');
+    return filteredDicts;
   }
 
   /**
@@ -319,9 +327,8 @@ class Sheet {
    * @return {Sheet} 文字列置換後の Sheet オブジェクト
    */
   replaceAllText(string, replaced) {
-    console.log(string, replaced);
     const textFinder = this.sheet.createTextFinder(string);
-    textFinder.replaceAllWith(after);
+    textFinder.replaceAllWith(replaced);
     return this;
   }
 
@@ -346,11 +353,12 @@ class Sheet {
 
   /**
    * Sheet オブジェクトから xlsx 形式の Excel ファイルを作成するメソッド
-   * @param {string} folerdId - 出力先の Google ドライブ フォルダ ID
+   * @param {string} xlsxName - 出力される xlsx ファイル名
+   * @param {string} folderId - 出力先の Google ドライブ フォルダ ID
    */
-  exportToExcel(xlsxName = EXCEL_INFO.NAME, folerdId = EXCEL_INFO.DRIVE.URL) {
+  exportToExcel(xlsxName, folderId) {
     this.flush();
-    const url = 'https://docs.google.com/feeds/download/spreadsheets/Export?key=' + this.getParentId() + '&amp;exportFormat=xlsx';
+    const url = 'https://docs.google.com/feeds/download/spreadsheets/Export?key=' + this.getParentId() + '&exportFormat=xlsx';
     const params = {
       headers: {
         Authorization: 'Bearer ' + ScriptApp.getOAuthToken()
@@ -358,7 +366,7 @@ class Sheet {
       muteHttpExceptions: true
     };
     const blob = UrlFetchApp.fetch(url, params).getBlob().setName(xlsxName);
-    DriveApp.getFolderById(folerdId).createFile(blob);
+    DriveApp.getFolderById(folderId).createFile(blob);
   }
 
   /**

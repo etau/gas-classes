@@ -25,7 +25,8 @@ class Menu {
    */
   create(title = MENU_INFO.TITLE, items = this.getItems()) {
     const menu = this.createMenu(title);
-    items.forEach(item => menu.addItem(item.caption, item.functionName).addToUi());
+    items.forEach(item => menu.addItem(item.caption, item.functionName));
+    menu.addToUi();  // NOTE: ループ内で呼ぶとアイテム数だけメニュー登録が走るため、ループの外で 1 度だけ呼ぶ
     return this;
   }
 

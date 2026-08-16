@@ -53,7 +53,7 @@ class Count {
    * @return {number} 1 加算された this.value
    */
   up() {
-    return this.value++;
+    return ++this.value;
   }
 
   /**
@@ -61,7 +61,7 @@ class Count {
    * @return {number} 1 減算された this.value
    */
   down() {
-    return this.value--;
+    return --this.value;
   }
 
   /**
@@ -70,6 +70,7 @@ class Count {
    */
   reset(resetValue = this.initialValue) {
     this.value = resetValue;
+    return this.value;
   }
 
 }

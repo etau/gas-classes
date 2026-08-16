@@ -19,12 +19,19 @@ class File {
   getUrl() { return this.file.getUrl(); }
   getId() { return this.file.getId(); }
   getName() { return this.file.getName(); }
+  getMimeType() { return this.file.getMimeType(); }
+  getBlob() { return this.file.getBlob(); }
+  getDateCreated() { return this.file.getDateCreated(); }
+  getLastUpdated() { return this.file.getLastUpdated(); }
+  getParents() { return this.file.getParents(); }
   setName(...args) { return this.file.setName(...args); }
+  setTrashed(...args) { return this.file.setTrashed(...args); }
   makeCopy(...args) { return this.file.makeCopy(...args); }
 
   /**
    * ファイルの種類を取得するメソッド
    * @return {string|undefined} ファイルの種類（'spreadsheets' 'document' または undefined）
+   * NOTE: MIME タイプで判定する場合は getMimeType メソッドと TYPE.FILE を利用する
    */
   getType() {
     const url = this.getUrl();

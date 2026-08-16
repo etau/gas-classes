@@ -32,7 +32,7 @@ class User {
    */
   getAdminEmails() {
     const adminEmails = PROPERTIES.get('ADMIN_EMAILS');
-    return adminEmails;
+    return adminEmails === null ? [] : adminEmails;  // NOTE: プロパティ未設定の場合に null が返るため
   }
 
   /**
