@@ -41,8 +41,6 @@ class Trigger {
   /**
    * スプレッドシート変更時のトリガーを設定するメソッド
    * @return {Trigger} Trigger オブジェクト
-   * NOTE: 常設トリガーは手動設置 (GUI) とし障害通知を設定することが【必須】。
-   * このメソッドでの設置は障害通知を設定できないため、検証用途に限定する。
    */
   createOnChangeForSpreadsheet() {
     this.delete();
@@ -56,8 +54,6 @@ class Trigger {
   /**
    * スプレッドシート編集時のトリガーを設定するメソッド
    * @return {Trigger} Trigger オブジェクト
-   * NOTE: 常設トリガーは手動設置 (GUI) とし障害通知を設定することが【必須】。
-   * このメソッドでの設置は障害通知を設定できないため、検証用途に限定する。
    */
   createOnEditForSpreadsheet() {
     this.delete();
@@ -96,5 +92,22 @@ class Trigger {
     });
     return this;
   }
+
+}
+
+/**
+ * 初回のトリガーを設定する関数
+ */
+function setInitialTriggers() {
+
+  const onChangeTriggers = TRIGGER_TYPE.ON_CHANGE;
+  onChangeTriggers.forEach(trigger => new Trigger(trigger.NAME).createOnChangeForSpreadsheet());
+
+  const onEditTriggers = TRIGGER_TYPE.ON_EDIT;
+  onEditTriggers.forEach(trigger => new Trigger(trigger.NAME).createOnEditForSpreadsheet());
+
+  const timeBasedTriggers = TRIGGER_TYPE.TIME_BASE;
+  const atHourTriggers = timeBasedTriggers.AT_HOUR;
+  atHourTriggers.forEach(trigger => new Trigger(trigger.NAME).createAtHour(trigger.HOUR, trigger.EVERY_DAYS));
 
 }
