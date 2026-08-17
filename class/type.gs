@@ -6,7 +6,7 @@ class Type {
    * 型判定をする対象と型が一致している場合にはその値を返し、一致していない場合にはエラーを投げる静的メソッド
    * @param {*} value - 型を判定する対象
    * @param {string} type - 型
-   * @retrun {*|Object} 型が一致している場合にはその値、一致していない場合にはエラーを投げる
+   * @return {*|Object} 型が一致している場合にはその値、一致していない場合にはエラーを投げる
    */
   static valid(value, type) {
     switch (type) {
@@ -23,7 +23,10 @@ class Type {
     if (TYPE.TO_STRINGS.includes(type)) return value.toString() === type ? value : this.throwAlert_(type);
     try {
       if (typeof value === type || value.getMimeType() === type) return value;
-    } catch (e) { this.throwAlert_(type); }
+    } catch (e) {
+      console.error('Type.valid: ' + e.stack);
+      this.throwAlert_(type);
+    }
   }
 
   /**

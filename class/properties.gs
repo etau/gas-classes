@@ -45,7 +45,8 @@ class Properties {
   parse(value) {
     try {
       return JSON.parse(value);
-    } catch {
+    } catch (e) {
+      console.error('Properties.parse: JSON 形式ではないため文字列として扱います - ' + e.message);
       return value;
     }
   }

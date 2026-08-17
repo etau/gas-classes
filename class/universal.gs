@@ -34,6 +34,7 @@ class Universal {
    */
   static shuffle(array) {
     const copiedArray = [...array];
+    // NOTE: 例外 3 - Fisher-Yates シャッフルのため、反復メソッドではなく for 文を使用する
     for (let i = copiedArray.length - 1; i >= 0; i--) {
       const r = Math.floor(Math.random() * (i + 1));
       [copiedArray[i], copiedArray[r]] = [copiedArray[r], copiedArray[i]];
