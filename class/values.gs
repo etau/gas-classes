@@ -1,6 +1,9 @@
 'use strict';
 
-// TODO: Universal クラスとの統合を予定
+/**
+ * 2 次元配列の値に関するクラス
+ * NOTE: A1 形式表記の解析は Range クラスの静的メソッドに集約している
+ */
 class Values {
 
   /**
@@ -9,80 +12,72 @@ class Values {
    * @param {Array.<Array.<string|number|boolean|Date>>} values - 値
    */
   constructor(values) {
+    /** @type {Array.<Array.<string|number|boolean|Date>>} */
     this.values = values;
   }
 
   /**
-   * 特定列情報だけを抜き出すメソッド
-   * @return {Array.<Array.<string|number|boolean|Date>>} 列情報を 2 次元配列
+   * 特定列の値だけを抜き出すメソッド
+   * @param {number} column - 抜き出す列番号 (一番左から 1, 2, 3,...)
+   * @return {Array.<string|number|boolean|Date>} 列の値
    */
-  getColumnValues(numColumn) {
-    const index = numColumn - 1;
+  getColumnValues(column) {
+    const index = column - 1;
     const columnValues = this.values.map(record => record[index]);
     return columnValues;
   }
 
   /**
-   * 配列内から A1 型式の場所の要素を返すメソッド
-   * @param {string} a1Notation - A1 形式表記
+   * 特定行の値だけを抜き出すメソッド
+   * @param {number} row - 抜き出す行番号 (一番上から 1, 2, 3,...)
+   * @return {Array.<string|number|boolean|Date>} 行の値
+   */
+  getRowValues(row) {
+    const index = row - 1;
+    const rowValues = this.values[index];
+    return rowValues;
+  }
+
+  /**
+   * 配列内から A1 形式で指定された場所の要素を返すメソッド
+   * @param {string} a1Notation - A1 形式表記 例: 'B2'
    * @return {string|number|boolean|Date} 指定された配列内の値
    */
   getValueByA1Notation(a1Notation) {
-    const rc = this.getRcByA1Notation(a1Notation);
+    const rc = Range.getRcByA1Notation(a1Notation);
     const value = this.values[rc.row - 1][rc.column - 1];
     return value;
   }
 
   /**
-   * 配列内から A1 型式の場所の要素を返すメソッド
-   * @param {string} a1Notation - A1 形式表記
-   * @return {string|number|boolean|Date} 指定された配列内の値
+   * 配列内から A1 形式で指定された範囲の要素を返すメソッド
+   * @param {string} a1Notation - A1 形式表記 例: 'A1:C3'
+   * @return {Array.<Array.<string|number|boolean|Date>>} 指定された範囲の値
    */
   getValuesByA1Notation(a1Notation) {
     const a1Notations = a1Notation.split(':');
-    const rcs = a1Notations.map(a1 => this.getRcByA1Notation(a1));
+    const rcs = a1Notations.map(a1 => Range.getRcByA1Notation(a1));
     const rows = rcs.map(rc => rc.row);
     const columns = rcs.map(rc => rc.column);
     const values = this.values
       .filter((_, i) => Math.min(...rows) <= i + 1 && i + 1 <= Math.max(...rows))
-      .map(r =>
-        r.filter((_, i) => Math.min(...columns) <= i + 1 && i + 1 <= Math.max(...columns)),
+      .map(record =>
+        record.filter((_, i) => Math.min(...columns) <= i + 1 && i + 1 <= Math.max(...columns)),
       );
     return values;
   }
 
   /**
-   * A1 形式表記から行数と列数を返すメソッド
-   * @param {string} a1Notation - A1 形式表記
-   * @return {Object} row と column をプロパティとして持つ
+   * ヘッダー行をキーとして持つ Dicts オブジェクトを生成するメソッド
+   * @param {number} headerIndex - ヘッダー行のインデックス
+   * @return {Dicts} ヘッダーを key, 値を value として持つ Dicts オブジェクト
    */
-  getRcByA1Notation(a1Notation) {
-    const row = this.getRow(a1Notation);
-    const a1Column = a1Notation.split(String(row))[0];
-    const column = this.getColumn(a1Column);
-    const rowAndColumn = { row, column };
-    return rowAndColumn;
-  }
-
-  /**
-   * A1 形式表記から行数を返すメソッド
-   * @param {string} a1Notation - A1 形式表記
-   * @return {number} 行数
-   */
-  getRow(a1Notation) {
-    const row = Number(a1Notation.match(/\d*$/)[0]);
-    return row;
-  }
-
-  /**
-   * A1 形式表記の列数から列数を返すメソッド
-   * @param {string} a1Column - A1 形式表記の列数
-   * @return {number} 列数
-   */
-  getColumn(a1Column) {
-    const a1ColumnCharacters = a1Column.split('');
-    const column = a1ColumnCharacters.reduce((acc, cur) => acc * 26 + cur.charCodeAt() - 64, 0);
-    return column;
+  getAsDicts(headerIndex = 0) {
+    const headers = this.values[headerIndex];
+    const dicts = this.values
+      .filter((_, i) => i > headerIndex)
+      .map(record => record.reduce((acc, cur, i) => acc.set(headers[i], cur), new Map()));
+    return new Dicts(dicts);
   }
 
 }

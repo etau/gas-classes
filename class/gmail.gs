@@ -1,14 +1,19 @@
 'use strict';
 
+/**
+ * 送信する Gmail に関するクラス
+ */
 class Gmail {
 
   /**
    * Gmail に関するコンストラクタ
    * @constructor
    * @param {Array.<string>} record - Gmail を作成するための配列の値
-   * NOTE: 配列で各種要素を取得する設計
+   * NOTE: 配列で各種要素を取得する設計。要素の順番は分割代入の並びと対応する
    */
   constructor(record) {
+    /** @type {Array.<string>} */
+    this.record = record;
     [
       this.recipient,
       this.subject,
@@ -20,11 +25,11 @@ class Gmail {
       this.htmlBody,
       this.attachmentFolderId
     ] = record;
-
   }
 
   /**
    * メールを送信するメソッド
+   * @return {Gmail} Gmail オブジェクト
    */
   send() {
     const { recipient, subject, body, options } = this.getParams();
@@ -34,16 +39,17 @@ class Gmail {
 
   /**
    * 下書きを作成するメソッド
+   * @return {Gmail} Gmail オブジェクト
    */
-  create() {
+  createDraft() {
     const { recipient, subject, body, options } = this.getParams();
     GmailApp.createDraft(recipient, subject, body, options);
     return this;
   }
 
   /**
-   * メールの下書きに必要なパラメーターを取得するメソッド
-   * @return {Object} メールの下書きを作成するために必要なパラメーター
+   * メールの送信・下書き作成に必要なパラメーターを取得するメソッド
+   * @return {Object} GmailApp に渡すパラメーター
    */
   getParams() {
     const params = {
@@ -51,7 +57,7 @@ class Gmail {
       subject: this.subject,
       body: this.body
     };
-    const options = {
+    params.options = {
       from: this.from,
       name: this.name,
       cc: this.cc,
@@ -59,7 +65,6 @@ class Gmail {
       attachments: this.getAttachments(),
       htmlBody: this.htmlBody
     };
-    params.options = options;
     return params;
   }
 
@@ -70,20 +75,20 @@ class Gmail {
    */
   getAttachments(folderId = this.attachmentFolderId) {
     if (folderId === undefined || folderId === '') return [];
-    const folder = new Folder(DriveApp.getFolderById(folderId));
+    const folder = Folder.getById(folderId);
     const attachments = folder.getFiles().map(file => file.getBlob());
     return attachments;
   }
 
   /**
-   * フォントのサイズと色を変更する静的メソッド
+   * フォントのサイズと色を指定した HTML 文字列を生成する静的メソッド
    * @param {string} string - 対象となる文字列
    * @param {string} color - フォント カラー
    * @param {number} size - フォント サイズ
    * @param {boolean} isBold - 太字かどうか
    * @return {string} HTML 化した文字列
    */
-  static setHtmlFont(string, color = 'black', size = 2, isBold = false) {
+  static getFontHtml(string, color = 'black', size = 2, isBold = false) {
     const sentences = string.split('\n');
     const htmlSentences = sentences.map(sentence =>
       isBold

@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Google ドライブのファイルに関するクラス
+ */
 class File {
 
   /**
@@ -30,25 +33,43 @@ class File {
 
   /**
    * ファイルの種類を取得するメソッド
-   * @return {string|undefined} ファイルの種類（'spreadsheets' 'document' または undefined）
-   * NOTE: MIME タイプで判定する場合は getMimeType メソッドと TYPE.FILE を利用する
+   * @return {string|undefined} TYPE.FILE のキー名。合致するものがない場合は undefined
+   * NOTE: 種類を追加する場合は TYPE.FILE に Mime Type を足すだけでよい
    */
   getType() {
-    const url = this.getUrl();
-    if (url.includes('https://docs.google.com/spreadsheets/')) return 'spreadsheets';
-    if (url.includes('https://docs.google.com/document/')) return 'document';
-    // TODO: 他も必要に応じて追加する
-    return undefined;
+    const mimeType = this.getMimeType();
+    const fileType = Object.keys(TYPE.FILE).find(key => TYPE.FILE[key] === mimeType);
+    return fileType;
   }
 
   /**
-   * ファイルの URL からFile オブジェクトを取得する静的メソッド
+   * 指定した種類のファイルかどうかを判定するメソッド
+   * @param {string} mimeType - 判定する Mime Type 例: TYPE.FILE.SPREADSHEET
+   * @return {boolean} 指定した種類のファイルかどうか
+   */
+  isType(mimeType) {
+    return this.getMimeType() === mimeType;
+  }
+
+  /**
+   * 親フォルダーを Folder オブジェクトの配列で取得するメソッド
+   * @return {Array.<Folder>} 親フォルダーの Folder オブジェクト
+   * NOTE: 複数の親フォルダーを持つ旧設定のファイルがあるため配列で返す
+   */
+  getParentFolders() {
+    const folderIterator = this.getParents();
+    const parentFolders = Folder.getIteratorAsArray(folderIterator).map(folder => new Folder(folder));
+    return parentFolders;
+  }
+
+  /**
+   * ファイルの URL から File オブジェクトを取得する静的メソッド
    * @param {string} fileUrl - ファイルの URL
    * @return {File} 取得した File オブジェクト
    */
   static getByUrl(fileUrl) {
     const fileId = fileUrl.match(/\/d\/(.*?)\//)[1];
-    const file = new File(DriveApp.getFileById(fileId));
+    const file = File.getById(fileId);
     return file;
   }
 

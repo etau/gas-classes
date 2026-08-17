@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * 数値を拡張して扱うクラス
+ */
 class NumberEx {
 
   /**
@@ -8,9 +11,9 @@ class NumberEx {
    * @param {number} max - 最大値
    * @return {number} 最小値 min, 最大値 max の間のランダムな整数
    */
-  static randomInteger(min, max) {
-    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-    return randomNumber;
+  static getRandomInteger(min, max) {
+    const randomInteger = Math.floor(Math.random() * (max - min + 1)) + min;
+    return randomInteger;
   }
 
   /**
@@ -18,22 +21,26 @@ class NumberEx {
    * @param {number} number - 3 桁区切り対象の数値
    * @return {string} 3 桁区切りされた文字列
    */
-  static thousandSeparator(number) {
+  static getThousandSeparated(number) {
     const string = number.toLocaleString('ja-JP');
     return string;
   }
 
   /**
-   * Count クラスオブジェクトを取得する静的メソッド
+   * Count オブジェクトを取得する静的メソッド
    * @param {number} initialValue - カウント開始する初期値
    * @return {Count} Count オブジェクト
    */
   static getCounter(initialValue = 0) {
-    return new Count(initialValue);
+    const counter = new Count(initialValue);
+    return counter;
   }
 
 }
 
+/**
+ * カウントに関するクラス
+ */
 class Count {
 
   /**
@@ -66,7 +73,8 @@ class Count {
 
   /**
    * 値を初期値にリセットするメソッド
-   * @return {number} 初期値に戻された this.value
+   * @param {number} resetValue - リセット後の値
+   * @return {number} リセットされた this.value
    */
   reset(resetValue = this.initialValue) {
     this.value = resetValue;

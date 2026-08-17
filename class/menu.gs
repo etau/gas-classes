@@ -1,19 +1,23 @@
 'use strict';
 
+/**
+ * カスタム メニューに関するクラス
+ */
 class Menu {
 
   /**
    * メニューに関するコンストラクタ
    * @constructor
+   * NOTE: ユーザーインターフェースの取得は Ui クラスに集約している
    */
   constructor() {
     /** @type {Ui} */
-    this.ui = SpreadsheetApp.getUi();
+    this.ui = new Ui();
   }
 
   /**
-   * Class Menu から委譲されたメソッド
-   * NOTE: https://developers.google.com/apps-script/reference/base/menu
+   * Class Ui から委譲されたメソッド
+   * NOTE: https://developers.google.com/apps-script/reference/base/ui
    */
   createMenu(...args) { return this.ui.createMenu(...args); }
 
@@ -21,7 +25,7 @@ class Menu {
    * メニューを作成するメソッド
    * @param {string} title - メニュー名
    * @param {Array.<Object.<string>>} items - メニューに追加するアイテム
-   * @return {Menu} メニュー オブジェクト
+   * @return {Menu} Menu オブジェクト
    */
   create(title = MENU_INFO.TITLE, items = this.getItems()) {
     const menu = this.createMenu(title);
@@ -40,7 +44,7 @@ class Menu {
       const item = {
         caption: (isAddNumber ? (i + 1) + '. ' : '') + func.CAPTION,
         functionName: func.NAME
-      }
+      };
       return item;
     });
     return items;

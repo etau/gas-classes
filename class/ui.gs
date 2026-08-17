@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * ユーザーインターフェースに関するクラス
+ */
 class Ui {
 
   /**
@@ -7,7 +10,7 @@ class Ui {
    * @constructor
    */
   constructor() {
-    /** @type {Ui} */
+    /** @type {SpreadsheetApp.Ui} */
     this.ui = SpreadsheetApp.getUi();
   }
 
@@ -16,15 +19,27 @@ class Ui {
    * NOTE: https://developers.google.com/apps-script/reference/base/ui
    */
   alert(...args) { return this.ui.alert(...args); }
+  prompt(...args) { return this.ui.prompt(...args); }
+  createMenu(...args) { return this.ui.createMenu(...args); }
 
   /**
    * アラートに「はい」ボタンが押されたかどうかを判定するメソッド
    * @param {string} alertMessage - アラート メッセージ
    * @return {boolean} 「はい」ボタンが押されたかどうか
    */
-  isClickYesButton(alertMessage) {
+  isYesButtonClicked(alertMessage) {
     const response = this.alert(alertMessage, this.ui.ButtonSet.YES_NO);
     return response === this.ui.Button.YES;
+  }
+
+  /**
+   * アラートに「OK」ボタンが押されたかどうかを判定するメソッド
+   * @param {string} alertMessage - アラート メッセージ
+   * @return {boolean} 「OK」ボタンが押されたかどうか
+   */
+  isOkButtonClicked(alertMessage) {
+    const response = this.alert(alertMessage, this.ui.ButtonSet.OK_CANCEL);
+    return response === this.ui.Button.OK;
   }
 
 }

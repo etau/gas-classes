@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * スプレッドシートの編集イベントに関するクラス
+ */
 class TriggerEditEvent {
 
   /**
@@ -18,16 +21,34 @@ class TriggerEditEvent {
 
   /**
    * イベントが実行されたシートを取得するメソッド
-   * @return {SpreadsheetApp.Sheet} Sheet オブジェクト
+   * @param {number} headerRows - ヘッダーの行数
+   * @return {Sheet} Sheet オブジェクト
    */
-  getSourceSheet() {
+  getSourceSheet(headerRows = 1) {
     const sourceSheet = this.source.getActiveSheet();
-    return sourceSheet;
+    return new Sheet(sourceSheet, headerRows);
+  }
+
+  /**
+   * 編集された範囲を取得するメソッド
+   * @return {Range} Range オブジェクト
+   */
+  getSourceRange() {
+    return new Range(this.range);
+  }
+
+  /**
+   * 単一セルの編集かどうか判定するメソッド
+   * @return {boolean} 単一セルへの編集かどうか
+   * NOTE: 判定そのものは Range クラスに集約している
+   */
+  isSingleCell() {
+    return this.getSourceRange().isSingleCell();
   }
 
   /**
    * 編集前後の値が同じかどうかを判定するメソッド
-   * @return {boolean|undefined} 編集前後の値が同じかどうか
+   * @return {boolean|undefined} 編集前後の値が同じかどうか。単一セルの編集でない場合は undefined
    * NOTE: 同じ値をコピー・アンド・ペーストした場合でも編集と判定されるため
    */
   isSameValue() {
@@ -36,21 +57,12 @@ class TriggerEditEvent {
   }
 
   /**
-   * 単一セルの編集かどうか判定するメソッド
-   * @return {boolean} 単一セルへの編集かどうか
-   */
-  isSingleCell() {
-    const numRows = this.range.getNumRows();
-    const numColumns = this.range.getNumColumns();
-    return numRows * numColumns === 1;
-  }
-
-  /**
-   * 編集範囲の値をクリアする関数
+   * 編集範囲の値をクリアするメソッド
+   * @return {TriggerEditEvent} TriggerEditEvent オブジェクト
    */
   clearContent() {
-    const range = this.range;
-    range.clearContent();
+    this.getSourceRange().clearContent();
+    return this;
   }
 
 }
