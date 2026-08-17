@@ -1,14 +1,17 @@
 'use strict';
 
+/**
+ * Google ドライブのフォルダーに関するクラス
+ */
 class Folder {
 
   /**
    * フォルダー オブジェクトに関するコンストラクタ
    * @constructor
-   * @param {DriveApp.folder} folder - フォルダー
+   * @param {DriveApp.Folder} folder - フォルダー
    */
   constructor(folder) {
-    /** @type {DriveApp.folder} */
+    /** @type {DriveApp.Folder} */
     this.folder = folder;
   }
 
@@ -21,9 +24,18 @@ class Folder {
   getName() { return this.folder.getName(); }
   getParents() { return this.folder.getParents(); }
   createFolder(...args) { return this.folder.createFolder(...args); }
-  createFile(...args) { return this.folder.createFile(...args); }
   setName(...args) { return this.folder.setName(...args); }
   setTrashed(...args) { return this.folder.setTrashed(...args); }
+
+  /**
+   * フォルダー内にファイルを作成するメソッド
+   * @param {...*} args - DriveApp.Folder の createFile メソッドに渡す引数
+   * @return {File} 作成されたファイルの File オブジェクト
+   */
+  createFile(...args) {
+    const file = this.folder.createFile(...args);
+    return new File(file);
+  }
 
   /**
    * フォルダー内のファイルを配列で取得するメソッド
@@ -31,7 +43,7 @@ class Folder {
    */
   getFiles() {
     const fileIterator = this.folder.getFiles();
-    const files = Array.from(this.generator(fileIterator)).map(file => new File(file));
+    const files = Folder.getIteratorAsArray(fileIterator).map(file => new File(file));
     return files;
   }
 
@@ -41,12 +53,12 @@ class Folder {
    */
   getFolders() {
     const folderIterator = this.folder.getFolders();
-    const folders = Array.from(this.generator(folderIterator)).map(folder => new Folder(folder));
+    const folders = Folder.getIteratorAsArray(folderIterator).map(folder => new Folder(folder));
     return folders;
   }
 
   /**
-   * 子フォルダーを作成する (同名のフォルダーがある場合は作成しない) メソッド 
+   * 子フォルダーを作成する (同名のフォルダーがある場合は作成しない) メソッド
    * @param {string} folderName - 作成する子フォルダーの名前
    * @return {Folder} 新しく作成された (もしくは既に存在していた) フォルダーの Folder オブジェクト
    */
@@ -57,24 +69,35 @@ class Folder {
   }
 
   /**
-   * 任意の文字列を含んだファイルを削除するメソッド
-   * @param {string} string - ファイル名に含まれているか鑑定する任意の文字列
+   * 任意の文字列をファイル名に含んだファイルをゴミ箱に移動するメソッド
+   * @param {string} partialName - ファイル名に含まれているか判定する任意の文字列
+   * @return {Folder} Folder オブジェクト
    */
-  removeFilesInclude(string) {
+  trashFilesByPartialName(partialName) {
     const files = this.getFiles();
-    files.forEach(file => {
-      const isInclude = file.getName().includes(string);
-      if (isInclude) file.setTrashed(true);
-    });
+    files
+      .filter(file => file.getName().includes(partialName))
+      .forEach(file => file.setTrashed(true));
+    return this;
   }
 
   /**
-   * イテレーターからジェネレーターを生成するメソッド
-   * @param {DriveApp.FileIterator | DriveApp.FolderIterator} iterator - ファイル オブジェクト・フォルダ オブジェクトのイテレーター
-   * @return {Generator} ジェネレーター オブジェクト
+   * イテレーターを配列化する静的メソッド
+   * @param {DriveApp.FileIterator|DriveApp.FolderIterator} iterator - ファイル・フォルダー オブジェクトのイテレーター
+   * @return {Array.<DriveApp.File|DriveApp.Folder>} 配列化されたファイル・フォルダー オブジェクト
    */
-  * generator(iterator) {
-    // NOTE: 例外 1 - DriveApp のイテレータは配列ではないため反復メソッドが使えない
+  static getIteratorAsArray(iterator) {
+    const array = Array.from(Folder.generator_(iterator));
+    return array;
+  }
+
+  /**
+   * イテレーターからジェネレーターを生成するプライベートな静的メソッド
+   * @param {DriveApp.FileIterator|DriveApp.FolderIterator} iterator - ファイル・フォルダー オブジェクトのイテレーター
+   * @return {Generator} ジェネレーター オブジェクト
+   * NOTE: 例外 1 - DriveApp のイテレータは配列ではないため反復メソッドが使えない
+   */
+  static * generator_(iterator) {
     while (iterator.hasNext()) {
       yield iterator.next();
     }
@@ -87,7 +110,7 @@ class Folder {
    */
   static getByUrl(folderUrl) {
     const folderId = folderUrl.match(/(?<=folders\/).*?(?=\/|$)/)[0];
-    const folder = new Folder(DriveApp.getFolderById(folderId));
+    const folder = Folder.getById(folderId);
     return folder;
   }
 

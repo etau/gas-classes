@@ -1,11 +1,14 @@
 'use strict';
 
+/**
+ * シートに関するクラス
+ */
 class Sheet {
 
   /**
    * シートに関するコンストラクタ
    * @constructor
-   * @param {SpreadsheetApp.sheet} sheet - 対象となるシート オブジェクト
+   * @param {SpreadsheetApp.Sheet} sheet - 対象となるシート オブジェクト
    * @param {number} headerRows - ヘッダーの行数
    * @param {number} headerIndex - ヘッダー行のインデックス (ユニークなカラム)
    */
@@ -16,6 +19,11 @@ class Sheet {
     this.headerRows = headerRows;
     /** @type {number} */
     this.headerIndex = headerIndex;
+    /**
+     * @type {Object}
+     * NOTE: 取得済みの値を保持する。追加するキャッシュはここに集約し、flush メソッドで一括破棄する
+     */
+    this.cache_ = {};
   }
 
   /**
@@ -30,8 +38,8 @@ class Sheet {
   getName() { return this.sheet.getName(); }
   getParent() { return this.sheet.getParent(); }
   getSheetId() { return this.sheet.getSheetId(); }
+  createTextFinder(...args) { return this.sheet.createTextFinder(...args); }
   activate() { return this.sheet.activate(); }
-  copy() { return new Sheet(this.sheet.copyTo(SS), this.headerRows, this.headerIndex); }
 
   /**
    * シートの URL を取得するメソッド
@@ -40,336 +48,6 @@ class Sheet {
   getUrl() {
     const url = this.getParent().getUrl() + '#gid=' + this.getSheetId();
     return url;
-  }
-
-  /**
-   * Sheet オブジェクトを新しく取得し直すメソッド
-   * @return {Sheet} 更新された Sheet オブジェクト
-   */
-  flush() {
-    SpreadsheetApp.flush();
-    this.dataRangeValues_ = undefined;
-    this.headers_ = undefined;
-    this.headerValues_ = undefined;
-    this.dataValues_ = undefined;
-    this.dicts_ = undefined;
-    this.columnIndexesObject_ = undefined;
-    return this;
-  }
-
-  /**
-   * シートの値すべて取得するメソッド
-   * @return {Array.<Array.<number|string|boolean|Date>>} シートの値
-   */
-  getDataRangeValues() {
-    if (this.dataRangeValues_ !== undefined) return this.dataRangeValues_;
-    const dataRangeValues = this.getDataRange().getValues();
-    this.dataRangeValues_ = dataRangeValues;
-    return dataRangeValues;
-  }
-
-  /**
-   * ヘッダーを取得するメソッド
-   * @return {Array.<string>} ヘッダー一覧
-   */
-  getHeaders() {
-    if (this.headers_ !== undefined) return this.headers_;
-    const headerValues = this.getHeaderValues();
-    const headers = headerValues[this.headerIndex];
-    this.headers_ = headers;
-    return headers;
-  }
-
-  /**
-   * ヘッダー部分を取得するメソッド
-   * @return {Array.<Array.<string>>} ヘッダー部分
-   */
-  getHeaderValues() {
-    if (this.headerValues_ !== undefined) return this.headerValues_;
-    const values = this.getDataRangeValues();
-    const headerValues = values.filter((_, i) => i < this.headerRows);
-    this.headerValues_ = headerValues;
-    return headerValues;
-  }
-
-  /**
-   * ヘッダー行を除いたレコード部分を取得するメソッド
-   * @return {Array.<Array.<number|string|boolean|Date>>} レコード
-   */
-  getDataValues() {
-    if (this.dataValues_ !== undefined) return this.dataValues_;
-    const values = this.getDataRangeValues();
-    const dataValues = values.filter((_, i) => i >= this.headerRows);
-    this.dataValues_ = dataValues;
-    return dataValues;
-  }
-
-  /**
-   * SHEET_INFO の COLUMN プロパティから、カラム名をプロパティ、カラム インデックスを値としてもつオブジェクトを生成するメソッド
-   * @param {Object.<string>} columnEnum - SHEET_INFO の COLUMN プロパティ 例: SHEET_INFO.SHEET_INFO.SHEET1.COLUMN
-   * @return {Object.<number>} カラム名をプロパティ、カラム インデックスを値としてもつオブジェクト
-   */
-  getColumnIndexesObject(columnEnum) {
-    if (this.columnIndexesObject_ !== undefined) return this.columnIndexesObject_;
-    const columns = Object.values(columnEnum);
-    const headers = this.getHeaders();
-    const columnIndexesObject = columns.reduce((pre, cur) => {
-      pre[cur] = headers.indexOf(cur);
-      return pre;
-    }, {});
-    this.columnIndexesObject_ = columnIndexesObject;
-    return columnIndexesObject;
-  }
-
-  /**
-   * ヘッダー情報から列番号を返すメソッド
-   * @param {string} headerName - ヘッダー名
-   * @return {number} 列番号
-   */
-  getColumnByHeaderName(headerName) {
-    const columnIndex = this.getColumnIndexByHeaderName(headerName, this.headerIndex);
-    const column = columnIndex + 1;
-    return column;
-  }
-
-  /**
-   * ヘッダー情報から列インデックスを返すメソッド
-   * @param {string} headerName - ヘッダー名
-   * @return {number} 列インデックス
-   */
-  getColumnIndexByHeaderName(headerName) {
-    const headers = this.getHeaders(this.headerIndex);
-    const columnIndex = headers.indexOf(headerName);
-    if (columnIndex === -1) throw new Error('The value "' + headerName + '" does not exist in the header row of sheet "' + this.getName() + '".');
-    return columnIndex;
-  }
-
-  /**
-   * レコードをすべて削除し、値を貼り付けるメソッド
-   * @param {Array.<Array.<number|string|boolean|Date>>} values - 貼り付ける値
-   */
-  setValuesHeaderRowsAfter(values) {
-    if (values.length === 0) return;
-    this.clearDataValues();
-    this.getRange(this.headerRows + 1, 1, values.length, values[0].length)
-      .setValues(values);
-    return this;
-  }
-
-  /**
-   * レコードをすべて削除するメソッド
-   */
-  clearDataValues() {
-    const values = this.getDataValues();
-    if (values.length === 0) return;
-    this.getRange(this.headerRows + 1, 1, values.length, values[0].length)
-      .clearContent();
-    return this;
-  }
-
-  /**
-   * 列の値をクリアするメソッド
-   * @param {string} headerName - ヘッダー名
-   * @return {Sheet} Sheet オブジェクト
-   */
-  clearField(headerName) {
-    const column = this.getColumnByHeaderName(headerName);
-    this.getRange(1 + this.headerRows, column, this.getLastRow() - this.headerRows)
-      .clearContent();
-    return this;
-  }
-
-  /**
-   * レコードの最終行の下に値を貼り付けるメソッド
-   * @param {Array.<Array.<number|string|boolean|Date>>} values - 貼り付ける値
-   */
-  appendRows(values) {
-    if (values.length === 0) return;
-    this.getRange(this.getLastRow() + 1, 1, values.length, values[0].length)
-      .setValues(values);
-    return this;
-  }
-
-  /**
-   * レコード範囲でソートするメソッド
-   * @param {number} column - ソート対象となる列
-   * @param {boolean} ascending - 昇順か降順か
-   */
-  sortDataRows(column = 1, ascending = true) {
-    this.getRange(this.headerRows + 1, 1, this.getLastRow() - this.headerRows, this.getLastColumn())
-      .sort({ column: column, ascending: ascending });
-    return this;
-  }
-
-  /**
-   * 列に値が存在するかどうか返すメソッド
-   * @param {string} headerName - 検索対象のヘッダー名
-   * @param {number|string|boolean|Date} value - 検索対象の値
-   * @return {boolean} 列に値が存在するかどうか
-   */
-  hasValueInField(headerName, value) {
-    const fieldValues = this.getFieldValues(headerName);
-    return fieldValues.includes(value);
-  }
-
-  /**
-   * ヘッダー名から列の値を取得するメソッド
-   * @param {string} headerName - ヘッダー名
-   * @param {boolean} isAddHeader - ヘッダー名を配列に含むかどうか
-   * @return {Array.<number|string|boolean|Date>} ヘッダー名に対する列の値
-   */
-  getFieldValues(headerName, isAddHeader = false) {
-    const fieldValues = this.select([headerName], isAddHeader).flat();
-    return fieldValues;
-  }
-
-  /**
-   * ヘッダー情報の配列から必要な列だけの値を取得するメソッド
-   * @param {Array.<string>} headers - 辞書のキーとなるヘッダー情報
-   * @param {boolean} isAddHeaders - ヘッダー情報を配列に含むかどうか
-   * @return {Array.<Array.<number|string|boolean|Date>>} ヘッダー情報に対応する列の値
-   */
-  select(headers, isAddHeaders = true) {
-    const dicts = this.getAsDicts();
-    const records = dicts.map(dict =>
-      headers.map(key => dict.get(key)),
-    );
-    const values = isAddHeaders ? [headers, ...records] : records;
-    return values;
-  }
-
-  /**
-   * シートの値から、ヘッダー情報をプロパティとして持つ Map 型を生成するメソッド
-   * @return {Array.<Map>} ヘッダー情報を key, 値を value として持つ Map オブジェクト
-   */
-  getAsDicts() {
-    if (this.dicts_ !== undefined) return this.dicts_;
-    const headers = this.getHeaders(this.headerIndex);
-    const values = this.getDataValues();
-    const dicts = values.map((record, i) =>
-      record.reduce(
-        (acc, cur, j) => acc.set(headers[j], cur),
-        new Map([
-          ['row', i + this.headerRows + 1], // NOTE: 必要に応じて削除
-          ['record', record], // NOTE: dict.get('record') を使っているメソッドがなければ削除
-        ]),
-      ),
-    );
-    this.dicts_ = dicts;
-    return dicts;
-  }
-
-  /**
-   * フィルター対象の列に合致したレコードを取得するメソッド
-   * @param {string} headerName - フィルター対象の列のヘッダー名
-   * @param {string|number|boolean|Date} value - フィルター対象の値
-   * @return {Array.<Array.<string|number|boolean|Date>} フィルターされたレコード
-   */
-  filterRecords(headerName, value) {
-    const filteredDicts = this.filterDicts(headerName, value);
-    const records = filteredDicts.map(dict => dict.get('record'));
-    return records;
-  }
-
-  /**
-   * フィルター対象の列に合致した dicts を取得するメソッド
-   * @param {string} headerName - フィルター対象の列のヘッダー名
-   * @param {string|number|boolean|Date} value - フィルター対象の値
-   * @param {boolean} isSameValue - 値が同一のものをフィルタするかどうか。false の場合は同一でないものをフィルタする
-   * @return {Array.<Map>} フィルターされた dicts
-   */
-  filterDicts(headerName, value, isSameValue = true) {
-    const dicts = this.getAsDicts();
-    const filteredDicts = isSameValue ?
-      dicts.filter(dict => dict.get(headerName) === value) :
-      dicts.filter(dict => dict.get(headerName) !== value);
-    return filteredDicts;
-  }
-
-  /**
-   * フィルター対象の列に値がある dicts を取得するメソッド
-   * @param {string} header - フィルター対象の列のヘッダー名
-   * @param {string|number|boolean|Date} value - フィルター対象の値
-   * @return {Array.<Map>} フィルターされた dicts
-   */
-  filterDictsWithValue(header) {
-    const dicts = this.getAsDicts();
-    const filteredDicts = dicts.filter(dict => dict.get(header) !== '');
-    return filteredDicts;
-  }
-
-  /**
-   * 抽出対象の列の一番最初に合致したレコードを取得するメソッド
-   * @param {string} header - 抽出対象の列のヘッダー名
-   * @param {string|number|boolean|Date} value - 抽出対象の値
-   * @return {Array.<string|number|boolean|Date>} 対象レコード
-   */
-  findRecord(header, value) {
-    const dict = this.findDict(header, value, this.headerIndex);
-    const record = dict === undefined ? null : dict.get('record');
-    return record;
-  }
-
-  /**
-   * 抽出対象の列の一番最初に合致した dict を取得するメソッド
-   * @param {string} headerName - 抽出対象の列のヘッダー名
-   * @param {string|number|boolean|Date} value - 抽出対象の値
-   * @return {Map} dict
-   */
-  findDict(headerName, value) {
-    const dicts = this.getAsDicts();
-    const dict = dicts.find(dict => dict.get(headerName) === value);
-    if (dict === undefined) throw new Error('The value "' + value + '" does not exist in the "' + headerName + '" column of sheet' + this.getName() + '.');
-    return dict;
-  }
-
-  /**
-   * シートの文字列を一括置換するメソッド
-   * @param {string} string - 置換対象の文字列
-   * @param {string} replaced - 置換後の文字列
-   * @return {Sheet} 文字列置換後の Sheet オブジェクト
-   */
-  replaceAllText(string, replaced) {
-    const textFinder = this.sheet.createTextFinder(string);
-    textFinder.replaceAllWith(replaced);
-    return this;
-  }
-
-  /**
-   * シートに回答するフォーム オブジェクトを取得するメソッド
-   * @return {FormApp.Form} シートに回答するフォーム オブジェクト
-   */
-  getAssociatedForm() {
-    const url = this.getFormUrl();
-    const form = FormApp.openByUrl(url);
-    return form;
-  }
-
-  /**
-   * アクティブなシートを移動させるメソッド
-   * @param {number} pos - シートの位置 (一番左から 1, 2, 3,...)
-   */
-  move(pos = 1) {
-    this.activate();
-    return SS.moveActiveSheet(pos);
-  }
-
-  /**
-   * Sheet オブジェクトから xlsx 形式の Excel ファイルを作成するメソッド
-   * @param {string} xlsxName - 出力される xlsx ファイル名
-   * @param {string} folderId - 出力先の Google ドライブ フォルダ ID
-   */
-  exportToExcel(xlsxName, folderId) {
-    this.flush();
-    const url = 'https://docs.google.com/feeds/download/spreadsheets/Export?key=' + this.getParentId() + '&exportFormat=xlsx';
-    const params = {
-      headers: {
-        Authorization: 'Bearer ' + ScriptApp.getOAuthToken()
-      },
-      muteHttpExceptions: true
-    };
-    const blob = UrlFetchApp.fetch(url, params).getBlob().setName(xlsxName);
-    DriveApp.getFolderById(folderId).createFile(blob);
   }
 
   /**
@@ -383,14 +61,316 @@ class Sheet {
   }
 
   /**
-   * URL からシートを取得する静的メソッド
+   * 保留中の変更を反映し、キャッシュを破棄するメソッド
+   * @return {Sheet} キャッシュが破棄された Sheet オブジェクト
+   */
+  flush() {
+    SpreadsheetApp.flush();
+    this.cache_ = {};
+    return this;
+  }
+
+  /**
+   * シートの値をすべて取得するメソッド
+   * @return {Array.<Array.<number|string|boolean|Date>>} シートの値
+   */
+  getDataRangeValues() {
+    if (this.cache_.dataRangeValues !== undefined) return this.cache_.dataRangeValues;
+    const dataRangeValues = this.getDataRange().getValues();
+    this.cache_.dataRangeValues = dataRangeValues;
+    return dataRangeValues;
+  }
+
+  /**
+   * ヘッダー部分を取得するメソッド
+   * @return {Array.<Array.<string>>} ヘッダー部分
+   */
+  getHeaderValues() {
+    if (this.cache_.headerValues !== undefined) return this.cache_.headerValues;
+    const values = this.getDataRangeValues();
+    const headerValues = values.filter((_, i) => i < this.headerRows);
+    this.cache_.headerValues = headerValues;
+    return headerValues;
+  }
+
+  /**
+   * ヘッダーを取得するメソッド
+   * @return {Array.<string>} ヘッダー一覧
+   */
+  getHeaders() {
+    if (this.cache_.headers !== undefined) return this.cache_.headers;
+    const headerValues = this.getHeaderValues();
+    const headers = headerValues[this.headerIndex];
+    this.cache_.headers = headers;
+    return headers;
+  }
+
+  /**
+   * ヘッダー行を除いたレコード部分を取得するメソッド
+   * @return {Array.<Array.<number|string|boolean|Date>>} レコード
+   */
+  getDataValues() {
+    if (this.cache_.dataValues !== undefined) return this.cache_.dataValues;
+    const values = this.getDataRangeValues();
+    const dataValues = values.filter((_, i) => i >= this.headerRows);
+    this.cache_.dataValues = dataValues;
+    return dataValues;
+  }
+
+  /**
+   * シートの値から、ヘッダーをキーとして持つ Dicts オブジェクトを生成するメソッド
+   * @return {Dicts} ヘッダーを key, 値を value として持つ Dicts オブジェクト
+   * NOTE: 各 dict の末尾には、シート上の行番号を 'row' キーで持たせている
+   */
+  getDicts() {
+    if (this.cache_.dicts !== undefined) return this.cache_.dicts;
+    const headers = this.getHeaders();
+    const values = this.getDataValues();
+    const dicts = new Dicts(values.map((record, i) => {
+      const dict = record.reduce((acc, cur, j) => acc.set(headers[j], cur), new Map());
+      return dict.set('row', i + this.headerRows + 1);
+    }));
+    this.cache_.dicts = dicts;
+    return dicts;
+  }
+
+  /**
+   * SHEET_INFO の COLUMN プロパティから、カラム名をプロパティ、カラム インデックスを値としてもつオブジェクトを生成するメソッド
+   * @param {Object.<string>} columnEnum - SHEET_INFO の COLUMN プロパティ 例: SHEET_INFO.SHEET1.COLUMN
+   * @return {Object.<number>} カラム名をプロパティ、カラム インデックスを値としてもつオブジェクト
+   */
+  getColumnIndexesObject(columnEnum) {
+    const columns = Object.values(columnEnum);
+    const headers = this.getHeaders();
+    const columnIndexesObject = columns.reduce((pre, cur) => {
+      pre[cur] = headers.indexOf(cur);
+      return pre;
+    }, {});
+    return columnIndexesObject;
+  }
+
+  /**
+   * ヘッダー情報から列インデックスを返すメソッド
+   * @param {string} headerName - ヘッダー名
+   * @return {number} 列インデックス (一番左から 0, 1, 2,...)
+   * @throws ヘッダー名が存在しない場合のエラー
+   */
+  getColumnIndexByHeaderName(headerName) {
+    const headers = this.getHeaders();
+    const columnIndex = headers.indexOf(headerName);
+    if (columnIndex === -1) throw new Error('The value "' + headerName + '" does not exist in the header row of sheet "' + this.getName() + '".');
+    return columnIndex;
+  }
+
+  /**
+   * ヘッダー情報から列番号を返すメソッド
+   * @param {string} headerName - ヘッダー名
+   * @return {number} 列番号 (一番左から 1, 2, 3,...)
+   * @throws ヘッダー名が存在しない場合のエラー
+   */
+  getColumnByHeaderName(headerName) {
+    const columnIndex = this.getColumnIndexByHeaderName(headerName);
+    const column = columnIndex + 1;
+    return column;
+  }
+
+  /**
+   * ヘッダー情報の配列から必要な列だけの値を取得するメソッド
+   * @param {Array.<string>} headerNames - 取得対象のヘッダー名
+   * @param {boolean} isAddHeaders - ヘッダー情報を配列に含むかどうか
+   * @return {Array.<Array.<number|string|boolean|Date>>} ヘッダー情報に対応する列の値
+   */
+  getValuesByHeaderNames(headerNames, isAddHeaders = true) {
+    const values = this.getDicts().getAsValues(headerNames, isAddHeaders);
+    return values;
+  }
+
+  /**
+   * ヘッダー名から列の値を取得するメソッド
+   * @param {string} headerName - ヘッダー名
+   * @param {boolean} isAddHeader - ヘッダー名を配列に含むかどうか
+   * @return {Array.<number|string|boolean|Date>} ヘッダー名に対する列の値
+   */
+  getColumnValuesByHeaderName(headerName, isAddHeader = false) {
+    const columnValues = this.getValuesByHeaderNames([headerName], isAddHeader).flat();
+    return columnValues;
+  }
+
+  /**
+   * 列に値が存在するかどうか返すメソッド
+   * @param {string} headerName - 検索対象のヘッダー名
+   * @param {number|string|boolean|Date} value - 検索対象の値
+   * @return {boolean} 列に値が存在するかどうか
+   */
+  hasValueInColumn(headerName, value) {
+    const columnValues = this.getColumnValuesByHeaderName(headerName);
+    return columnValues.includes(value);
+  }
+
+  /**
+   * 抽出対象の列の一番最初に合致した dict を取得するメソッド
+   * @param {string} headerName - 抽出対象の列のヘッダー名
+   * @param {string|number|boolean|Date} value - 抽出対象の値
+   * @return {Map} dict
+   * @throws 合致する dict がない場合のエラー
+   * NOTE: 合致しない場合に undefined を許容するときは getDicts().find を利用する
+   */
+  findDict(headerName, value) {
+    const dict = this.getDicts().find(headerName, value);
+    if (dict === undefined) throw new Error('The value "' + value + '" does not exist in the "' + headerName + '" column of sheet "' + this.getName() + '".');
+    return dict;
+  }
+
+  /**
+   * 抽出対象の列の一番最初に合致したレコードを取得するメソッド
+   * @param {string} headerName - 抽出対象の列のヘッダー名
+   * @param {string|number|boolean|Date} value - 抽出対象の値
+   * @return {Array.<string|number|boolean|Date>} 対象レコード
+   * @throws 合致するレコードがない場合のエラー
+   */
+  findRecord(headerName, value) {
+    const dict = this.findDict(headerName, value);
+    const headers = this.getHeaders();
+    const record = headers.map(header => dict.get(header));
+    return record;
+  }
+
+  /**
+   * レコードをすべて削除し、値を貼り付けるメソッド
+   * @param {Array.<Array.<number|string|boolean|Date>>} values - 貼り付ける値
+   * @return {Sheet} Sheet オブジェクト
+   */
+  setDataValues(values) {
+    if (values.length === 0) return this;
+    this.clearDataValues();
+    this.getRange(this.headerRows + 1, 1, values.length, values[0].length)
+      .setValues(values);
+    return this;
+  }
+
+  /**
+   * レコードの最終行の下に値を貼り付けるメソッド
+   * @param {Array.<Array.<number|string|boolean|Date>>} values - 貼り付ける値
+   * @return {Sheet} Sheet オブジェクト
+   */
+  appendRows(values) {
+    if (values.length === 0) return this;
+    this.getRange(this.getLastRow() + 1, 1, values.length, values[0].length)
+      .setValues(values);
+    return this;
+  }
+
+  /**
+   * レコードをすべて削除するメソッド
+   * @return {Sheet} Sheet オブジェクト
+   */
+  clearDataValues() {
+    const values = this.getDataValues();
+    if (values.length === 0) return this;
+    this.getRange(this.headerRows + 1, 1, values.length, values[0].length)
+      .clearContent();
+    return this;
+  }
+
+  /**
+   * 列の値をクリアするメソッド
+   * @param {string} headerName - ヘッダー名
+   * @return {Sheet} Sheet オブジェクト
+   */
+  clearColumn(headerName) {
+    const column = this.getColumnByHeaderName(headerName);
+    this.getRange(this.headerRows + 1, column, this.getLastRow() - this.headerRows)
+      .clearContent();
+    return this;
+  }
+
+  /**
+   * レコード範囲でソートするメソッド
+   * @param {number} column - ソート対象となる列
+   * @param {boolean} ascending - 昇順か降順か
+   * @return {Sheet} Sheet オブジェクト
+   */
+  sortDataRows(column = 1, ascending = true) {
+    this.getRange(this.headerRows + 1, 1, this.getLastRow() - this.headerRows, this.getLastColumn())
+      .sort({ column: column, ascending: ascending });
+    return this;
+  }
+
+  /**
+   * シートの文字列を一括置換するメソッド
+   * @param {string} string - 置換対象の文字列
+   * @param {string} replaced - 置換後の文字列
+   * @return {Sheet} 文字列置換後の Sheet オブジェクト
+   */
+  replaceAllText(string, replaced) {
+    const textFinder = this.createTextFinder(string);
+    textFinder.replaceAllWith(replaced);
+    return this;
+  }
+
+  /**
+   * シートを対象のスプレッドシートにコピーするメソッド
+   * @param {SpreadsheetApp.Spreadsheet} spreadsheet - コピー先のスプレッドシート
+   * @return {Sheet} コピーで生成された Sheet オブジェクト
+   */
+  copyTo(spreadsheet = SS) {
+    const copiedSheet = this.sheet.copyTo(spreadsheet);
+    return new Sheet(copiedSheet, this.headerRows, this.headerIndex);
+  }
+
+  /**
+   * アクティブなシートを移動させるメソッド
+   * @param {number} pos - シートの位置 (一番左から 1, 2, 3,...)
+   * @return {Sheet} Sheet オブジェクト
+   */
+  move(pos = 1) {
+    this.activate();
+    SS.moveActiveSheet(pos);
+    return this;
+  }
+
+  /**
+   * シートに回答するフォーム オブジェクトを取得するメソッド
+   * @return {Form} シートに回答するフォームの Form オブジェクト
+   */
+  getAssociatedForm() {
+    const url = this.getFormUrl();
+    const form = FormApp.openByUrl(url);
+    return new Form(form);
+  }
+
+  /**
+   * Sheet オブジェクトから xlsx 形式の Excel ファイルを作成するメソッド
+   * @param {string} xlsxName - 出力される xlsx ファイル名
+   * @param {string} folderId - 出力先の Google ドライブ フォルダ ID
+   * @return {File} 生成された xlsx ファイルの File オブジェクト
+   */
+  exportToExcel(xlsxName, folderId) {
+    this.flush();
+    const url = 'https://docs.google.com/feeds/download/spreadsheets/Export?key=' + this.getParentId() + '&exportFormat=xlsx';
+    const params = {
+      headers: {
+        Authorization: 'Bearer ' + ScriptApp.getOAuthToken()
+      },
+      muteHttpExceptions: true
+    };
+    const blob = UrlFetchApp.fetch(url, params).getBlob().setName(xlsxName);
+    const file = DriveApp.getFolderById(folderId).createFile(blob);
+    return new File(file);
+  }
+
+  /**
+   * URL から Sheet オブジェクトを取得する静的メソッド
    * @param {string} url - シート ID を含むスプレッドシートの URL
+   * @return {Sheet} Sheet オブジェクト
+   * @throws URL に合致するシートがない場合のエラー
    */
   static getByUrl(url) {
     const sheets = SpreadsheetApp.openByUrl(url).getSheets();
     const sheetId = Number(url.split('#gid=')[1]);
     const sheet = sheets.find(sheet => sheet.getSheetId() === sheetId);
-    return sheet;
+    if (sheet === undefined) throw new Error('The sheet does not exist in the URL "' + url + '".');
+    return new Sheet(sheet);
   }
 
 }

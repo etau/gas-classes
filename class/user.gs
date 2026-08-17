@@ -1,13 +1,17 @@
 'use strict';
 
+/**
+ * ユーザーに関するクラス
+ */
 class User {
 
   /**
-   * ユーザー オブジェクトに関するクラス
+   * ユーザー オブジェクトに関するコンストラクタ
    * @constructor
    * @param {Session.User} user - ユーザー オブジェクト
    */
   constructor(user = Session.getActiveUser()) {
+    /** @type {Session.User} */
     this.user = user;
   }
 
@@ -19,18 +23,18 @@ class User {
 
   /**
    * 管理者かどうか判定するメソッド
+   * @param {Array.<string>} adminEmails - 管理者の email
    * @return {boolean} 管理者かどうか
    */
-  isAdmin(adminEmails = this.getAdminEmails()) {
+  isAdmin(adminEmails = User.getAdminEmails()) {
     return adminEmails.includes(this.getEmail());
   }
 
   /**
-   * 管理者の email をプロパティ ストアから取得するメソッド
-   * @return {Array.<string>} adminEmails - 管理者の email
-   * NOTE: Properties クラスを new して利用
+   * 管理者の email をプロパティ ストアから取得する静的メソッド
+   * @return {Array.<string>} 管理者の email。未設定の場合は空配列
    */
-  getAdminEmails() {
+  static getAdminEmails() {
     const adminEmails = PROPERTIES.get(PROPERTY_KEYS.ADMIN_EMAILS);
     return adminEmails === null ? [] : adminEmails;  // NOTE: プロパティ未設定の場合に null が返るため
   }
@@ -38,10 +42,9 @@ class User {
   /**
    * 管理者の email をプロパティ ストアに設定する静的メソッド
    * @param {Array.<string>} adminEmails - 管理者の email
-   * NOTE: Properties クラスを利用
    */
   static setAdminEmails(adminEmails) {
-    Properties.set(PROPERTY_KEYS.ADMIN_EMAILS, adminEmails);
+    PROPERTIES.set(PROPERTY_KEYS.ADMIN_EMAILS, adminEmails);
   }
 
 }

@@ -1,31 +1,27 @@
 'use strict';
 
-class SlackWebhook { // TODO: SlackApi クラスに変更して、SlackWebhookApi は継承する形に変更
+/**
+ * Slack の Incoming Webhook に関するクラス
+ * NOTE: SlackApi クラスを継承しているため、このファイルは slack.gs より後に評価される必要がある
+ */
+class SlackWebhookApi extends SlackApi {
 
   /**
-   * slack のメッセージ送信に関するコンストラクタ
+   * Slack のメッセージ送信に関するコンストラクタ
    * @constructor
    * @param {string} webhookUrl - Webhook URL
    */
-  constructor(webhookUrl) {
+  constructor(webhookUrl = PROPERTIES.get(PROPERTY_KEYS.WEBHOOK_URL)) {
+    super();
     /** @type {string} */
     this.webhookUrl = webhookUrl;
   }
 
   /**
-   * slack ID からメンションを作成する関数
-   * @param {string} slackId - メンションする対象の slack ID
-   * @return {string} メンション
-   */
-  getUserMention(slackId) {
-    const mention = '<@' + slackId + '>';
-    return mention;
-  }
-
-  /**
-   * slack にメッセージを送信する
+   * Webhook URL に slack のメッセージを送信するメソッド
    * @param {string} message - slack に投稿するメッセージ
-   * @param {boolean} isChannelMention - チャンネルメンションをつけるかどうか
+   * @param {boolean} isChannelMention - チャンネル メンションをつけるかどうか
+   * @return {SlackWebhookApi} SlackWebhookApi オブジェクト
    */
   send(message, isChannelMention = false) {
     const options = {
@@ -36,14 +32,25 @@ class SlackWebhook { // TODO: SlackApi クラスに変更して、SlackWebhookAp
       })
     };
     UrlFetchApp.fetch(this.webhookUrl, options);
+    return this;
   }
 
   /**
-   * Webhook URL をセットする静的メソッド
-   * NOTE: class properties がある場合は不要
+   * slack ID からメンションを作成する静的メソッド
+   * @param {string} slackId - メンションする対象の slack ID
+   * @return {string} メンション
+   */
+  static getUserMention(slackId) {
+    const mention = '<@' + slackId + '>';
+    return mention;
+  }
+
+  /**
+   * Webhook URL をスクリプト プロパティにセットする静的メソッド
+   * @param {string} webhookUrl - Webhook URL
    */
   static setWebhookUrl(webhookUrl) {
-    Properties.set(PROPERTY_KEYS.WEBHOOK_URL, webhookUrl);
+    PROPERTIES.set(PROPERTY_KEYS.WEBHOOK_URL, webhookUrl);
   }
 
 }

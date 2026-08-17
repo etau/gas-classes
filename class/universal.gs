@@ -1,7 +1,8 @@
 'use strict';
 
 /**
- * 汎用機能を提供するクラス
+ * 特定のドメインに属さない汎用機能を提供するクラス
+ * NOTE: A1 形式表記の変換は Range クラス、2 次元配列の操作は Values クラスに集約している
  */
 class Universal {
 
@@ -15,6 +16,7 @@ class Universal {
 
   /**
    * 配列化された Map オブジェクトの中身を確認する静的メソッド
+   * @param {Array.<Map>} dicts - 出力する Map オブジェクトの配列
    */
   static logDicts(dicts) {
     dicts.forEach(dict => Universal.logDict(dict));
@@ -22,6 +24,7 @@ class Universal {
 
   /**
    * Map オブジェクトの中身を確認する静的メソッド
+   * @param {Map} dict - 出力する Map オブジェクト
    */
   static logDict(dict) {
     console.log([...dict]);
@@ -29,8 +32,8 @@ class Universal {
 
   /**
    * 配列をランダムにシャッフルする静的メソッド
-   * @param {Array.<>} array - もとの配列
-   * @return {Array.<>} ランダムにシャッフルされた配列
+   * @param {Array} array - もとの配列
+   * @return {Array} ランダムにシャッフルされた配列
    */
   static shuffle(array) {
     const copiedArray = [...array];
@@ -42,15 +45,14 @@ class Universal {
     return copiedArray;
   }
 
-  /** TODO: Range クラスができたら移植
-   * 列番号から A1 表記を取得するメソッド
-   * @param {number} number - 列番号
-   * @return {string} A1 表記の列番号
+  /**
+   * 配列から重複を取り除く静的メソッド
+   * @param {Array} array - もとの配列
+   * @return {Array} 重複が取り除かれた配列
    */
-  static getColumnA1NotationByNumber(number) {
-    const rangeA1Notation = SpreadsheetApp.getActiveSheet().getRange(1, number).getA1Notation();
-    const columnA1Notation = rangeA1Notation.replace(/\d/, '');
-    return columnA1Notation;
+  static getUniqueValues(array) {
+    const uniqueValues = [...new Set(array)];
+    return uniqueValues;
   }
 
 }

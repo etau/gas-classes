@@ -1,14 +1,18 @@
 'use strict';
 
+/**
+ * 文字列を拡張して扱うクラス
+ */
 class StringEx {
 
   /**
    * 改行を削除する静的メソッド
    * @param {string} string - 改行を削除する文字列
    * @return {string} 改行を削除した文字列
+   * NOTE: CRLF・LF のどちらの改行コードにも対応する
    */
   static deleteNewLine(string) {
-    const replacementLists = [[/\n/g, '']]; // TODO: ほかのパターンもあれば追加する
+    const replacementLists = [[/\r?\n/g, '']];
     const replaced = StringEx.replaceWithLists(string, replacementLists);
     return replaced;
   }
@@ -19,14 +23,27 @@ class StringEx {
    * @param {string} prefix - プレフィックス
    * @param {string} suffix - サフィックス
    * @param {boolean} isInclude - プレフィックスとサフィックスを結果にふくむかどうか
-   * @return {Array.<string>} 抽出された文字列
+   * @return {Array.<string>|null} 抽出された文字列。合致するものがない場合は null
    */
-  static fetch(string, prefix = '{{', suffix = '}}', isInclude = false) {
+  static getStringsBetween(string, prefix = '{{', suffix = '}}', isInclude = false) {
     const regExp = isInclude ?
       new RegExp(prefix + '[\\s\\S]*?' + suffix, 'g') :
       new RegExp('(?<=' + prefix + ')[\\s\\S]*?(?=' + suffix + ')', 'g');
-    const fetchStrings = string.match(regExp);
-    return fetchStrings;
+    const stringsBetween = string.match(regExp);
+    return stringsBetween;
+  }
+
+  /**
+   * プレフィックスとサフィックスに挟まれた最初の文字列を抽出する静的メソッド
+   * @param {string} string - 抽出対象の文字列
+   * @param {string} prefix - プレフィックス
+   * @param {string} suffix - サフィックス
+   * @param {boolean} isInclude - プレフィックスとサフィックスを結果にふくむかどうか
+   * @return {string|null} 抽出された文字列。合致するものがない場合は null
+   */
+  static getStringBetween(string, prefix = '{{', suffix = '}}', isInclude = false) {
+    const stringsBetween = StringEx.getStringsBetween(string, prefix, suffix, isInclude);
+    return stringsBetween === null ? null : stringsBetween[0];
   }
 
   /**

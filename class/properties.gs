@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * スクリプト プロパティに関するクラス
+ */
 class Properties {
 
   /**
@@ -15,20 +18,13 @@ class Properties {
    * Class Properties から委譲されたメソッド
    * NOTE: https://developers.google.com/apps-script/reference/properties/properties
    */
+  getKeys() { return this.scriptProperties.getKeys(); }
   deleteAll() { return this.scriptProperties.deleteAllProperties(); }
-
-  /**
-   * スクリプト プロパティの内容をすべてログ出力するメソッド
-   */
-  log() {
-    const properties = this.scriptProperties.getProperties();
-    console.log(properties);
-  }
 
   /**
    * スクリプト プロパティから値を取得するメソッド
    * @param {string} key - キーとなる文字列
-   * @return {string|Array|Object} 値
+   * @return {string|Array|Object|null} 値。キーが存在しない場合は null
    * NOTE: JSON 形式のものは、オブジェクトにして返す
    */
   get(key) {
@@ -38,30 +34,51 @@ class Properties {
   }
 
   /**
+   * スクリプト プロパティにキーと値をセットするメソッド
+   * @param {string} key - キーとなる文字列
+   * @param {string|Array|Object} value - 値
+   * @return {Properties} Properties オブジェクト
+   * NOTE: オブジェクトは JSON 形式にしてセットする
+   */
+  set(key, value) {
+    this.scriptProperties.setProperty(
+      key,
+      typeof value === 'object' ? JSON.stringify(value) : value,
+    );
+    return this;
+  }
+
+  /**
+   * スクリプト プロパティからキーと値を削除するメソッド
+   * @param {string} key - キーとなる文字列
+   * @return {Properties} Properties オブジェクト
+   */
+  delete(key) {
+    this.scriptProperties.deleteProperty(key);
+    return this;
+  }
+
+  /**
    * JSON 形式のものは、オブジェクトにして返すメソッド
-   * @param {string} 値
-   * @return {string|Array|Object} パースされた値
+   * @param {string} value - パースする値
+   * @return {string|Array|Object|null} パースされた値
    */
   parse(value) {
     try {
       return JSON.parse(value);
     } catch (e) {
-      console.error('Properties.parse: JSON 形式ではないため文字列として扱います - ' + e.message);
-      return value;
+      return value;  // NOTE: JSON 形式でないプロパティは想定内のため、文字列としてそのまま返す
     }
   }
 
   /**
-   * スクリプト プロパティにキーと値をセットする静的メソッド
-   * @param {string} key - キーとなる文字列
-   * @param {string|Array|Object} value - 値
-   * NOTE: オブジェクトは JSON 形式にしてセットする
+   * スクリプト プロパティの内容をすべてログ出力するメソッド
+   * @return {Properties} Properties オブジェクト
    */
-  static set(key, value) {
-    PropertiesService.getScriptProperties().setProperty(
-      key,
-      typeof value === 'object' ? JSON.stringify(value) : value,
-    );
+  log() {
+    const properties = this.scriptProperties.getProperties();
+    console.log(properties);
+    return this;
   }
 
 }

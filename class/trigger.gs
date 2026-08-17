@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * トリガーに関するクラス
+ */
 class Trigger {
 
   /**
@@ -16,7 +19,8 @@ class Trigger {
    * retryMins 後にトリガーを設定するメソッド
    * @param {number} retryMins - 分
    * @return {Trigger} Trigger オブジェクト
-   * NOTE: try...chatch 文とセットで利用する
+   * NOTE: try...catch 文とセットで利用する
+   * NOTE: リトライを重ねられるよう、既存のトリガーは削除しない
    */
   retry(retryMins = 1) {
     const date = new Date();
@@ -34,6 +38,22 @@ class Trigger {
     ScriptApp.newTrigger(this.functionName)
       .timeBased()
       .at(triggerTime)
+      .create();
+    return this;
+  }
+
+  /**
+   * 時間主導型 - 日付ベースのタイマーを設定するメソッド
+   * @param {number} hour - 時間 NOTE: 20 と設定した場合「午後 20 時～ 21 時」に設定
+   * @param {number} everyDays - 何日ごとに実行するか
+   * @return {Trigger} Trigger オブジェクト
+   */
+  createAtHour(hour, everyDays) {
+    this.delete();
+    ScriptApp.newTrigger(this.functionName)
+      .timeBased()
+      .atHour(hour)
+      .everyDays(everyDays)
       .create();
     return this;
   }
@@ -65,49 +85,36 @@ class Trigger {
   }
 
   /**
-   * 時間主導型 - 日付ベースのタイマーを設定するメソッド
-   * @param {number} hour - 時間 NOTE: 20 と設定した場合「午後 20 時～ 21 時」に設定
-   * @param {number} everyDays - 何日ごとに実行するか
-   * @return {Trigger} Trigger オブジェクト
+   * 対象の関数に紐づくトリガーをすべて取得するメソッド
+   * @return {Array.<ScriptApp.Trigger>} 対象の関数に紐づくトリガー
    */
-  createAtHour(hour, everyDays) {
-    this.delete();
-    ScriptApp.newTrigger(this.functionName)
-      .timeBased()
-      .atHour(hour)
-      .everyDays(everyDays)
-      .create();
-    return this;
+  getTriggers() {
+    const triggers = ScriptApp.getProjectTriggers()
+      .filter(trigger => trigger.getHandlerFunction() === this.functionName);
+    return triggers;
   }
 
   /**
-   * トリガーを削除するメソッド
+   * 対象の関数に紐づくトリガーをすべて削除するメソッド
    * @return {Trigger} Trigger オブジェクト
    */
   delete() {
-    const triggers = ScriptApp.getProjectTriggers();
-    triggers.forEach(trigger => {
-      if (trigger.getHandlerFunction() !== this.functionName) return;
-      ScriptApp.deleteTrigger(trigger);
-    });
+    this.getTriggers().forEach(trigger => ScriptApp.deleteTrigger(trigger));
     return this;
   }
 
 }
 
 /**
- * 初回のトリガーを設定する関数
+ * TRIGGER_TYPE enum の定義にしたがって初回のトリガーを設定する関数
  */
 function setInitialTriggers() {
-
   const onChangeTriggers = TRIGGER_TYPE.ON_CHANGE;
   onChangeTriggers.forEach(trigger => new Trigger(trigger.NAME).createOnChangeForSpreadsheet());
 
   const onEditTriggers = TRIGGER_TYPE.ON_EDIT;
   onEditTriggers.forEach(trigger => new Trigger(trigger.NAME).createOnEditForSpreadsheet());
 
-  const timeBasedTriggers = TRIGGER_TYPE.TIME_BASE;
-  const atHourTriggers = timeBasedTriggers.AT_HOUR;
+  const atHourTriggers = TRIGGER_TYPE.TIME_BASE.AT_HOUR;
   atHourTriggers.forEach(trigger => new Trigger(trigger.NAME).createAtHour(trigger.HOUR, trigger.EVERY_DAYS));
-
 }

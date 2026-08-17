@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Map 型を要素として持つ配列に関するクラス
+ */
 class Dicts {
 
   /**
@@ -13,16 +16,35 @@ class Dicts {
   }
 
   /**
-   * Map 型を要素として持つ配列を、2 次元配列化するメソッド
-   * @param {boolean} isAddHeaders - ヘッダー情報を配列に含むかどうか
-   * @return {Array.<Array>} ヘッダー情報に対応する列の値
+   * 要素数を取得するメソッド
+   * @return {number} dicts の要素数
    */
-  getAsValues(isAddHeaders = false) {
-    const headers = [...this.dicts[0].keys()];
+  getLength() {
+    const length = this.dicts.length;
+    return length;
+  }
+
+  /**
+   * すべての dict が持つキーを取得するメソッド
+   * @return {Array.<string>} キーの一覧。dicts が空の場合は空配列
+   */
+  getKeys() {
+    if (this.getLength() === 0) return [];
+    const keys = [...this.dicts[0].keys()];
+    return keys;
+  }
+
+  /**
+   * Map 型を要素として持つ配列を、2 次元配列化するメソッド
+   * @param {Array.<string>} keys - 抜き出すキーの一覧
+   * @param {boolean} isAddHeaders - キーの一覧を先頭行に含むかどうか
+   * @return {Array.<Array.<string|number|boolean|Date>>} キーに対応する列の値
+   */
+  getAsValues(keys = this.getKeys(), isAddHeaders = false) {
     const records = this.dicts.map(dict =>
-      headers.map(key => dict.get(key)),
+      keys.map(key => dict.get(key)),
     );
-    const values = isAddHeaders ? [headers, ...records] : records;
+    const values = isAddHeaders ? [keys, ...records] : records;
     return values;
   }
 
@@ -38,6 +60,16 @@ class Dicts {
       this.dicts.filter(dict => dict.get(key) === value) :
       this.dicts.filter(dict => dict.get(key) !== value);
     return new Dicts(filteredDicts);
+  }
+
+  /**
+   * 対象のキーに値がある dicts を取得するメソッド
+   * @param {string} key - フィルター対象のキー
+   * @return {Dicts} フィルターされた Dicts オブジェクト
+   */
+  filterWithValue(key) {
+    const filteredDicts = this.filter(key, '', false);
+    return filteredDicts;
   }
 
   /**
